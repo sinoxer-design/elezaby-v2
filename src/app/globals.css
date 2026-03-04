@@ -2,9 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
 
 /* ===== El Ezaby Design System - Tailwind v4 Theme ===== */
+/* Noon-inspired clean commerce | Navy + Cyan brand identity */
 @theme inline {
   /* Colors - mapped from CSS variables */
   --color-background: var(--background);
@@ -27,17 +27,29 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Brand colors */
-  --color-brand-50: var(--green-50);
-  --color-brand-100: var(--green-100);
-  --color-brand-200: var(--green-200);
-  --color-brand-300: var(--green-300);
-  --color-brand-400: var(--green-400);
-  --color-brand-500: var(--green-500);
-  --color-brand-600: var(--green-600);
-  --color-brand-700: var(--green-700);
-  --color-brand-800: var(--green-800);
-  --color-brand-900: var(--green-900);
+  /* Brand colors — Navy (primary brand: Pantone 281 U ≈ #003478) */
+  --color-brand-50: var(--navy-50);
+  --color-brand-100: var(--navy-100);
+  --color-brand-200: var(--navy-200);
+  --color-brand-300: var(--navy-300);
+  --color-brand-400: var(--navy-400);
+  --color-brand-500: var(--navy-500);
+  --color-brand-600: var(--navy-600);
+  --color-brand-700: var(--navy-700);
+  --color-brand-800: var(--navy-800);
+  --color-brand-900: var(--navy-900);
+
+  /* Accent colors — Cyan (Pantone 299 U ≈ #00AEEF) */
+  --color-cyan-50: var(--cyan-50);
+  --color-cyan-100: var(--cyan-100);
+  --color-cyan-200: var(--cyan-200);
+  --color-cyan-300: var(--cyan-300);
+  --color-cyan-400: var(--cyan-400);
+  --color-cyan-500: var(--cyan-500);
+  --color-cyan-600: var(--cyan-600);
+  --color-cyan-700: var(--cyan-700);
+  --color-cyan-800: var(--cyan-800);
+  --color-cyan-900: var(--cyan-900);
 
   /* Sand neutrals */
   --color-sand-50: var(--sand-50);
@@ -57,6 +69,12 @@
   --color-info: var(--color-info);
   --color-health: var(--color-health);
   --color-success: var(--color-success);
+
+  /* Deal / Commerce tokens */
+  --color-deal: var(--color-deal);
+  --color-deal-bg: var(--color-deal-bg);
+  --color-express: var(--color-express);
+  --color-express-bg: var(--color-express-bg);
 
   /* Font families */
   --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
@@ -130,6 +148,65 @@
   @keyframes card-reveal {
     to { opacity: 1; transform: translateY(0); }
   }
+  @keyframes countdown-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes slide-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes float-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.9; }
+  }
+  @keyframes twinkle-alt {
+    0%, 100% { opacity: 0.6; }
+    40% { opacity: 0.15; }
+    80% { opacity: 0.8; }
+  }
+  @keyframes sway-lantern {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+  @keyframes sway-lantern-alt {
+    0%, 100% { transform: rotate(1.5deg); }
+    50% { transform: rotate(-1.5deg); }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.3; filter: blur(8px); }
+    50% { opacity: 0.6; filter: blur(12px); }
+  }
+  @keyframes drift-slow {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes lantern-float-1 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(0.5deg); }
+    50% { transform: translateY(-3px) rotate(-0.3deg); }
+    75% { transform: translateY(-10px) rotate(0.2deg); }
+  }
+  @keyframes lantern-float-2 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    30% { transform: translateY(-12px) rotate(-0.5deg); }
+    60% { transform: translateY(-5px) rotate(0.4deg); }
+    80% { transform: translateY(-9px) rotate(-0.2deg); }
+  }
+  @keyframes lantern-float-3 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    20% { transform: translateY(-6px) rotate(0.3deg); }
+    50% { transform: translateY(-14px) rotate(-0.4deg); }
+    70% { transform: translateY(-8px) rotate(0.2deg); }
+  }
+  @keyframes lantern-glow {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.45; }
+  }
 
   /* Animations */
   --animate-slide-up: slide-up 0.4s var(--ease-out-expo);
@@ -139,43 +216,77 @@
   --animate-cart-bounce: cart-bounce 0.3s var(--ease-out-expo);
   --animate-pulse-stock: pulse-stock 2s ease-in-out infinite;
   --animate-shimmer: shimmer 1.5s ease-in-out infinite;
+  --animate-countdown-pulse: countdown-pulse 1s ease-in-out infinite;
+  --animate-slide-left: slide-left 20s linear infinite;
+  --animate-float-up: float-up 0.5s var(--ease-out-expo) forwards;
+  --animate-twinkle: twinkle 3s ease-in-out infinite;
+  --animate-twinkle-alt: twinkle-alt 4s ease-in-out infinite;
+  --animate-sway-lantern: sway-lantern 6s ease-in-out infinite;
+  --animate-sway-lantern-alt: sway-lantern-alt 7s ease-in-out infinite;
+  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
+  --animate-drift-slow: drift-slow 8s ease-in-out infinite;
+  --animate-lantern-float-1: lantern-float-1 12s ease-in-out infinite;
+  --animate-lantern-float-2: lantern-float-2 14s ease-in-out infinite;
+  --animate-lantern-float-3: lantern-float-3 16s ease-in-out infinite;
+  --animate-lantern-glow: lantern-glow 5s ease-in-out infinite;
 }
 
 /* ===== CSS Variables (Design Tokens) ===== */
 :root {
   /* Tier 1: Primitive Tokens */
-  --green-50:  oklch(0.97 0.03 155);
-  --green-100: oklch(0.93 0.06 155);
-  --green-200: oklch(0.85 0.09 155);
-  --green-300: oklch(0.75 0.12 155);
-  --green-400: oklch(0.65 0.14 155);
-  --green-500: oklch(0.55 0.15 155);
-  --green-600: oklch(0.48 0.14 155);
-  --green-700: oklch(0.40 0.12 155);
-  --green-800: oklch(0.32 0.10 155);
-  --green-900: oklch(0.24 0.08 155);
 
-  --sand-50:   oklch(0.985 0.005 90);
-  --sand-100:  oklch(0.97 0.005 90);
-  --sand-200:  oklch(0.91 0.008 90);
-  --sand-300:  oklch(0.82 0.008 90);
-  --sand-400:  oklch(0.70 0.008 90);
-  --sand-500:  oklch(0.58 0.008 90);
-  --sand-600:  oklch(0.45 0.010 90);
-  --sand-700:  oklch(0.35 0.012 85);
-  --sand-800:  oklch(0.25 0.012 85);
-  --sand-900:  oklch(0.15 0.010 85);
+  /* Navy scale — Pantone 281 U / #003478 (hue ≈ 260) */
+  --navy-50:  oklch(0.97 0.01 260);
+  --navy-100: oklch(0.94 0.025 260);
+  --navy-200: oklch(0.87 0.05 260);
+  --navy-300: oklch(0.75 0.08 260);
+  --navy-400: oklch(0.60 0.12 260);
+  --navy-500: oklch(0.48 0.14 260);
+  --navy-600: oklch(0.38 0.13 260);
+  --navy-700: oklch(0.30 0.11 260);
+  --navy-800: oklch(0.24 0.09 260);
+  --navy-900: oklch(0.18 0.06 260);
 
-  --red-500:   oklch(0.55 0.22 25);
-  --red-50:    oklch(0.95 0.04 25);
-  --amber-500: oklch(0.75 0.16 80);
-  --amber-50:  oklch(0.96 0.04 80);
-  --blue-500:  oklch(0.55 0.15 250);
-  --blue-50:   oklch(0.96 0.03 250);
-  --teal-500:  oklch(0.60 0.12 195);
+  /* Cyan scale — Pantone 299 U / #00AEEF (hue ≈ 230) */
+  --cyan-50:  oklch(0.97 0.02 230);
+  --cyan-100: oklch(0.93 0.04 230);
+  --cyan-200: oklch(0.87 0.08 230);
+  --cyan-300: oklch(0.78 0.12 230);
+  --cyan-400: oklch(0.72 0.15 230);
+  --cyan-500: oklch(0.67 0.16 230);
+  --cyan-600: oklch(0.55 0.15 230);
+  --cyan-700: oklch(0.45 0.13 230);
+  --cyan-800: oklch(0.35 0.10 230);
+  --cyan-900: oklch(0.25 0.07 230);
+
+  /* Cool gray neutrals — noon-inspired blue-gray (hue 265) */
+  --sand-50:   oklch(0.985 0.003 265);
+  --sand-100:  oklch(0.97 0.004 265);
+  --sand-200:  oklch(0.92 0.006 265);
+  --sand-300:  oklch(0.85 0.008 265);
+  --sand-400:  oklch(0.70 0.012 260);
+  --sand-500:  oklch(0.60 0.014 260);
+  --sand-600:  oklch(0.48 0.016 260);
+  --sand-700:  oklch(0.38 0.018 260);
+  --sand-800:  oklch(0.27 0.016 260);
+  --sand-900:  oklch(0.17 0.012 260);
+
+  /* Functional primitives */
+  --red-500:     oklch(0.55 0.22 25);
+  --red-50:      oklch(0.95 0.04 25);
+  --amber-500:   oklch(0.75 0.16 80);
+  --amber-50:    oklch(0.96 0.04 80);
+  --blue-500:    oklch(0.55 0.15 250);
+  --blue-50:     oklch(0.96 0.03 250);
+  --teal-500:    oklch(0.60 0.12 195);
+
+  /* Crimson — promotions & deals (from brand complementary palette) */
+  --crimson-500: oklch(0.52 0.24 18);
+  --crimson-600: oklch(0.45 0.22 18);
+  --crimson-50:  oklch(0.96 0.04 18);
 
   /* Tier 2: Semantic Tokens (shadcn/ui required) */
-  --background: var(--sand-50);
+  --background: oklch(0.975 0.004 265);
   --foreground: var(--sand-800);
 
   --card: oklch(1 0 0);
@@ -184,7 +295,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: var(--sand-800);
 
-  --primary: var(--green-500);
+  --primary: var(--navy-600);
   --primary-foreground: oklch(1 0 0);
 
   --secondary: var(--sand-100);
@@ -193,46 +304,52 @@
   --muted: var(--sand-100);
   --muted-foreground: var(--sand-500);
 
-  --accent: var(--green-50);
-  --accent-foreground: var(--green-700);
+  --accent: var(--cyan-50);
+  --accent-foreground: var(--navy-700);
 
   --destructive: var(--red-500);
   --destructive-foreground: oklch(1 0 0);
 
   --border: var(--sand-200);
   --input: var(--sand-200);
-  --ring: var(--green-400);
+  --ring: var(--cyan-400);
 
   /* Custom semantic tokens */
-  --color-discount: var(--red-500);
-  --color-discount-bg: var(--red-50);
+  --color-discount: var(--crimson-500);
+  --color-discount-bg: var(--crimson-50);
   --color-warning: var(--amber-500);
   --color-warning-bg: var(--amber-50);
   --color-info: var(--blue-500);
   --color-info-bg: var(--blue-50);
   --color-health: var(--teal-500);
-  --color-success: var(--green-500);
-  --color-success-bg: var(--green-50);
+  --color-success: var(--cyan-600);
+  --color-success-bg: var(--cyan-50);
 
-  /* Prescription label accent (signature motif) */
-  --color-card-accent: var(--green-500);
+  /* Deal / Commerce tokens */
+  --color-deal: var(--crimson-500);
+  --color-deal-bg: var(--crimson-50);
+  --color-express: var(--cyan-500);
+  --color-express-bg: var(--cyan-50);
+
+  /* Card accent colors */
+  --color-card-accent: var(--navy-600);
   --color-card-accent-rx: var(--teal-500);
-  --color-card-accent-sale: var(--red-500);
+  --color-card-accent-sale: var(--crimson-500);
+  --color-card-accent-express: var(--cyan-500);
 
-  /* Shadows */
-  --shadow-card: 0 1px 3px oklch(0.15 0.01 85 / 0.06),
-                 0 0 0 1px oklch(0.15 0.01 85 / 0.03);
-  --shadow-elevated: 0 4px 6px oklch(0.15 0.01 85 / 0.06),
-                     0 2px 4px oklch(0.15 0.01 85 / 0.04);
-  --shadow-sheet: 0 -4px 20px oklch(0.15 0.01 85 / 0.12);
-  --shadow-bottom-nav: 0 -1px 3px oklch(0.15 0.01 85 / 0.08);
+  /* Shadows — subtle, noon-style (cards rely on bg contrast more than shadow) */
+  --shadow-card: 0 1px 2px oklch(0.20 0.015 260 / 0.05);
+  --shadow-elevated: 0 4px 12px oklch(0.20 0.015 260 / 0.08),
+                     0 1px 3px oklch(0.20 0.015 260 / 0.04);
+  --shadow-sheet: 0 -4px 20px oklch(0.20 0.015 260 / 0.10);
+  --shadow-bottom-nav: 0 -1px 2px oklch(0.20 0.015 260 / 0.06);
 
-  /* Radii */
-  --radius: 0.5rem;
+  /* Radii — tighter, noon uses 5-8px for cards */
+  --radius: 0.375rem;
   --radius-sm: 0.25rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
   --radius-pill: 9999px;
 
   /* Motion */
@@ -243,14 +360,15 @@
   --duration-slow: 400ms;
 
   /* Layout */
-  --header-height: 7.5rem;
-  --header-collapsed-height: 3.5rem;
-  --bottom-nav-height: 4.5rem;
-  --header-height-desktop: 6.5rem;
+  --header-height: 10.75rem;          /* deals banner (1.75rem) + logo row (3.5rem) + search+tabs (~5.5rem) */
+  --header-collapsed-height: 5.25rem; /* deals banner (1.75rem) + logo row (3.5rem) */
+  --bottom-nav-height: 3.75rem;
+  --header-height-desktop: 8.25rem;   /* deals banner (1.75rem) + logo row (3.5rem) + nav row (3rem) */
   --page-padding-x: 1rem;
   --page-padding-x-md: 1.5rem;
   --page-padding-x-lg: 2rem;
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --deals-banner-height: 1.75rem;
 }
 
 @media (min-width: 1024px) {
@@ -259,46 +377,6 @@
   }
 }
 
-/* Dark mode */
-.dark {
-  --background: oklch(0.14 0.008 85);
-  --foreground: oklch(0.93 0.005 90);
-
-  --card: oklch(0.18 0.008 85);
-  --card-foreground: oklch(0.93 0.005 90);
-
-  --popover: oklch(0.18 0.008 85);
-  --popover-foreground: oklch(0.93 0.005 90);
-
-  --primary: oklch(0.65 0.14 155);
-  --primary-foreground: oklch(0.14 0.008 85);
-
-  --secondary: oklch(0.22 0.008 85);
-  --secondary-foreground: oklch(0.88 0.005 90);
-
-  --muted: oklch(0.22 0.008 85);
-  --muted-foreground: oklch(0.62 0.008 90);
-
-  --accent: oklch(0.22 0.04 155);
-  --accent-foreground: oklch(0.85 0.09 155);
-
-  --destructive: oklch(0.60 0.20 25);
-  --destructive-foreground: oklch(0.14 0.008 85);
-
-  --border: oklch(0.28 0.008 85);
-  --input: oklch(0.28 0.008 85);
-  --ring: oklch(0.55 0.15 155);
-
-  --color-discount: oklch(0.65 0.20 25);
-  --color-warning: oklch(0.80 0.14 80);
-  --color-info: oklch(0.65 0.13 250);
-
-  --shadow-card: 0 1px 3px oklch(0 0 0 / 0.3),
-                 0 0 0 1px oklch(1 0 0 / 0.03);
-  --shadow-elevated: 0 4px 6px oklch(0 0 0 / 0.4);
-  --shadow-sheet: 0 -4px 20px oklch(0 0 0 / 0.5);
-  --shadow-bottom-nav: 0 -1px 3px oklch(0 0 0 / 0.3);
-}
 
 /* RTL support */
 [dir="rtl"] {
@@ -341,7 +419,7 @@
 
 /* ===== Utility Classes ===== */
 @layer utilities {
-  /* Prescription label top-accent on cards */
+  /* Card top-accent bars */
   .card-accent {
     position: relative;
   }
@@ -360,6 +438,9 @@
   }
   .card-accent-rx::before {
     background: var(--color-card-accent-rx);
+  }
+  .card-accent-express::before {
+    background: var(--color-card-accent-express);
   }
 
   /* Hide scrollbar for horizontal scroll rails */
@@ -386,6 +467,7 @@
   .stagger-4 { animation-delay: 200ms; }
   .stagger-5 { animation-delay: 250ms; }
   .stagger-6 { animation-delay: 300ms; }
+
   /* Responsive heading scales */
   @media (min-width: 1024px) {
     .font-display {
@@ -393,6 +475,14 @@
     }
   }
 
+  /* Deals banner marquee */
+  .deals-marquee {
+    display: flex;
+    animation: slide-left 20s linear infinite;
+  }
+  .deals-marquee:hover {
+    animation-play-state: paused;
+  }
 }
 
 /* ===== Reduced Motion ===== */

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" rx="16" fill="#FFF0F5"/>
+  <defs>
+    <linearGradient id="jarGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#E8E8E8"/>
+    </linearGradient>
+    <linearGradient id="jarLid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F9A8D4"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="jarSh" x="-10%" y="-5%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#EC4899" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <g filter="url(#jarSh)">
+    <!-- Jar body -->
+    <path d="M120,220 Q120,180 130,170 L270,170 Q280,180 280,220 L280,290 Q280,320 260,320 L140,320 Q120,320 120,290 Z" fill="url(#jarGrad)"/>
+    <!-- Jar shine -->
+    <path d="M135,185 Q135,175 145,175 L155,175 Q155,280 145,300 L135,300 Q130,290 130,270 Z" fill="white" opacity="0.35"/>
+    <!-- Lid -->
+    <rect x="108" y="140" width="184" height="38" rx="10" fill="url(#jarLid)"/>
+    <rect x="108" y="155" width="184" height="23" rx="6" fill="#DB2777" opacity="0.3"/>
+    <!-- Lid highlight -->
+    <rect x="120" y="147" width="60" height="6" rx="3" fill="white" opacity="0.3"/>
+    <!-- Label area -->
+    <rect x="145" y="210" width="110" height="60" rx="8" fill="#EC4899" opacity="0.12"/>
+    <rect x="160" y="225" width="80" height="8" rx="2" fill="#EC4899" opacity="0.2"/>
+    <rect x="170" y="240" width="60" height="6" rx="2" fill="#EC4899" opacity="0.15"/>
+    <rect x="175" y="253" width="50" height="6" rx="2" fill="#EC4899" opacity="0.1"/>
+  </g>
+</svg>
