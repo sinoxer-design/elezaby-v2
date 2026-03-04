@@ -65,9 +65,9 @@ export function NotifyMeDialog({
  You'll be notified!
  </h3>
  <p className="text-center text-sm text-sand-500">
- We'll send a notification to{""}
- <span className="font-medium text-sand-700">{email}</span> when{""}
- <span className="font-medium text-sand-700">{productName}</span>{""}
+ We'll send a notification to{" "}
+ <span className="font-medium text-sand-700">{email}</span> when{" "}
+ <span className="font-medium text-sand-700">{productName}</span>{" "}
  is back in stock.
  </p>
  <Button

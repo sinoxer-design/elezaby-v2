@@ -155,7 +155,7 @@ export default function CheckoutPage() {
  htmlFor="checkout-addr2"
  className="text-sm font-medium text-sand-700"
  >
- Address Line 2{""}
+ Address Line 2{" "}
  <span className="font-normal text-sand-400">(optional)</span>
  </label>
  <Input

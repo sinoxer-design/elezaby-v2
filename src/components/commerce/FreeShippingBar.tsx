@@ -44,11 +44,11 @@ export function FreeShippingBar({ className }: FreeShippingBarProps) {
  </p>
  ) : (
  <p className="text-sm text-sand-600">
- Add{""}
+ Add{" "}
  <span className="font-bold text-brand-700">
  {remaining.toFixed(0)} EGP
- </span>{""}
- more for{""}
+ </span>{" "}
+ more for{" "}
  <span className="font-bold text-cyan-600">
  FREE delivery
  </span>
