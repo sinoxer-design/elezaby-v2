@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ProductCard } from "@/components/commerce/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { mockProducts } from "@/lib/mock-data";
+import { allProducts } from "@/lib/mock-data";
 import { useCart } from "@/hooks/useCart";
 import {
   FilterSheet,
@@ -15,19 +15,21 @@ import {
   type FilterValues,
 } from "@/components/commerce/FilterSheet";
 import { FilterSidebar } from "@/components/commerce/FilterSidebar";
+import { CategoryBottomBar } from "@/components/commerce/CategoryBottomBar";
+import { CategoryPromoBanner } from "@/components/commerce/CategoryPromoBanner";
 import {
   getCategoryBySlug,
-  getCategoryPath,
   getCategoryAndDescendantIds,
   getChildren,
   getCategoryDepth,
+  getPrimaryAncestor,
+  resolveSubCategory,
 } from "@/lib/categories";
 import {
-  SlidersHorizontal,
   ArrowUpDown,
   X,
   ChevronLeft,
-  ChevronRight,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -54,9 +56,9 @@ export default function ProductListingPage() {
     <React.Suspense
       fallback={
         <div className="flex flex-col gap-3 py-4">
-          <div className="mx-[var(--page-padding-x)] overflow-hidden rounded-xl bg-sand-100 dark:bg-secondary p-4">
-            <div className="h-6 w-32 animate-pulse rounded bg-sand-200 dark:bg-muted" />
-            <div className="mt-2 h-4 w-20 animate-pulse rounded bg-sand-200 dark:bg-muted" />
+          <div className="mx-[var(--page-padding-x)] overflow-hidden rounded-xl bg-sand-100 p-4">
+            <div className="h-6 w-32 animate-pulse rounded bg-sand-200" />
+            <div className="mt-2 h-4 w-20 animate-pulse rounded bg-sand-200" />
           </div>
         </div>
       }
@@ -71,42 +73,70 @@ function ProductListingContent() {
   const router = useRouter();
   const categorySlug = searchParams.get("category");
   const { addItem } = useCart();
+
   const [sortBy, setSortBy] = React.useState("relevance");
   const [showSort, setShowSort] = React.useState(false);
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [appliedFilters, setAppliedFilters] =
     React.useState<FilterValues>(defaultFilters);
-  const [activeDeepCat, setActiveDeepCat] = React.useState<string | null>(null);
+  const [viewMode, setViewMode] = React.useState<"list" | "grid">("list");
+  const [instantDelivery, setInstantDelivery] = React.useState(false);
 
-  // Resolve current category
+  // ── Category resolution ──
   const currentCategory = categorySlug
     ? getCategoryBySlug(categorySlug)
     : undefined;
-  const categoryPath = currentCategory
-    ? getCategoryPath(currentCategory)
-    : [];
-  const categoryDepth = currentCategory
-    ? getCategoryDepth(currentCategory)
-    : -1;
 
-  // Deep category chips (only shown when viewing a sub-category, depth === 1)
-  const deepCategories = React.useMemo(() => {
-    if (!currentCategory) return [];
-    if (categoryDepth === 1) return getChildren(currentCategory.id);
-    return [];
-  }, [currentCategory, categoryDepth]);
+  const primaryCategory = React.useMemo(
+    () => (currentCategory ? getPrimaryAncestor(currentCategory) : undefined),
+    [currentCategory]
+  );
 
-  // Reset deep cat selection when category changes
+  const initialSubCat = React.useMemo(
+    () => (currentCategory ? resolveSubCategory(currentCategory) : undefined),
+    [currentCategory]
+  );
+
+  // Row 1: sub-categories of the primary ancestor
+  const siblingSubCategories = React.useMemo(
+    () => (primaryCategory ? getChildren(primaryCategory.id) : []),
+    [primaryCategory]
+  );
+
+  const [activeSubCat, setActiveSubCat] = React.useState<string | null>(null);
+  const [activeDeepCat, setActiveDeepCat] = React.useState<string | null>(null);
+
+  // Initialize active sub-cat from URL
   React.useEffect(() => {
-    setActiveDeepCat(null);
+    if (initialSubCat) {
+      setActiveSubCat(initialSubCat.id);
+    }
+    // If the URL points to a deep category, pre-select it
+    if (currentCategory && getCategoryDepth(currentCategory) === 2) {
+      setActiveDeepCat(currentCategory.id);
+    } else {
+      setActiveDeepCat(null);
+    }
   }, [categorySlug]);
 
-  // Filter products
-  const filteredProducts = React.useMemo(() => {
-    let products = [...mockProducts];
+  // Row 2: deep categories under the active sub-category
+  const deepCategories = React.useMemo(
+    () => (activeSubCat ? getChildren(activeSubCat) : []),
+    [activeSubCat]
+  );
 
+  // ── Product filtering ──
+  const filteredProducts = React.useMemo(() => {
+    let products = [...allProducts];
+
+    // Filter by deep cat or sub cat
     if (activeDeepCat) {
       const validIds = getCategoryAndDescendantIds(activeDeepCat);
+      products = products.filter(
+        (p) => p.categoryId && validIds.includes(p.categoryId)
+      );
+    } else if (activeSubCat) {
+      const validIds = getCategoryAndDescendantIds(activeSubCat);
       products = products.filter(
         (p) => p.categoryId && validIds.includes(p.categoryId)
       );
@@ -117,6 +147,12 @@ function ProductListingContent() {
       );
     }
 
+    // Instant delivery filter
+    if (instantDelivery) {
+      products = products.filter((p) => p.expressDelivery);
+    }
+
+    // Standard filters
     if (appliedFilters.priceMin !== undefined) {
       products = products.filter((p) => p.price >= appliedFilters.priceMin!);
     }
@@ -145,6 +181,7 @@ function ProductListingContent() {
       );
     }
 
+    // Sort
     switch (sortBy) {
       case "price-asc":
         products.sort((a, b) => a.price - b.price);
@@ -163,25 +200,29 @@ function ProductListingContent() {
     }
 
     return products;
-  }, [currentCategory, activeDeepCat, appliedFilters, sortBy]);
+  }, [currentCategory, activeSubCat, activeDeepCat, instantDelivery, appliedFilters, sortBy]);
 
   const availableBrands = React.useMemo(() => {
-    let products = [...mockProducts];
-    if (currentCategory) {
+    let products = [...allProducts];
+    if (activeSubCat) {
+      const validIds = getCategoryAndDescendantIds(activeSubCat);
+      products = products.filter(
+        (p) => p.categoryId && validIds.includes(p.categoryId)
+      );
+    } else if (currentCategory) {
       const validIds = getCategoryAndDescendantIds(currentCategory.id);
       products = products.filter(
         (p) => p.categoryId && validIds.includes(p.categoryId)
       );
     }
-    const brands = [...new Set(products.map((p) => p.brand))].sort();
-    return brands;
-  }, [currentCategory]);
+    return [...new Set(products.map((p) => p.brand))].sort();
+  }, [currentCategory, activeSubCat]);
 
   const activeFilterCount = getActiveFilterCount(appliedFilters);
   const activeFilterLabels = getActiveFilterLabels(appliedFilters);
 
   const handleAddToCart = (productId: string) => {
-    const product = mockProducts.find((p) => p.id === productId);
+    const product = allProducts.find((p) => p.id === productId);
     if (product) {
       addItem({
         id: product.id,
@@ -192,10 +233,6 @@ function ProductListingContent() {
         originalPrice: product.originalPrice,
       });
     }
-  };
-
-  const handleApplyFilters = (filters: FilterValues) => {
-    setAppliedFilters(filters);
   };
 
   const removeFilterLabel = (label: string) => {
@@ -219,7 +256,7 @@ function ProductListingContent() {
     });
   };
 
-  // Close sort dropdown when clicking outside
+  // Close sort dropdown on outside click
   const sortRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     if (!showSort) return;
@@ -235,109 +272,143 @@ function ProductListingContent() {
   const pageTitle = currentCategory?.name ?? "All Products";
 
   return (
-    <div className="flex flex-col gap-0 py-4">
-      {/* Page Banner with Breadcrumb */}
-      <div className="mx-[var(--page-padding-x)] overflow-hidden rounded-xl bg-sand-100 dark:bg-secondary p-4 lg:mx-8">
-        <div className="flex items-center gap-1 text-xs">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-brand-500 dark:text-primary font-medium hover:text-brand-600"
-          >
-            <ChevronLeft className="h-3.5 w-3.5" />
-          </button>
-          {categoryPath.length > 0 ? (
-            categoryPath.map((crumb, i) => (
-              <React.Fragment key={crumb.id}>
-                {i > 0 && (
-                  <ChevronRight className="h-3 w-3 text-sand-300 dark:text-muted-foreground" />
-                )}
-                {i < categoryPath.length - 1 ? (
-                  <Link
-                    href={
-                      getCategoryDepth(crumb) === 0
-                        ? "/categories"
-                        : `/products?category=${crumb.slug}`
-                    }
-                    className="text-brand-500 dark:text-primary font-medium hover:text-brand-600"
-                  >
-                    {crumb.name}
-                  </Link>
-                ) : (
-                  <span className="text-sand-600 dark:text-muted-foreground font-medium">
-                    {crumb.name}
-                  </span>
-                )}
-              </React.Fragment>
-            ))
-          ) : (
-            <span className="text-sand-600 dark:text-muted-foreground font-medium">All Products</span>
-          )}
-        </div>
-
-        <h1 className="mt-2 text-xl font-bold text-sand-800 dark:text-foreground lg:text-2xl">
+    <div className="flex flex-col pb-0">
+      {/* ── Header: Back + Title + Search ── */}
+      <div className="flex items-center gap-3 px-[var(--page-padding-x)] py-3 lg:px-8">
+        <button
+          onClick={() => router.back()}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-sand-100"
+        >
+          <ChevronLeft className="h-5 w-5 text-sand-600" />
+        </button>
+        <h1 className="flex-1 text-base font-semibold text-sand-800 truncate">
           {pageTitle}
         </h1>
-        <p className="text-xs text-sand-500 dark:text-muted-foreground">
-          {filteredProducts.length} products available
-        </p>
+        <Link
+          href="/search"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-sand-100"
+        >
+          <Search className="h-5 w-5 text-sand-600" />
+        </Link>
       </div>
 
-      {/* Deep Category Chips */}
-      {deepCategories.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide px-[var(--page-padding-x)] pt-3 pb-1 lg:px-8">
-          <button
-            onClick={() => setActiveDeepCat(null)}
-            className={cn(
-              "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all",
-              activeDeepCat === null
-                ? "bg-brand-500 text-white shadow-sm"
-                : "bg-sand-100 dark:bg-secondary text-sand-600 dark:text-muted-foreground"
-            )}
-          >
-            All
-          </button>
-          {deepCategories.map((deep) => (
-            <button
-              key={deep.id}
-              onClick={() =>
-                setActiveDeepCat(deep.id === activeDeepCat ? null : deep.id)
-              }
-              className={cn(
-                "flex shrink-0 items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all",
-                activeDeepCat === deep.id
-                  ? "bg-brand-500 text-white shadow-sm"
-                  : "bg-sand-100 dark:bg-secondary text-sand-600 dark:text-muted-foreground"
-              )}
-            >
-              <span className="text-sm">{deep.emoji}</span>
-              {deep.name}
-            </button>
-          ))}
+      {/* ── Row 1: Sub-category tabs ── */}
+      {siblingSubCategories.length > 0 && (
+        <div className="border-b border-sand-100 bg-brand-700">
+          <div className="flex gap-0 overflow-x-auto scrollbar-hide">
+            {siblingSubCategories.map((sub) => (
+              <button
+                key={sub.id}
+                onClick={() => {
+                  setActiveSubCat(sub.id);
+                  setActiveDeepCat(null);
+                }}
+                className={cn(
+                  "shrink-0 px-4 py-2.5 text-xs font-semibold transition-all whitespace-nowrap",
+                  activeSubCat === sub.id
+                    ? "border-b-2 border-white text-white"
+                    : "text-white/60 hover:text-white/80"
+                )}
+              >
+                {sub.name}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Filter & Sort Bar */}
-      <div className="sticky top-[var(--header-collapsed-height)] z-[49] bg-white/95 dark:bg-background/95 backdrop-blur-sm">
-        <div className="flex items-center gap-2 px-[var(--page-padding-x)] py-2 lg:px-8">
-          {/* Mobile filter button — hidden on desktop */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 rounded-lg border-sand-200 text-xs lg:hidden"
-            onClick={() => setFilterOpen(true)}
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-            Filters
-            {activeFilterCount > 0 && (
-              <Badge
-                variant="secondary"
-                className="ms-0.5 h-4 min-w-4 rounded-full bg-brand-500 px-1 text-[10px] font-bold text-white"
+      {/* ── Row 2: Deep category tabs ── */}
+      {deepCategories.length > 0 && (
+        <div className="border-b border-sand-100 bg-white">
+          <div className="flex gap-0 overflow-x-auto scrollbar-hide">
+            <button
+              onClick={() => setActiveDeepCat(null)}
+              className={cn(
+                "shrink-0 px-4 py-2.5 text-xs font-medium transition-all whitespace-nowrap",
+                activeDeepCat === null
+                  ? "border-b-2 border-brand-600 text-brand-700 font-semibold"
+                  : "text-sand-500 hover:text-sand-700"
+              )}
+            >
+              All
+            </button>
+            {deepCategories.map((deep) => (
+              <button
+                key={deep.id}
+                onClick={() =>
+                  setActiveDeepCat(deep.id === activeDeepCat ? null : deep.id)
+                }
+                className={cn(
+                  "shrink-0 px-4 py-2.5 text-xs font-medium transition-all whitespace-nowrap",
+                  activeDeepCat === deep.id
+                    ? "border-b-2 border-brand-600 text-brand-700 font-semibold"
+                    : "text-sand-500 hover:text-sand-700"
+                )}
               >
-                {activeFilterCount}
-              </Badge>
-            )}
-          </Button>
+                {deep.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
+      {/* ── Promo Banner ── */}
+      {primaryCategory && (
+        <CategoryPromoBanner primaryId={primaryCategory.id} />
+      )}
+
+      {/* ── Filter bar + Sort bar + filter pills ── */}
+      <div className="sticky top-[var(--header-collapsed-height)] z-[49] bg-white/95 backdrop-blur-sm">
+        {/* Filters / Sort / Instant / View toggle — mobile only */}
+        <CategoryBottomBar
+          onFilterClick={() => setFilterOpen(true)}
+          instantDelivery={instantDelivery}
+          onInstantToggle={setInstantDelivery}
+          viewMode={viewMode}
+          onViewModeToggle={() =>
+            setViewMode((v) => (v === "list" ? "grid" : "list"))
+          }
+          filterCount={activeFilterCount}
+          resultCount={filteredProducts.length}
+          sortSlot={
+            <div className="relative" ref={sortRef}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 rounded-lg border-sand-200 text-xs"
+                onClick={() => setShowSort(!showSort)}
+              >
+                <ArrowUpDown className="h-3.5 w-3.5" />
+                Sort
+              </Button>
+
+              {showSort && (
+                <div className="absolute start-0 top-full z-50 mt-1 w-48 rounded-lg border border-sand-200 bg-white p-1 shadow-elevated">
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setSortBy(option.value);
+                        setShowSort(false);
+                      }}
+                      className={cn(
+                        "w-full rounded-md px-3 py-2 text-start text-sm transition-colors",
+                        sortBy === option.value
+                          ? "bg-brand-50 text-brand-700 font-medium"
+                          : "text-sand-600 hover:bg-sand-50"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          }
+        />
+
+        {/* Desktop: Sort row (hidden on mobile since it's in CategoryBottomBar) */}
+        <div className="hidden items-center gap-2 px-[var(--page-padding-x)] py-2 lg:flex lg:px-8">
           <div className="relative" ref={sortRef}>
             <Button
               variant="outline"
@@ -350,7 +421,7 @@ function ProductListingContent() {
             </Button>
 
             {showSort && (
-              <div className="absolute start-0 top-full z-50 mt-1 w-48 rounded-lg border border-sand-200 dark:border-border bg-white dark:bg-card p-1 shadow-elevated">
+              <div className="absolute start-0 top-full z-50 mt-1 w-48 rounded-lg border border-sand-200 bg-white p-1 shadow-elevated">
                 {sortOptions.map((option) => (
                   <button
                     key={option.value}
@@ -361,8 +432,8 @@ function ProductListingContent() {
                     className={cn(
                       "w-full rounded-md px-3 py-2 text-start text-sm transition-colors",
                       sortBy === option.value
-                        ? "bg-brand-50 dark:bg-accent text-brand-700 dark:text-accent-foreground font-medium"
-                        : "text-sand-600 dark:text-muted-foreground hover:bg-sand-50 dark:hover:bg-secondary"
+                        ? "bg-brand-50 text-brand-700 font-medium"
+                        : "text-sand-600 hover:bg-sand-50"
                     )}
                   >
                     {option.label}
@@ -372,7 +443,7 @@ function ProductListingContent() {
             )}
           </div>
 
-          <span className="ms-auto text-xs text-sand-400 dark:text-muted-foreground">
+          <span className="ms-auto text-xs text-sand-400">
             {filteredProducts.length} results
           </span>
         </div>
@@ -389,7 +460,7 @@ function ProductListingContent() {
                 {label}
                 <button
                   onClick={() => removeFilterLabel(label)}
-                  className="rounded-full hover:bg-sand-300 dark:hover:bg-secondary"
+                  className="rounded-full hover:bg-sand-300"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -399,7 +470,7 @@ function ProductListingContent() {
         )}
       </div>
 
-      {/* Desktop layout: sidebar + grid */}
+      {/* ── Desktop layout: sidebar + grid | Mobile: list ── */}
       <div className="flex gap-6 px-[var(--page-padding-x)] pt-2 lg:px-8 lg:items-start">
         {/* Filter Sidebar — desktop only */}
         <FilterSidebar
@@ -408,52 +479,59 @@ function ProductListingContent() {
           availableBrands={availableBrands}
         />
 
-        {/* Product Grid */}
+        {/* Product list/grid */}
         <div className="flex-1 min-w-0">
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product, i) => (
+          {filteredProducts.length > 0 ? (
+            <div
+              className={cn(
+                viewMode === "list"
+                  ? "flex flex-col gap-3"
+                  : "grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4"
+              )}
+            >
+              {filteredProducts.map((product, i) => (
                 <div
                   key={product.id}
                   className={cn("card-reveal", `stagger-${(i % 6) + 1}`)}
                 >
                   <ProductCard
                     product={product}
-                    layout="grid"
+                    layout={viewMode === "list" ? "horizontal" : "grid"}
                     onAddToCart={handleAddToCart}
                   />
                 </div>
-              ))
-            ) : (
-              <div className="col-span-2 flex flex-col items-center gap-2 py-12 text-center md:col-span-3 lg:col-span-4">
-                <p className="text-sm font-medium text-sand-600 dark:text-muted-foreground">
-                  No products match your filters
-                </p>
-                <p className="text-xs text-sand-400 dark:text-muted-foreground">
-                  Try adjusting or clearing your filters
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => {
-                    setAppliedFilters(defaultFilters);
-                    setActiveDeepCat(null);
-                  }}
-                >
-                  Clear All Filters
-                </Button>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2 py-12 text-center">
+              <p className="text-sm font-medium text-sand-600">
+                No products match your filters
+              </p>
+              <p className="text-xs text-sand-400">
+                Try adjusting or clearing your filters
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => {
+                  setAppliedFilters(defaultFilters);
+                  setActiveDeepCat(null);
+                  setInstantDelivery(false);
+                }}
+              >
+                Clear All Filters
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Mobile Filter Sheet */}
+      {/* ── Mobile Filter Sheet ── */}
       <FilterSheet
         open={filterOpen}
         onOpenChange={setFilterOpen}
-        onApply={handleApplyFilters}
+        onApply={setAppliedFilters}
         initialFilters={appliedFilters}
         availableBrands={availableBrands}
       />
