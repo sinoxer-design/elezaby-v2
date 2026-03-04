@@ -84,6 +84,8 @@ export default function HomePage() {
  {/* Ramadan atmospheric background — floating blue lanterns */}
  <RamadanHeroBanner />
 
+ {/* All content sits above the lantern layer — isolate creates a stacking context */}
+ <div className="relative z-[1] isolate flex flex-col gap-5">
  {/* 1. Delivery/Pickup Selector (F8) */}
  <HomepageDeliverySelector />
 
@@ -233,6 +235,7 @@ export default function HomePage() {
  ))}
  </div>
  </section>
+ </div>{/* end content z-[1] wrapper */}
  </div>
  );
 }

@@ -67,7 +67,7 @@ export function PrescriptionDialog({
  Upload Prescription
  </DialogTitle>
  <DialogDescription className="text-sm text-sand-500">
- A valid prescription is required for{""}
+ A valid prescription is required for{" "}
  <span className="font-medium text-sand-700">{productName}</span>
  </DialogDescription>
  </DialogHeader>

@@ -156,11 +156,11 @@ export function HeaderBar({
  </Link>
  </Button>
 
- {/* Cart */}
+ {/* Cart — hidden on mobile (in bottom nav) */}
  <Button
  variant="ghost"
  size="icon"
- className="relative h-9 w-9"
+ className="relative hidden h-9 w-9 lg:inline-flex"
  aria-label="Cart"
  asChild
  >
@@ -174,11 +174,11 @@ export function HeaderBar({
  </Link>
  </Button>
 
- {/* Profile */}
+ {/* Profile — hidden on mobile (in bottom nav) */}
  <Button
  variant="ghost"
  size="icon"
- className="h-9 w-9"
+ className="hidden h-9 w-9 lg:inline-flex"
  aria-label={isAuthenticated ?"Account" :"Sign in"}
  asChild
  >
