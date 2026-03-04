@@ -5,16 +5,46 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CategoryPill } from "@/components/commerce/CategoryPill";
 import { ProductCarousel } from "@/components/commerce/ProductCarousel";
-import { mockProducts } from "@/lib/mock-data";
+import { PromoBannerCarousel } from "@/components/commerce/PromoBannerCarousel";
+import { FlashDealsSection } from "@/components/commerce/FlashDealsSection";
+import { ProductGrid } from "@/components/commerce/ProductGrid";
+import { BentoPromoGrid } from "@/components/commerce/BentoPromoGrid";
+import { FreeShippingBar } from "@/components/commerce/FreeShippingBar";
+import { WelcomeOfferBanner } from "@/components/commerce/WelcomeOfferBanner";
+import { HomepageDeliverySelector } from "@/components/commerce/HomepageDeliverySelector";
+import { ProfileCompletionAlert } from "@/components/commerce/ProfileCompletionAlert";
+import { MaxSavingsSection } from "@/components/commerce/MaxSavingsSection";
+import { BundleSection } from "@/components/commerce/BundleSection";
+import { OrderAgainSection } from "@/components/commerce/OrderAgainSection";
+import { BabyBrandSection } from "@/components/commerce/BabyBrandSection";
+import { RamadanHeroBanner } from "@/components/commerce/RamadanHeroBanner";
+import {
+  mockProducts,
+  mockFlashDeals,
+  mockBestSellers,
+  mockPromoBanners,
+  mockMaxSavings,
+  mockBundles,
+  allProducts,
+  getPersonalizedProducts,
+} from "@/lib/mock-data";
 import { getPrimaryCategories } from "@/lib/categories";
 import { useCart } from "@/hooks/useCart";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 export default function HomePage() {
   const { addItem } = useCart();
+  const { profile } = useUserProfile();
   const primaryCategories = getPrimaryCategories();
 
+  // Personalized recommendations
+  const recommendedProducts = getPersonalizedProducts(
+    mockProducts.slice(0, 12),
+    profile
+  ).slice(0, 8);
+
   const handleAddToCart = (productId: string) => {
-    const product = mockProducts.find((p) => p.id === productId);
+    const product = allProducts.find((p) => p.id === productId);
     if (product) {
       addItem({
         id: product.id,
@@ -27,77 +57,130 @@ export default function HomePage() {
     }
   };
 
+  const handleAddBundle = (bundleId: string) => {
+    const bundle = mockBundles.find((b) => b.id === bundleId);
+    if (!bundle) return;
+    for (const item of bundle.products) {
+      const product = allProducts.find((p) => p.id === item.productId);
+      if (product) {
+        addItem({
+          id: product.id,
+          name: product.name,
+          brand: product.brand,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          originalPrice: product.originalPrice,
+        });
+      }
+    }
+  };
+
+  // Flash deal end time (shared across all flash deals)
+  const flashDealEndTime =
+    mockFlashDeals[0]?.flashDeal?.endsAt || new Date().toISOString();
+
   return (
-    <div className="flex flex-col gap-6 pb-6">
-      {/* Category Rail */}
-      <section>
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2 ps-[var(--page-padding-x)] pe-4 lg:flex-wrap lg:overflow-visible lg:px-8 lg:py-4 lg:gap-6">
+    <div className="relative flex flex-col gap-5 pt-3 pb-6">
+      {/* Ramadan atmospheric background — floating blue lanterns */}
+      <RamadanHeroBanner />
+
+      {/* 1. Delivery/Pickup Selector (F8) */}
+      <HomepageDeliverySelector />
+
+      {/* 2. Profile Completion Alert (F2, conditional) */}
+      <ProfileCompletionAlert />
+
+      {/* 3. Category Rail */}
+      <section className="relative z-10">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide py-2 ps-[var(--page-padding-x)] pe-4 lg:flex-wrap lg:overflow-visible lg:px-8 lg:py-4 lg:gap-4">
           {primaryCategories.map((cat) => (
             <CategoryPill
               key={cat.id}
               name={cat.name}
               emoji={cat.emoji}
+              imageUrl={cat.imageUrl}
               href={`/products?category=${cat.slug}`}
             />
           ))}
         </div>
       </section>
 
-      {/* Hero Banner */}
-      <section className="px-[var(--page-padding-x)] lg:px-8">
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-brand-400 p-6 lg:p-10 lg:h-64">
-          <div className="relative z-10">
-            <span className="text-[0.625rem] font-semibold uppercase tracking-wider text-white/80">
-              Special Offer
-            </span>
-            <h2 className="mt-1 font-display text-2xl text-white lg:text-4xl">
-              Up to 30% Off
-            </h2>
-            <p className="mt-1 text-sm text-white/90 lg:text-base lg:mt-2">
-              On vitamins & supplements this week
-            </p>
-            <button className="mt-3 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-brand-600 transition-transform active:scale-95 lg:mt-6 lg:px-6 lg:py-3 lg:text-base">
-              Shop Now
-            </button>
-          </div>
-          {/* Decorative elements */}
-          <div className="absolute -end-8 -top-8 h-32 w-32 rounded-full bg-white/10 lg:h-64 lg:w-64 lg:-end-16 lg:-top-16" />
-          <div className="absolute -bottom-4 -end-4 h-24 w-24 rounded-full bg-white/5 lg:h-40 lg:w-40" />
-        </div>
-      </section>
+      {/* 4. Hero Banner Carousel */}
+      <PromoBannerCarousel banners={mockPromoBanners} />
 
-      {/* Trending Now */}
+      {/* 6. Welcome Offer Banner */}
+      <WelcomeOfferBanner />
+
+      {/* 6. Free Shipping Progress Bar */}
+      <FreeShippingBar />
+
+      {/* 7. Flash Deals */}
+      <FlashDealsSection
+        products={mockFlashDeals}
+        endsAt={flashDealEndTime}
+        onAddToCart={handleAddToCart}
+      />
+
+      {/* 8. Maximize Your Savings (F3) */}
+      <MaxSavingsSection
+        products={mockMaxSavings}
+        onAddToCart={handleAddToCart}
+      />
+
+      {/* 9. Bento Category Promo Grid */}
+      <BentoPromoGrid />
+
+      {/* 10. Best Sellers Carousel */}
       <ProductCarousel
-        title="Trending Now"
-        subtitle="Most popular this week"
-        products={mockProducts.slice(0, 6)}
+        title="Best Sellers"
+        subtitle="Most loved by our customers"
+        products={mockBestSellers.slice(0, 8)}
         viewAllHref="/products"
         onAddToCart={handleAddToCart}
       />
 
-      {/* New Arrivals */}
+      {/* 11. Sales in Bundles (F4) */}
+      <BundleSection bundles={mockBundles} onAddBundle={handleAddBundle} />
+
+      {/* 12. Order Again (F6) */}
+      <OrderAgainSection onAddToCart={handleAddToCart} />
+
+      {/* 13. Recommended For You (personalized) */}
+      <ProductGrid
+        title="Recommended For You"
+        subtitle="Based on your profile & trending"
+        products={recommendedProducts}
+        viewAllHref="/products"
+        onAddToCart={handleAddToCart}
+      />
+
+      {/* 14. New Arrivals Carousel */}
       <ProductCarousel
         title="New Arrivals"
         subtitle="Just added to our catalog"
-        products={mockProducts.slice(4, 10)}
+        products={mockProducts.slice(14, 20)}
         viewAllHref="/products"
         onAddToCart={handleAddToCart}
       />
 
-      {/* Skincare Essentials */}
-      <ProductCarousel
-        title="Skincare Essentials"
-        subtitle="Dermatologist recommended"
-        products={[mockProducts[2], mockProducts[6], mockProducts[9], mockProducts[0], mockProducts[1], mockProducts[3]]}
+      {/* 15. Baby Brands (F7) */}
+      <BabyBrandSection />
+
+      {/* 16. You May Also Like */}
+      <ProductGrid
+        title="You May Also Like"
+        products={mockProducts.slice(8, 16)}
         viewAllHref="/products"
         onAddToCart={handleAddToCart}
       />
 
-      {/* Health Tips / Blog Preview */}
+      {/* 17. Health Tips / Blog Preview */}
       <section className="px-[var(--page-padding-x)] lg:px-8">
         <div className="flex items-end justify-between">
           <div>
-            <h2 className="font-display text-xl text-sand-800 dark:text-foreground lg:text-2xl">Health Tips</h2>
+            <h2 className="font-display text-lg font-bold text-sand-800 dark:text-foreground lg:text-xl">
+              Health Tips
+            </h2>
             <p className="mt-0.5 text-xs text-sand-500 dark:text-muted-foreground">
               Expert advice from our pharmacists
             </p>
@@ -105,7 +188,7 @@ export default function HomePage() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs font-semibold text-brand-500 dark:text-primary"
+            className="text-xs font-semibold text-brand-600 dark:text-primary"
             asChild
           >
             <Link href="/blog">

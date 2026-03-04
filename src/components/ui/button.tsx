@@ -15,11 +15,12 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-sand-200",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-brand-500 underline-offset-4 hover:underline",
-        // Custom El Ezaby variants
-        "add-to-cart": "bg-primary text-primary-foreground hover:bg-brand-400 shadow-sm font-bold",
+        // El Ezaby variants (navy/cyan brand)
+        "add-to-cart": "bg-brand-700 text-white hover:bg-brand-600 shadow-sm font-bold",
         "notify-me": "bg-sand-800 text-white hover:bg-sand-700 shadow-sm",
-        "options": "border-2 border-primary text-primary bg-white hover:bg-brand-50",
+        "options": "border-2 border-brand-600 text-brand-700 bg-white hover:bg-brand-50",
         "upload-rx": "bg-health text-white hover:opacity-90 shadow-sm",
+        "deal-cta": "bg-deal text-white hover:bg-deal/90 shadow-sm font-bold",
       },
       size: {
         default: "h-10 px-4 py-2",

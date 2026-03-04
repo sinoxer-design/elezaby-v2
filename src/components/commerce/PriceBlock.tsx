@@ -29,8 +29,8 @@ export function PriceBlock({
   const savingsAmount = isDiscounted ? originalPrice - price : 0;
 
   const priceTextClass = {
-    sm: "text-base font-bold",
-    md: "text-lg font-bold",
+    sm: "text-sm font-extrabold",
+    md: "text-base font-extrabold",
     lg: "font-display text-3xl",
   }[size];
 
@@ -53,13 +53,13 @@ export function PriceBlock({
         </div>
       )}
 
-      {/* Current Price */}
-      <div className="flex items-baseline gap-1">
+      {/* Price line — inline layout for sm size */}
+      <div className="flex flex-wrap items-baseline gap-1">
         <span
           className={cn(
             priceTextClass,
             "font-mono tracking-tight",
-            isDiscounted ? "text-discount" : "text-sand-800"
+            isDiscounted ? "text-deal" : "text-sand-800 dark:text-foreground"
           )}
         >
           {price.toFixed(2)}
@@ -72,25 +72,24 @@ export function PriceBlock({
         >
           {currency}
         </span>
-      </div>
 
-      {/* Original Price + Discount */}
-      {isDiscounted && (
-        <div className="flex items-center gap-1.5">
-          <span
-            className={cn(
-              "font-mono text-sand-400 line-through",
-              size === "lg" ? "text-base" : "text-xs"
+        {/* Original Price + Discount — always inline */}
+        {isDiscounted && (
+          <>
+            <span
+              className={cn(
+                "font-mono text-sand-400 line-through decoration-2",
+                size === "lg" ? "text-base" : "text-xs"
+              )}
+            >
+              {originalPrice.toFixed(2)}
+            </span>
+            {discountPercent && discountPercent > 0 && (
+              <Badge variant="discount">-{discountPercent}%</Badge>
             )}
-          >
-            {originalPrice.toFixed(2)}
-          </span>
-          {/* Show discount badge only on md/lg sizes - sm cards already have it on the image */}
-          {discountPercent && discountPercent > 0 && size !== "sm" && (
-            <Badge variant="discount">-{discountPercent}%</Badge>
-          )}
-        </div>
-      )}
+          </>
+        )}
+      </div>
 
       {/* Savings Line (PDP only, size lg) */}
       {isDiscounted && size === "lg" && (

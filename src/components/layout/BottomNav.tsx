@@ -2,14 +2,21 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Grid3X3, Search, ShoppingCart, User } from "lucide-react";
+import { Home, Grid3X3, ShoppingCart, User, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+interface NavItem {
+  href: string;
+  icon: typeof Home;
+  label: string;
+  elevated?: boolean;
+}
+
+const navItems: NavItem[] = [
   { href: "/", icon: Home, label: "Home" },
   { href: "/categories", icon: Grid3X3, label: "Categories" },
-  { href: "/search", icon: Search, label: "Search" },
+  { href: "/products?sale=true", icon: Flame, label: "Sales", elevated: true },
   { href: "/cart", icon: ShoppingCart, label: "Cart" },
   { href: "/account", icon: User, label: "Account" },
 ];
@@ -31,15 +38,48 @@ export function BottomNav({ cartCount = 0 }: BottomNavProps) {
           const isActive =
             item.href === "/"
               ? pathname === "/"
-              : pathname.startsWith(item.href);
+              : pathname.startsWith(item.href.split("?")[0]);
 
+          // ── Elevated Sales Button ──────────────────────────
+          if (item.elevated) {
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="relative flex flex-col items-center gap-0.5 px-3 py-2"
+              >
+                <motion.div
+                  className="relative -mt-5 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-deal to-amber-500 text-white shadow-elevated"
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  {/* Pulsing ring */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-deal/30"
+                    animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.15, 1] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <Flame className="relative h-6 w-6" strokeWidth={2.5} />
+                </motion.div>
+                <span className="text-[0.625rem] font-bold text-deal">
+                  {item.label}
+                </span>
+              </Link>
+            );
+          }
+
+          // ── Standard Nav Item ──────────────────────────────
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex flex-col items-center gap-1 px-4 py-2 transition-colors duration-200",
-                isActive ? "text-brand-500" : "text-sand-400"
+                "relative flex flex-col items-center gap-0.5 px-3 py-2 transition-colors duration-200",
+                isActive ? "text-brand-600" : "text-sand-400"
               )}
             >
               {/* Active indicator bar */}
@@ -47,7 +87,7 @@ export function BottomNav({ cartCount = 0 }: BottomNavProps) {
                 {isActive && (
                   <motion.div
                     layoutId="bottomNavIndicator"
-                    className="absolute -top-[1px] h-0.5 w-8 rounded-full bg-brand-500"
+                    className="absolute -top-[1px] h-0.5 w-8 rounded-full bg-brand-600"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -62,8 +102,8 @@ export function BottomNav({ cartCount = 0 }: BottomNavProps) {
                   transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 >
                   <item.icon
-                    className="h-6 w-6"
-                    strokeWidth={isActive ? 2.5 : 2}
+                    className="h-5 w-5"
+                    strokeWidth={isActive ? 2.5 : 1.5}
                   />
                 </motion.div>
 
@@ -83,7 +123,7 @@ export function BottomNav({ cartCount = 0 }: BottomNavProps) {
                 </AnimatePresence>
               </div>
 
-              <span className="text-xs font-medium">{item.label}</span>
+              <span className="text-[0.625rem] font-medium">{item.label}</span>
             </Link>
           );
         })}

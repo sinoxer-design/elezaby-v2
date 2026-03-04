@@ -14,10 +14,21 @@ import {
   Sun,
   Moon,
   ChevronDown,
+  Flame,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { MegaMenu } from "./MegaMenu";
+import { DealsBanner } from "@/components/commerce/DealsBanner";
+
+const quickTabs = [
+  { label: "Deals 🔥", href: "/products?sale=true" },
+  { label: "Vitamins", href: "/products?category=vitamins" },
+  { label: "Skincare", href: "/products?category=skincare" },
+  { label: "Baby", href: "/products?category=baby" },
+  { label: "Hair Care", href: "/products?category=haircare" },
+  { label: "Medicines", href: "/products?category=medicine" },
+];
 
 interface HeaderBarProps {
   notificationCount?: number;
@@ -70,7 +81,7 @@ export function HeaderBar({
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-sticky overflow-hidden bg-white dark:bg-background transition-all duration-300",
+          "fixed inset-x-0 top-0 z-sticky flex flex-col overflow-hidden bg-white dark:bg-card dark:border-b dark:border-border transition-all duration-300",
           minimal
             ? "h-[var(--header-collapsed-height)] shadow-sm"
             : isCollapsed
@@ -79,12 +90,15 @@ export function HeaderBar({
         )}
         style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
       >
-        <div className="mx-auto flex h-full max-w-7xl flex-col px-[var(--page-padding-x)] lg:px-8">
+        {/* Deals marquee banner — full width, pinned at top */}
+        <DealsBanner />
+
+        <div className="mx-auto flex w-full min-h-0 flex-1 max-w-7xl flex-col px-[var(--page-padding-x)] lg:px-8">
           {/* Top Row: Logo + Search (desktop center) + Actions (always visible) */}
           <div className="flex h-14 shrink-0 items-center justify-between gap-4">
             {/* Logo */}
             <Link href="/" className="flex shrink-0 items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700">
                 <span className="text-sm font-bold text-white">
                   E
                 </span>
@@ -108,7 +122,7 @@ export function HeaderBar({
                 aria-label="Search products"
               >
                 <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand-400" />
-                <div className="flex h-10 w-full items-center rounded-xl border border-sand-200 dark:border-border bg-sand-50 dark:bg-secondary ps-9 text-sm text-sand-400 dark:text-muted-foreground">
+                <div className="flex h-10 w-full items-center rounded-lg border border-sand-200 dark:border-border bg-sand-50 dark:bg-background ps-9 text-sm text-sand-400 dark:text-muted-foreground transition-colors focus-within:border-cyan-400 focus-within:ring-1 focus-within:ring-cyan-400">
                   Search medicines, health products...
                 </div>
               </Link>
@@ -142,7 +156,7 @@ export function HeaderBar({
                 <Link href="/notifications">
                   <Bell className="h-5 w-5 text-sand-600 dark:text-muted-foreground" />
                   {notificationCount > 0 && (
-                    <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-discount px-1 text-[10px] font-bold text-white">
+                    <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-deal px-1 text-[10px] font-bold text-white">
                       {notificationCount > 9 ? "9+" : notificationCount}
                     </span>
                   )}
@@ -173,7 +187,7 @@ export function HeaderBar({
                 <Link href="/cart">
                   <ShoppingCart className="h-5 w-5 text-sand-600 dark:text-muted-foreground" />
                   {cartCount > 0 && (
-                    <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-500 px-1 text-[10px] font-bold text-white">
+                    <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">
                       {cartCount}
                     </span>
                   )}
@@ -195,16 +209,16 @@ export function HeaderBar({
             </div>
           </div>
 
-          {/* Mobile: Expandable search + scan (hidden when collapsed or minimal) */}
+          {/* Mobile: Expandable search + scan + quick tabs (hidden when collapsed or minimal) */}
           {!minimal && (
             <div
               className={cn(
-                "flex flex-col gap-3.5 overflow-hidden transition-all duration-300 lg:hidden",
+                "flex flex-col gap-2 overflow-hidden transition-all duration-300 lg:hidden",
                 isCollapsed ? "max-h-0 opacity-0" : "max-h-40 opacity-100"
               )}
               style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
             >
-              <div className="flex gap-2 pb-3">
+              <div className="flex gap-2">
                 <Link
                   href="/search"
                   className="relative flex-1 cursor-pointer"
@@ -212,19 +226,32 @@ export function HeaderBar({
                   aria-label="Search products"
                 >
                   <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand-400" />
-                  <div className="flex h-10 w-full items-center rounded-xl border border-sand-200 dark:border-border bg-sand-50 dark:bg-secondary ps-9 text-sm text-sand-400 dark:text-muted-foreground">
+                  <div className="flex h-10 w-full items-center rounded-lg border border-sand-200 dark:border-border bg-sand-50 dark:bg-background ps-9 text-sm text-sand-400 dark:text-muted-foreground">
                     Search medicines, health products...
                   </div>
                 </Link>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-10 w-10 shrink-0 rounded-xl border-sand-200"
+                  className="h-10 w-10 shrink-0 rounded-xl border-sand-200 dark:border-border dark:bg-background"
                   onClick={onBarcodeScan}
                   aria-label="Scan barcode"
                 >
-                  <ScanBarcode className="h-5 w-5 text-sand-600" />
+                  <ScanBarcode className="h-5 w-5 text-sand-600 dark:text-muted-foreground" />
                 </Button>
+              </div>
+
+              {/* Quick Category Tabs — mobile only, below search */}
+              <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-2">
+                {quickTabs.map((tab) => (
+                  <Link
+                    key={tab.label}
+                    href={tab.href}
+                    className="shrink-0 rounded-full border border-sand-200 bg-white px-3 py-1 text-[0.6875rem] font-medium text-sand-600 transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 dark:bg-background dark:border-border dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground"
+                  >
+                    {tab.label}
+                  </Link>
+                ))}
               </div>
             </div>
           )}
@@ -233,7 +260,7 @@ export function HeaderBar({
           <nav className="hidden h-12 items-center gap-6 border-t border-sand-100 dark:border-border lg:flex">
             <Link
               href="/"
-              className="text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-500 dark:hover:text-primary"
+              className="text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-600 dark:hover:text-primary"
             >
               Home
             </Link>
@@ -243,7 +270,7 @@ export function HeaderBar({
               onMouseEnter={handleMegaMenuEnter}
               onMouseLeave={handleMegaMenuLeave}
             >
-              <button className="flex items-center gap-1 text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-500 dark:hover:text-primary">
+              <button className="flex items-center gap-1 text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-600 dark:hover:text-primary">
                 Categories
                 <ChevronDown className={cn(
                   "h-3.5 w-3.5 transition-transform duration-200",
@@ -254,13 +281,14 @@ export function HeaderBar({
 
             <Link
               href="/products?sale=true"
-              className="text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-500 dark:hover:text-primary"
+              className="flex items-center gap-1 text-sm font-semibold text-deal transition-colors hover:text-deal/80"
             >
+              <Flame className="h-3.5 w-3.5" />
               Deals
             </Link>
             <Link
               href="/blog"
-              className="text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-500 dark:hover:text-primary"
+              className="text-sm font-medium text-sand-600 dark:text-muted-foreground transition-colors hover:text-brand-600 dark:hover:text-primary"
             >
               Blog
             </Link>

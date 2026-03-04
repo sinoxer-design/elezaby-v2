@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   User,
+  UserCircle,
+  Shield,
   MapPin,
   Heart,
   Package,
@@ -14,8 +16,26 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const menuItems = [
+  {
+    icon: UserCircle,
+    label: "My Profile",
+    description: "Age, gender, health conditions",
+    href: "/account/profile",
+    color: "text-cyan-500",
+    bg: "bg-cyan-50 dark:bg-cyan-500/10",
+    showIncomplete: true,
+  },
+  {
+    icon: Shield,
+    label: "Health Insurance",
+    description: "Upload & manage insurance coverage",
+    href: "/account/insurance",
+    color: "text-emerald-500",
+    bg: "bg-emerald-50 dark:bg-emerald-500/10",
+  },
   {
     icon: Package,
     label: "My Orders",
@@ -68,6 +88,8 @@ const menuItems = [
 ];
 
 export default function AccountPage() {
+  const { isProfileComplete } = useUserProfile();
+
   return (
     <div className="px-[var(--page-padding-x)] py-4 lg:py-8">
       {/* Mobile: single column / Desktop: sidebar + grid layout */}
@@ -137,6 +159,11 @@ export default function AccountPage() {
                     {item.badge && (
                       <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-500 px-1.5 text-[0.625rem] font-bold text-white">
                         {item.badge}
+                      </span>
+                    )}
+                    {(item as typeof menuItems[0] & { showIncomplete?: boolean }).showIncomplete && !isProfileComplete && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-deal px-1.5 text-[0.625rem] font-bold text-white">
+                        !
                       </span>
                     )}
                   </div>

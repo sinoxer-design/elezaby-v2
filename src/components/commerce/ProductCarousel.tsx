@@ -36,7 +36,7 @@ export function ProductCarousel({
       {/* Section Header */}
       <div className="flex items-end justify-between px-[var(--page-padding-x)] lg:px-8">
         <div>
-          <h2 className="font-display text-xl text-sand-800 dark:text-foreground lg:text-2xl">{title}</h2>
+          <h2 className="font-display text-lg font-bold text-sand-800 dark:text-foreground lg:text-xl">{title}</h2>
           {subtitle && (
             <p className="mt-0.5 text-xs text-sand-500 dark:text-muted-foreground">{subtitle}</p>
           )}
@@ -45,7 +45,7 @@ export function ProductCarousel({
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs font-semibold text-brand-500 dark:text-primary"
+            className="text-xs font-semibold text-brand-600 dark:text-primary"
             asChild
           >
             <Link href={viewAllHref}>
@@ -65,11 +65,11 @@ export function ProductCarousel({
         }}
         className="w-full"
       >
-        <CarouselContent className="-ms-3 items-stretch ps-[var(--page-padding-x)] lg:ps-8">
+        <CarouselContent className="!ml-0 gap-4 pl-[var(--page-padding-x)] lg:pl-8 items-stretch">
           {products.map((product) => (
             <CarouselItem
               key={product.id}
-              className="flex basis-[42%] ps-3 md:basis-[30%] lg:basis-[22%] xl:basis-[18%]"
+              className="flex !pl-0 basis-[44%] md:basis-[30%] lg:basis-[22%] xl:basis-[18%]"
             >
               <ProductCard
                 product={product}

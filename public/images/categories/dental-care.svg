@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <circle cx="100" cy="100" r="90" fill="#CFFAFE"/>
+  <circle cx="100" cy="100" r="78" fill="#67E8F9" opacity="0.4"/>
+  <!-- Tooth shape -->
+  <g transform="translate(100,98)">
+    <!-- Tooth crown -->
+    <path d="M-28,-25 Q-32,-45 -14,-45 Q-6,-45 -2,-38 Q2,-45 10,-45 Q28,-45 24,-25" fill="#0891B2"/>
+    <!-- Tooth body -->
+    <path d="M-28,-25 Q-30,5 -18,15 Q-12,20 -10,35 Q-8,42 -2,42 Q4,42 4,35 L4,20 Q4,12 10,12 Q16,12 16,20 L16,35 Q16,42 22,38 Q28,30 24,-25" fill="#0891B2"/>
+  </g>
+  <!-- Sparkle/shine on tooth -->
+  <circle cx="88" cy="82" r="5" fill="#22D3EE" opacity="0.5"/>
+  <circle cx="94" cy="76" r="3" fill="#22D3EE" opacity="0.4"/>
+  <!-- Sparkle accents -->
+  <g transform="translate(138,68)">
+    <rect x="-1.5" y="-6" width="3" height="12" rx="1.5" fill="#0E7490" opacity="0.5"/>
+    <rect x="-6" y="-1.5" width="12" height="3" rx="1.5" fill="#0E7490" opacity="0.5"/>
+  </g>
+</svg>

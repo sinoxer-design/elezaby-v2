@@ -13,13 +13,17 @@ const badgeVariants = cva(
         secondary: "border-transparent bg-secondary text-secondary-foreground",
         destructive: "border-transparent bg-destructive text-white",
         outline: "text-foreground border-border",
-        // Custom El Ezaby pharmacy variants
-        discount: "border-transparent bg-discount text-white rounded-sm",
+        // El Ezaby pharmacy variants (navy/cyan brand)
+        discount: "border-transparent bg-deal text-white rounded-sm",
         "low-stock": "border-transparent bg-warning text-sand-900 rounded-sm",
-        prescription: "border-transparent bg-health text-white rounded-sm",
-        "new": "border-transparent bg-brand-100 text-brand-700 rounded-sm",
+        prescription: "border-transparent bg-brand-700 text-white rounded-sm",
+        "new": "border-transparent bg-cyan-100 text-cyan-800 rounded-sm",
         "best-seller": "border-transparent bg-amber-50 text-amber-900 rounded-sm",
         oos: "border-transparent bg-sand-200 text-sand-600 rounded-sm",
+        // Commerce badges
+        express: "border-transparent bg-express-bg text-cyan-700 rounded-sm font-bold",
+        "flash-deal": "border-transparent bg-deal text-white rounded-sm font-bold animate-countdown-pulse",
+        insurance: "border-transparent bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-sm",
       },
     },
     defaultVariants: {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart, Truck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PriceBlock } from "./PriceBlock";
@@ -14,6 +14,8 @@ import { CTAButton } from "./CTAButton";
 import { PrescriptionDialog } from "./PrescriptionDialog";
 import { NotifyMeDialog } from "./NotifyMeDialog";
 import { useDeliveryContext } from "@/hooks/useDeliveryContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { InsuranceBadge } from "./InsuranceBadge";
 
 export interface ProductData {
   id: string;
@@ -27,14 +29,20 @@ export interface ProductData {
   currency?: string;
   badges?: Array<{
     label: string;
-    variant: "discount" | "new" | "best-seller" | "prescription" | "low-stock";
+    variant: "discount" | "new" | "best-seller" | "prescription" | "low-stock" | "express" | "flash-deal";
   }>;
   hasVariants: boolean;
   inStock: boolean;
   requiresPrescription?: boolean;
   quantityOffer?: string;
   rating?: number;
+  reviewCount?: number;
+  soldCount?: number;
+  freeShipping?: boolean;
+  expressDelivery?: boolean;
+  flashDeal?: { endsAt: string };
   categoryId?: string;
+  fulfillmentType?: "both" | "delivery-only" | "pickup-only";
 }
 
 interface ProductCardProps {
@@ -60,6 +68,8 @@ export function ProductCard({
   const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
   const [notifyOpen, setNotifyOpen] = React.useState(false);
   const { deliveryMethod } = useDeliveryContext();
+  const { isInsuranceCovered } = useUserProfile();
+  const showInsuranceBadge = isInsuranceCovered(product.categoryId);
 
   // Use pickup price when available and delivery method is pickup
   const displayPrice =
@@ -67,11 +77,8 @@ export function ProductCard({
       ? product.pickupPrice
       : product.price;
 
-  const accent = product.discountPercent
-    ? "sale"
-    : product.requiresPrescription
-    ? "rx"
-    : "none";
+  // Noon-style: no accent bars on product cards - cleaner look
+  const accent = "none" as const;
 
   return (
     <>
@@ -109,6 +116,32 @@ export function ProductCard({
             />
           </AspectRatio>
 
+          {/* Express Delivery Badge */}
+          {product.expressDelivery && layout === "grid" && (
+            <div className="absolute bottom-2 start-2 z-10">
+              <span className="inline-flex items-center gap-1 rounded-md bg-express-bg px-1.5 py-0.5 text-[0.5625rem] font-bold text-cyan-700 backdrop-blur-sm">
+                <Truck className="h-3 w-3" />
+                Express 24hr
+              </span>
+            </div>
+          )}
+
+          {/* Quick-add floating button (grid layout) */}
+          {layout === "grid" && product.inStock && !product.requiresPrescription && !product.hasVariants && (
+            <motion.button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onAddToCart?.(product.id);
+              }}
+              whileTap={{ scale: 0.85 }}
+              className="absolute bottom-2 end-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-white shadow-md opacity-0 transition-opacity group-hover:opacity-100"
+              aria-label="Quick add to cart"
+            >
+              <ShoppingCart className="h-3.5 w-3.5" />
+            </motion.button>
+          )}
+
           {/* Wishlist Button */}
           <motion.button
             onClick={(e) => {
@@ -131,7 +164,7 @@ export function ProductCard({
                 className={cn(
                   "h-4 w-4 transition-colors",
                   isWishlisted
-                    ? "fill-discount text-discount"
+                    ? "fill-deal text-deal"
                     : "text-sand-400"
                 )}
               />
@@ -164,6 +197,26 @@ export function ProductCard({
               </Badge>
             </div>
           )}
+
+          {/* Fulfillment Mismatch Overlay */}
+          {product.inStock &&
+            product.fulfillmentType === "pickup-only" &&
+            deliveryMethod === "delivery" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-background/70 backdrop-blur-[1px]">
+                <span className="rounded-md bg-brand-700 px-2.5 py-1 text-[0.625rem] font-bold text-white">
+                  Pickup Only
+                </span>
+              </div>
+            )}
+          {product.inStock &&
+            product.fulfillmentType === "delivery-only" &&
+            deliveryMethod === "pickup" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-background/70 backdrop-blur-[1px]">
+                <span className="rounded-md bg-cyan-700 px-2.5 py-1 text-[0.625rem] font-bold text-white">
+                  Delivery Only
+                </span>
+              </div>
+            )}
         </div>
 
         {/* Content Section */}
@@ -173,17 +226,20 @@ export function ProductCard({
             layout === "grid" ? "p-3 pt-1" : "flex-1 justify-center p-3"
           )}
         >
-          {/* Brand */}
-          <span className="text-xs font-medium uppercase tracking-wide text-sand-400 dark:text-muted-foreground">
-            {product.brand}
-          </span>
+          {/* Brand + Insurance Badge */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-medium uppercase tracking-wide text-sand-400 dark:text-muted-foreground">
+              {product.brand}
+            </span>
+            {showInsuranceBadge && <InsuranceBadge />}
+          </div>
 
           {/* Product Name (2-line clamp) */}
           <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug text-sand-700 dark:text-foreground">
             {product.name}
           </h3>
 
-          {/* Rating placeholder */}
+          {/* Rating + Review count */}
           {product.rating && (
             <div className="mt-1 flex items-center gap-1">
               <div className="flex">
@@ -201,7 +257,19 @@ export function ProductCard({
                   </span>
                 ))}
               </div>
+              {product.reviewCount && (
+                <span className="text-[0.625rem] text-sand-400">
+                  ({product.reviewCount.toLocaleString()})
+                </span>
+              )}
             </div>
+          )}
+
+          {/* Sold count */}
+          {product.soldCount && product.soldCount > 1000 && (
+            <span className="mt-0.5 text-[0.625rem] text-sand-400">
+              {product.soldCount.toLocaleString()} sold
+            </span>
           )}
 
           {/* Price Block */}
@@ -210,10 +278,15 @@ export function ProductCard({
             originalPrice={product.originalPrice}
             discountPercent={product.discountPercent}
             currency={product.currency}
-            deliveryMethod={deliveryMethod}
-            hasPickupPrice={!!product.pickupPrice}
-            className="mt-2"
+            className="mt-1.5"
           />
+
+          {/* Free Shipping indicator */}
+          {product.freeShipping && (
+            <span className="mt-1 text-[0.625rem] font-semibold text-cyan-600 dark:text-cyan-400">
+              FREE Delivery
+            </span>
+          )}
 
           {/* Quantity Offer */}
           {product.quantityOffer && (
@@ -225,7 +298,7 @@ export function ProductCard({
           )}
 
           {/* CTA Button */}
-          <div className="mt-auto pt-3" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+          <div className="mt-auto pt-2" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
             <CTAButton
               inStock={product.inStock}
               hasVariants={product.hasVariants}

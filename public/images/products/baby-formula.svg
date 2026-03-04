@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" rx="16" fill="#FFF5EE"/>
+  <defs>
+    <linearGradient id="canGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D4A06A"/>
+      <stop offset="30%" stop-color="#E8C49A"/>
+      <stop offset="70%" stop-color="#E8C49A"/>
+      <stop offset="100%" stop-color="#C8935A"/>
+    </linearGradient>
+    <linearGradient id="canLid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F0EB"/>
+      <stop offset="100%" stop-color="#DDD5CB"/>
+    </linearGradient>
+    <filter id="canSh" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#A0784A" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <g filter="url(#canSh)">
+    <!-- Can body -->
+    <rect x="120" y="110" width="160" height="230" rx="12" fill="url(#canGrad)"/>
+    <!-- Can top rim -->
+    <ellipse cx="200" cy="110" rx="80" ry="16" fill="url(#canLid)"/>
+    <ellipse cx="200" cy="108" rx="80" ry="16" fill="#EDE8E2"/>
+    <!-- Can bottom rim -->
+    <ellipse cx="200" cy="340" rx="80" ry="10" fill="#B8864E"/>
+    <!-- Body shine -->
+    <rect x="130" y="115" width="18" height="215" rx="6" fill="white" opacity="0.15"/>
+    <!-- Lid -->
+    <ellipse cx="200" cy="110" rx="65" ry="12" fill="url(#canLid)" stroke="#C8B8A0" stroke-width="1"/>
+    <!-- Pull tab on lid -->
+    <ellipse cx="200" cy="108" rx="16" ry="5" fill="#CFBFAF" stroke="#B8A898" stroke-width="1"/>
+    <!-- Label band -->
+    <rect x="120" y="160" width="160" height="130" fill="#1E6BB0" opacity="0.85" rx="0"/>
+    <!-- Label content -->
+    <rect x="140" y="178" width="120" height="12" rx="3" fill="white" opacity="0.35"/>
+    <rect x="150" y="198" width="100" height="8" rx="2" fill="white" opacity="0.25"/>
+    <!-- Milk drop icon -->
+    <path d="M200,230 Q192,245 192,255 Q192,265 200,268 Q208,265 208,255 Q208,245 200,230 Z" fill="white" opacity="0.3"/>
+    <!-- Bottom text -->
+    <rect x="155" y="278" width="90" height="6" rx="2" fill="white" opacity="0.2"/>
+  </g>
+</svg>

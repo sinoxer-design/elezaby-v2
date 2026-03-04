@@ -3,7 +3,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 interface CardProps extends React.ComponentProps<"div"> {
-  accent?: "brand" | "sale" | "rx" | "none";
+  accent?: "brand" | "sale" | "rx" | "express" | "none";
 }
 
 function Card({ className, accent = "none", ...props }: CardProps) {
@@ -11,10 +11,11 @@ function Card({ className, accent = "none", ...props }: CardProps) {
     <div
       data-slot="card"
       className={cn(
-        "rounded-lg bg-card text-card-foreground shadow-card",
+        "rounded-lg border border-sand-200 dark:border-border bg-card text-card-foreground shadow-card",
         accent === "brand" && "card-accent",
         accent === "sale" && "card-accent card-accent-sale",
         accent === "rx" && "card-accent card-accent-rx",
+        accent === "express" && "card-accent card-accent-express",
         className
       )}
       {...props}

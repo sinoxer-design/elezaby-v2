@@ -14,14 +14,14 @@ export interface Category {
 // ── Full category tree ──────────────────────────────────────────────
 export const categories: Category[] = [
   // ─── Primary Categories ───
-  { id: "med",   name: "Medicines",              slug: "medicines",     parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "💊", productCount: 2450, order: 1 },
-  { id: "skin",  name: "Skincare",               slug: "skincare",      parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "✨", productCount: 890,  order: 2 },
-  { id: "vit",   name: "Vitamins & Supplements", slug: "vitamins",      parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "🧬", productCount: 560,  order: 3 },
-  { id: "baby",  name: "Baby Care",              slug: "baby-care",     parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "👶", productCount: 340,  order: 4 },
-  { id: "hair",  name: "Hair Care",              slug: "hair-care",     parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "💇", productCount: 420,  order: 5 },
-  { id: "pc",    name: "Personal Care",          slug: "personal-care", parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "🧴", productCount: 780,  order: 6 },
-  { id: "fa",    name: "First Aid",              slug: "first-aid",     parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "🩹", productCount: 150,  order: 7 },
-  { id: "dent",  name: "Dental Care",            slug: "dental-care",   parentId: null, imageUrl: "/images/categories/placeholder.svg", emoji: "🦷", productCount: 230,  order: 8 },
+  { id: "med",   name: "Medicines",              slug: "medicines",     parentId: null, imageUrl: "/images/categories/medicines.svg", emoji: "💊", productCount: 2450, order: 1 },
+  { id: "skin",  name: "Skincare",               slug: "skincare",      parentId: null, imageUrl: "/images/categories/skincare.svg", emoji: "✨", productCount: 890,  order: 2 },
+  { id: "vit",   name: "Vitamins & Supplements", slug: "vitamins",      parentId: null, imageUrl: "/images/categories/vitamins.svg", emoji: "🧬", productCount: 560,  order: 3 },
+  { id: "baby",  name: "Baby Care",              slug: "baby-care",     parentId: null, imageUrl: "/images/categories/baby-care.svg", emoji: "👶", productCount: 340,  order: 4 },
+  { id: "hair",  name: "Hair Care",              slug: "hair-care",     parentId: null, imageUrl: "/images/categories/hair-care.svg", emoji: "💇", productCount: 420,  order: 5 },
+  { id: "pc",    name: "Personal Care",          slug: "personal-care", parentId: null, imageUrl: "/images/categories/personal-care.svg", emoji: "🧴", productCount: 780,  order: 6 },
+  { id: "fa",    name: "First Aid",              slug: "first-aid",     parentId: null, imageUrl: "/images/categories/first-aid.svg", emoji: "🩹", productCount: 150,  order: 7 },
+  { id: "dent",  name: "Dental Care",            slug: "dental-care",   parentId: null, imageUrl: "/images/categories/dental-care.svg", emoji: "🦷", productCount: 230,  order: 8 },
 
   // ─── Medicines → Sub-Categories ───
   { id: "med-pain",    name: "Pain Relief",     slug: "pain-relief",      parentId: "med", imageUrl: "/images/categories/placeholder.svg", emoji: "🤕", productCount: 320, order: 1 },
