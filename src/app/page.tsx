@@ -11,13 +11,13 @@ import { ProductGrid } from"@/components/commerce/ProductGrid";
 import { BentoPromoGrid } from"@/components/commerce/BentoPromoGrid";
 import { FreeShippingBar } from"@/components/commerce/FreeShippingBar";
 import { WelcomeOfferBanner } from"@/components/commerce/WelcomeOfferBanner";
-import { HomepageDeliverySelector } from"@/components/commerce/HomepageDeliverySelector";
 import { ProfileCompletionAlert } from"@/components/commerce/ProfileCompletionAlert";
 import { MaxSavingsSection } from"@/components/commerce/MaxSavingsSection";
 import { BundleSection } from"@/components/commerce/BundleSection";
 import { OrderAgainSection } from"@/components/commerce/OrderAgainSection";
 import { BabyBrandSection } from"@/components/commerce/BabyBrandSection";
 import { RamadanHeroBanner } from"@/components/commerce/RamadanHeroBanner";
+import { SymptomSearchSection } from"@/components/commerce/SymptomSearchSection";
 import {
  mockProducts,
  mockFlashDeals,
@@ -53,6 +53,7 @@ export default function HomePage() {
  imageUrl: product.imageUrl,
  price: product.price,
  originalPrice: product.originalPrice,
+ requiresPrescription: product.requiresPrescription,
  });
  }
  };
@@ -86,15 +87,9 @@ export default function HomePage() {
 
  {/* All content sits above the lantern layer — isolate creates a stacking context */}
  <div className="relative z-[1] isolate flex flex-col gap-5">
- {/* 1. Delivery/Pickup Selector (F8) */}
- <HomepageDeliverySelector />
-
- {/* 2. Profile Completion Alert (F2, conditional) */}
- <ProfileCompletionAlert />
-
- {/* 3. Category Rail */}
+ {/* 1. Category Rail */}
  <section className="relative z-10">
- <div className="flex gap-3 overflow-x-auto scrollbar-hide py-2 ps-[var(--page-padding-x)] pe-4 lg:flex-wrap lg:overflow-visible lg:px-8 lg:py-4 lg:gap-4">
+ <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2 ps-[var(--page-padding-x)] pe-4 lg:flex-wrap lg:overflow-visible lg:px-8 lg:py-4 lg:gap-5">
  {primaryCategories.map((cat) => (
  <CategoryPill
  key={cat.id}
@@ -107,13 +102,19 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* 4. Hero Banner Carousel */}
+ {/* 2. Search by Symptoms */}
+ <SymptomSearchSection />
+
+ {/* 3. Hero Banner Carousel */}
  <PromoBannerCarousel banners={mockPromoBanners} />
 
- {/* 6. Welcome Offer Banner */}
+ {/* 3. Welcome Offer Banner */}
  <WelcomeOfferBanner />
 
- {/* 6. Free Shipping Progress Bar */}
+ {/* 4. Profile Completion Alert (moved lower) */}
+ <ProfileCompletionAlert />
+
+ {/* 5. Free Shipping Progress Bar */}
  <FreeShippingBar />
 
  {/* 7. Flash Deals */}

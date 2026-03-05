@@ -16,6 +16,7 @@ import {
  Banknote,
  ChevronDown,
 } from"lucide-react";
+import { CheckoutPrescriptionSection } from"@/components/commerce/CheckoutPrescriptionSection";
 
 const egyptAreas = [
 "Nasr City",
@@ -273,6 +274,16 @@ export default function CheckoutPage() {
  </button>
  </div>
  </section>
+
+ {/* ---- Section: Prescription Upload ---- */}
+ <CheckoutPrescriptionSection
+ items={items.map((item) => ({
+ id: item.id,
+ name: item.name,
+ imageUrl: item.imageUrl,
+ requiresPrescription: item.requiresPrescription,
+ }))}
+ />
 
  {/* ---- Section: Payment Method ---- */}
  <section className="rounded-xl bg-white p-4 shadow-card">

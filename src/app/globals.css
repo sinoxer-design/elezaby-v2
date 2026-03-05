@@ -360,8 +360,8 @@
   --duration-slow: 400ms;
 
   /* Layout */
-  --header-height: 10.75rem;          /* deals banner (1.75rem) + logo row (3.5rem) + search+tabs (~5.5rem) */
-  --header-collapsed-height: 5.25rem; /* deals banner (1.75rem) + logo row (3.5rem) */
+  --header-height: 5.25rem;            /* deals banner (1.75rem) + logo row (3.5rem) */
+  --header-collapsed-height: 5.25rem; /* same — no collapsing on mobile anymore */
   --bottom-nav-height: 3.75rem;
   --header-height-desktop: 8.25rem;   /* deals banner (1.75rem) + logo row (3.5rem) + nav row (3rem) */
   --page-padding-x: 1rem;

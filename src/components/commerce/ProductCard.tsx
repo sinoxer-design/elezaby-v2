@@ -190,9 +190,9 @@ export function ProductCard({
  </div>
  )}
 
- {/* Out of Stock Overlay */}
+ {/* Out of Stock Badge — no overlay, image stays visible */}
  {!product.inStock && (
- <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
+ <div className="absolute bottom-2 start-2 z-10">
  <Badge variant="oos" className="text-xs">
  Out of Stock
  </Badge>

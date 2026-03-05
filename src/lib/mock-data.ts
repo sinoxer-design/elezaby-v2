@@ -1519,3 +1519,246 @@ export const mockCategoryPromoBanners: Record<string, PromoBanner> = {
     imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
   },
 };
+
+// ── Symptom Categories (Search by Symptom) ──────────────────────────
+
+export interface SymptomCategory {
+  id: string;
+  name: string;
+  nameAr: string;
+  emoji: string;
+  slug: string;
+  color: string;
+  relatedCategoryIds: string[];
+}
+
+export const mockSymptoms: SymptomCategory[] = [
+  { id: "sym-headache", name: "Headache", nameAr: "صداع", emoji: "🤕", slug: "headache", color: "brand", relatedCategoryIds: ["med-pain-tab"] },
+  { id: "sym-cold", name: "Cold & Flu", nameAr: "برد وإنفلونزا", emoji: "🤧", slug: "cold-flu", color: "cyan", relatedCategoryIds: ["med-cold-dec", "med-cold-cgh"] },
+  { id: "sym-stomach", name: "Stomach Ache", nameAr: "ألم معدة", emoji: "🤢", slug: "stomach-ache", color: "deal", relatedCategoryIds: ["med-dig-ant", "med-dig-lax"] },
+  { id: "sym-allergy", name: "Allergies", nameAr: "حساسية", emoji: "🌿", slug: "allergies", color: "emerald", relatedCategoryIds: ["med-allergy"] },
+  { id: "sym-fever", name: "Fever", nameAr: "حمى", emoji: "🌡️", slug: "fever", color: "amber", relatedCategoryIds: ["med-pain-tab"] },
+  { id: "sym-skin", name: "Skin Rash", nameAr: "طفح جلدي", emoji: "🩹", slug: "skin-rash", color: "purple", relatedCategoryIds: ["skin-treat-ser", "skin-treat-mask"] },
+  { id: "sym-muscle", name: "Muscle Pain", nameAr: "ألم عضلات", emoji: "💪", slug: "muscle-pain", color: "pink", relatedCategoryIds: ["med-pain-top"] },
+  { id: "sym-fatigue", name: "Fatigue", nameAr: "إرهاق", emoji: "😴", slug: "fatigue", color: "blue", relatedCategoryIds: ["vit-energy", "vit-multi-adult"] },
+];
+
+// ── Brands (Brands Page) ────────────────────────────────────────────
+
+export interface Brand {
+  name: string;
+  slug: string;
+  logoUrl: string;
+  productCount: number;
+  categories: string[];
+  featured?: boolean;
+}
+
+export const mockBrands: Brand[] = [
+  {
+    name: "Aptamil",
+    slug: "aptamil",
+    logoUrl: "https://logo.clearbit.com/aptamil.com",
+    productCount: 12,
+    categories: ["baby"],
+  },
+  {
+    name: "Bepanthen",
+    slug: "bepanthen",
+    logoUrl: "https://logo.clearbit.com/bepanthen.com",
+    productCount: 8,
+    categories: ["baby", "skin"],
+  },
+  {
+    name: "Betadine",
+    slug: "betadine",
+    logoUrl: "https://logo.clearbit.com/betadine.com",
+    productCount: 12,
+    categories: ["fa", "med"],
+  },
+  {
+    name: "Bioderma",
+    slug: "bioderma",
+    logoUrl: "https://logo.clearbit.com/bioderma.com",
+    productCount: 22,
+    categories: ["skin"],
+    featured: true,
+  },
+  {
+    name: "CeraVe",
+    slug: "cerave",
+    logoUrl: "https://logo.clearbit.com/cerave.com",
+    productCount: 32,
+    categories: ["skin"],
+    featured: true,
+  },
+  {
+    name: "Centrum",
+    slug: "centrum",
+    logoUrl: "https://logo.clearbit.com/centrum.com",
+    productCount: 24,
+    categories: ["vit"],
+    featured: true,
+  },
+  {
+    name: "Cetaphil",
+    slug: "cetaphil",
+    logoUrl: "https://logo.clearbit.com/cetaphil.com",
+    productCount: 20,
+    categories: ["skin"],
+  },
+  {
+    name: "Colgate",
+    slug: "colgate",
+    logoUrl: "https://logo.clearbit.com/colgate.com",
+    productCount: 20,
+    categories: ["dent"],
+  },
+  {
+    name: "Dettol",
+    slug: "dettol",
+    logoUrl: "https://logo.clearbit.com/dettol.com",
+    productCount: 22,
+    categories: ["pc", "fa"],
+  },
+  {
+    name: "Dove",
+    slug: "dove",
+    logoUrl: "https://logo.clearbit.com/dove.com",
+    productCount: 25,
+    categories: ["pc", "hair"],
+  },
+  {
+    name: "Eucerin",
+    slug: "eucerin",
+    logoUrl: "https://logo.clearbit.com/eucerin.com",
+    productCount: 28,
+    categories: ["skin"],
+  },
+  {
+    name: "Garnier",
+    slug: "garnier",
+    logoUrl: "https://logo.clearbit.com/garnier.com",
+    productCount: 35,
+    categories: ["skin", "hair"],
+  },
+  {
+    name: "Gillette",
+    slug: "gillette",
+    logoUrl: "https://logo.clearbit.com/gillette.com",
+    productCount: 18,
+    categories: ["pc"],
+  },
+  {
+    name: "Himalaya",
+    slug: "himalaya",
+    logoUrl: "https://logo.clearbit.com/himalayawellness.com",
+    productCount: 30,
+    categories: ["skin", "pc"],
+  },
+  {
+    name: "La Roche-Posay",
+    slug: "la-roche-posay",
+    logoUrl: "https://logo.clearbit.com/laroche-posay.com",
+    productCount: 38,
+    categories: ["skin"],
+    featured: true,
+  },
+  {
+    name: "L'Oreal",
+    slug: "loreal",
+    logoUrl: "https://logo.clearbit.com/loreal.com",
+    productCount: 48,
+    categories: ["skin", "hair"],
+    featured: true,
+  },
+  {
+    name: "Mustela",
+    slug: "mustela",
+    logoUrl: "https://logo.clearbit.com/mustela.com",
+    productCount: 16,
+    categories: ["baby"],
+  },
+  {
+    name: "Nature's Bounty",
+    slug: "natures-bounty",
+    logoUrl: "https://logo.clearbit.com/naturesbounty.com",
+    productCount: 40,
+    categories: ["vit"],
+  },
+  {
+    name: "Neutrogena",
+    slug: "neutrogena",
+    logoUrl: "https://logo.clearbit.com/neutrogena.com",
+    productCount: 30,
+    categories: ["skin"],
+  },
+  {
+    name: "Nivea",
+    slug: "nivea",
+    logoUrl: "https://logo.clearbit.com/nivea.com",
+    productCount: 45,
+    categories: ["skin", "pc"],
+    featured: true,
+  },
+  {
+    name: "Oral-B",
+    slug: "oral-b",
+    logoUrl: "https://logo.clearbit.com/oralb.com",
+    productCount: 15,
+    categories: ["dent"],
+    featured: true,
+  },
+  {
+    name: "Panadol",
+    slug: "panadol",
+    logoUrl: "https://logo.clearbit.com/panadol.com",
+    productCount: 18,
+    categories: ["med"],
+    featured: true,
+  },
+  {
+    name: "Pampers",
+    slug: "pampers",
+    logoUrl: "https://logo.clearbit.com/pampers.com",
+    productCount: 28,
+    categories: ["baby"],
+    featured: true,
+  },
+  {
+    name: "Sensodyne",
+    slug: "sensodyne",
+    logoUrl: "https://logo.clearbit.com/sensodyne.com",
+    productCount: 14,
+    categories: ["dent"],
+  },
+  {
+    name: "Solgar",
+    slug: "solgar",
+    logoUrl: "https://logo.clearbit.com/solgar.com",
+    productCount: 50,
+    categories: ["vit"],
+  },
+  {
+    name: "The Ordinary",
+    slug: "the-ordinary",
+    logoUrl: "https://logo.clearbit.com/theordinary.com",
+    productCount: 42,
+    categories: ["skin"],
+    featured: true,
+  },
+  {
+    name: "Vichy",
+    slug: "vichy",
+    logoUrl: "https://logo.clearbit.com/vichy.com",
+    productCount: 26,
+    categories: ["skin"],
+  },
+  {
+    name: "Voltaren",
+    slug: "voltaren",
+    logoUrl: "https://logo.clearbit.com/voltaren.com",
+    productCount: 10,
+    categories: ["med"],
+  },
+];

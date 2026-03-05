@@ -5,7 +5,6 @@ import { usePathname } from"next/navigation";
 import { HeaderBar } from"./HeaderBar";
 import { BottomNav } from"./BottomNav";
 import { FloatingCartButton } from"@/components/commerce/FloatingCartButton";
-import { SocialProofToast } from"@/components/commerce/SocialProofToast";
 import { PersonalizedOfferFAB } from"@/components/commerce/PersonalizedOfferFAB";
 import {
  DeliveryContext,
@@ -42,7 +41,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
  (pathname ==="/checkout" && !pathname.startsWith("/checkout/confirmation"));
 
  const isHomePage = pathname ==="/";
- const isProductsPage = pathname ==="/products";
 
  return (
  <UserProfileContext.Provider value={userProfileState}>
@@ -57,13 +55,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
  <main
  className="mx-auto max-w-7xl pb-safe"
  style={{
- paddingTop: hideHeader
- ? 0
- : isMinimalHeader
- ?"var(--header-collapsed-height)"
- : isProductsPage
- ?"7.75rem"
- :"var(--header-height)",
+ paddingTop: hideHeader ? 0 :"var(--header-height)",
  minHeight:"100dvh",
  }}
  >
@@ -74,10 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
  {/* Floating Cart Button */}
  <FloatingCartButton />
 
- {/* Social Proof Toast */}
- {isHomePage && <SocialProofToast />}
-
- {/* Personalized Offer FAB — homepage only */}
+{/* Personalized Offer FAB — homepage only */}
  {isHomePage && <PersonalizedOfferFAB />}
  </CartContext.Provider>
  </DeliveryContext.Provider>

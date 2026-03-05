@@ -44,35 +44,30 @@ export function BundleCard({
  </div>
 
  {/* Product Thumbnails */}
- <div className="flex items-center justify-center gap-1.5 px-3 py-2">
+ <div className="flex items-center justify-center gap-2 px-3 py-3">
  {bundle.products.map((product, idx) => (
- <div key={product.productId} className="flex items-center gap-1.5">
- <div className="relative h-12 w-12 overflow-hidden rounded-full border border-sand-100 bg-sand-50">
+ <div key={product.productId} className="flex items-center gap-2">
+ <div className="relative h-16 w-16 overflow-hidden rounded-full border border-sand-100 bg-sand-50">
  <Image
  src={product.imageUrl}
  alt={product.name}
  fill
- className="object-contain p-1"
- sizes="48px"
+ className="object-contain p-1.5"
+ sizes="64px"
  />
  </div>
  {idx < bundle.products.length - 1 && (
- <Plus className="h-3 w-3 text-sand-400" />
+ <Plus className="h-3.5 w-3.5 text-sand-400" />
  )}
  </div>
  ))}
  </div>
 
- {/* Product Names */}
+ {/* Product Count */}
  <div className="px-3 pb-2">
- {bundle.products.map((product) => (
- <p
- key={product.productId}
- className="text-[0.625rem] text-sand-500 truncate"
- >
- {product.name}
+ <p className="text-[0.625rem] text-sand-500">
+ {bundle.products.length} products included
  </p>
- ))}
  </div>
 
  {/* Price Comparison */}

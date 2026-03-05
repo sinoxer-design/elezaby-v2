@@ -32,13 +32,13 @@ export function CategoryPill({
  transition={{ type:"spring", stiffness: 400, damping: 20 }}
  className={cn(
 "flex shrink-0 flex-col items-center gap-1.5",
-"w-16"
+"w-20"
  )}
  >
  <div
  className={cn(
 "overflow-hidden rounded-full border-2 transition-all duration-200",
-"h-14 w-14",
+"h-[4.5rem] w-[4.5rem]",
  isActive
  ?"border-cyan-500 shadow-[0_2px_10px_rgba(0,174,239,0.25)] ring-2 ring-cyan-200/50"
  :"border-white bg-white shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
@@ -51,7 +51,7 @@ export function CategoryPill({
  alt={name}
  fill
  className="object-cover"
- sizes="56px"
+ sizes="72px"
  unoptimized
  />
  </div>
@@ -62,13 +62,13 @@ export function CategoryPill({
  isActive &&"ring-1 ring-cyan-200"
  )}
  >
- <span className="text-2xl">{emoji}</span>
+ <span className="text-3xl">{emoji}</span>
  </div>
  )}
  </div>
  <span
  className={cn(
-"w-full text-center text-[0.625rem] font-medium leading-tight",
+"w-full text-center text-[0.6875rem] font-medium leading-tight",
  isActive ?"text-brand-700" :"text-sand-600"
  )}
  >
