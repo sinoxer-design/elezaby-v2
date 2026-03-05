@@ -9,6 +9,7 @@ interface CartItem {
   imageUrl: string;
   price: number;
   originalPrice?: number;
+  requiresPrescription?: boolean;
   quantity: number;
 }
 
