@@ -3,6 +3,7 @@
 import * as React from"react";
 import Image from"next/image";
 import Link from"next/link";
+import { useRouter } from"next/navigation";
 import { Card } from"@/components/ui/card";
 import { Badge } from"@/components/ui/badge";
 import { AspectRatio } from"@/components/ui/aspect-ratio";
@@ -65,6 +66,7 @@ export function ProductCard({
  onWishlist,
  className,
 }: ProductCardProps) {
+ const router = useRouter();
  const [isWishlisted, setIsWishlisted] = React.useState(false);
  const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
  const [notifyOpen, setNotifyOpen] = React.useState(false);
@@ -329,7 +331,13 @@ export function ProductCard({
  }
  }}
  onNotifyMe={() => setNotifyOpen(true)}
- onOptions={() => onOptions?.(product.id)}
+ onOptions={() => {
+              if (onOptions) {
+                onOptions(product.id);
+              } else {
+                router.push(`/products/${product.id}`);
+              }
+            }}
  size="card-cta"
  />
  </div>

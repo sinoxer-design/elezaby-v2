@@ -13,7 +13,7 @@ import { QuantitySelector } from"@/components/commerce/QuantitySelector";
 import { ProductCarousel } from"@/components/commerce/ProductCarousel";
 import { PrescriptionDialog } from"@/components/commerce/PrescriptionDialog";
 import { NotifyMeDialog } from"@/components/commerce/NotifyMeDialog";
-import { mockProducts } from"@/lib/mock-data";
+import { mockProducts, mockFlashDeals, mockBabyProducts } from"@/lib/mock-data";
 import { useCart } from"@/hooks/useCart";
 import { ProductCard } from"@/components/commerce/ProductCard";
 import {
@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
  const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
  const [notifyOpen, setNotifyOpen] = React.useState(false);
 
- const product = mockProducts.find((p) => p.id === slug);
+ const product = [...mockProducts, ...mockFlashDeals, ...mockBabyProducts].find((p) => p.id === slug);
 
  if (!product) {
  return (
