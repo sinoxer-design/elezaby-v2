@@ -125,21 +125,12 @@ export default function HomePage() {
  <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2 pe-4 lg:flex-wrap lg:overflow-visible lg:gap-5">
  {mockBrands.filter((b) => b.featured).concat(mockBrands.filter((b) => !b.featured)).slice(0, 10).map((brand) => (
  <Link key={brand.slug} href={`/products?brand=${brand.slug}`} className="flex shrink-0 flex-col items-center gap-1.5 w-20">
- <div className="overflow-hidden rounded-full border-2 border-white bg-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] h-[4.5rem] w-[4.5rem] flex items-center justify-center">
+ <div className="overflow-hidden rounded-full border-2 border-brand-100 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] h-[4.5rem] w-[4.5rem]">
  <img
- src={brand.logoUrl}
+ src={`https://ui-avatars.com/api/?name=${encodeURIComponent(brand.name)}&background=EBF0FF&color=1B3A6B&bold=true&size=128&font-size=0.4`}
  alt={brand.name}
- className="h-10 w-10 object-contain"
- onError={(e) => {
- const target = e.currentTarget;
- target.style.display = "none";
- const fallback = target.nextElementSibling as HTMLElement;
- if (fallback) fallback.style.display = "flex";
- }}
+ className="h-full w-full object-cover"
  />
- <span className="hidden text-lg font-bold text-brand-600 items-center justify-center h-full w-full">
- {brand.name.charAt(0)}
- </span>
  </div>
  <span className="w-full text-center text-[0.6875rem] font-medium leading-tight text-sand-600 line-clamp-2">
  {brand.name}
