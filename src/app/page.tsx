@@ -25,6 +25,7 @@ import {
  mockPromoBanners,
  mockMaxSavings,
  mockBundles,
+ mockBrands,
  allProducts,
  getPersonalizedProducts,
 } from"@/lib/mock-data";
@@ -102,16 +103,53 @@ export default function HomePage() {
  </div>
  </section>
 
- {/* 2. Search by Symptoms */}
- <SymptomSearchSection />
-
- {/* 3. Hero Banner Carousel */}
+ {/* 2. Hero Banner Carousel */}
  <PromoBannerCarousel banners={mockPromoBanners} />
 
- {/* 3. Welcome Offer Banner */}
- <WelcomeOfferBanner />
+ {/* 3. Search by Symptoms */}
+ <SymptomSearchSection />
 
- {/* 4. Profile Completion Alert (moved lower) */}
+ {/* 4. Shop by Brand */}
+ <section className="px-[var(--page-padding-x)] lg:px-8">
+ <div className="flex items-end justify-between mb-3">
+ <h2 className="font-display text-lg font-bold text-sand-800 lg:text-xl">
+ Shop by Brand
+ </h2>
+ <Button variant="ghost" size="sm" className="text-xs font-semibold text-brand-600" asChild>
+ <Link href="/brands">
+ See All
+ <ChevronRight className="ms-0.5 h-3.5 w-3.5" />
+ </Link>
+ </Button>
+ </div>
+ <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2 pe-4 lg:flex-wrap lg:overflow-visible lg:gap-5">
+ {mockBrands.filter((b) => b.featured).concat(mockBrands.filter((b) => !b.featured)).slice(0, 10).map((brand) => (
+ <Link key={brand.slug} href={`/products?brand=${brand.slug}`} className="flex shrink-0 flex-col items-center gap-1.5 w-20">
+ <div className="overflow-hidden rounded-full border-2 border-white bg-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] h-[4.5rem] w-[4.5rem] flex items-center justify-center">
+ <img
+ src={brand.logoUrl}
+ alt={brand.name}
+ className="h-10 w-10 object-contain"
+ onError={(e) => {
+ const target = e.currentTarget;
+ target.style.display = "none";
+ const fallback = target.nextElementSibling as HTMLElement;
+ if (fallback) fallback.style.display = "flex";
+ }}
+ />
+ <span className="hidden text-lg font-bold text-brand-600 items-center justify-center h-full w-full">
+ {brand.name.charAt(0)}
+ </span>
+ </div>
+ <span className="w-full text-center text-[0.6875rem] font-medium leading-tight text-sand-600 line-clamp-2">
+ {brand.name}
+ </span>
+ </Link>
+ ))}
+ </div>
+ </section>
+
+ {/* 5. Profile Completion Alert (moved lower) */}
  <ProfileCompletionAlert />
 
  {/* 5. Free Shipping Progress Bar */}

@@ -44,20 +44,20 @@ export function BundleCard({
  </div>
 
  {/* Product Thumbnails */}
- <div className="flex items-center justify-center gap-2 px-3 py-3">
+ <div className="flex items-center justify-center gap-2 px-3 py-4">
  {bundle.products.map((product, idx) => (
  <div key={product.productId} className="flex items-center gap-2">
- <div className="relative h-16 w-16 overflow-hidden rounded-full border border-sand-100 bg-sand-50">
+ <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-sand-100 bg-sand-50">
  <Image
  src={product.imageUrl}
  alt={product.name}
  fill
- className="object-contain p-1.5"
- sizes="64px"
+ className="object-cover"
+ sizes="80px"
  />
  </div>
  {idx < bundle.products.length - 1 && (
- <Plus className="h-3.5 w-3.5 text-sand-400" />
+ <Plus className="h-4 w-4 text-sand-400" />
  )}
  </div>
  ))}

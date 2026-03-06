@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
  >
  {children}
  </main>
- {!hideBottomNav && <BottomNav cartCount={cartState.itemCount} />}
+ {!hideBottomNav && <BottomNav />}
 
  {/* Floating Cart Button */}
  <FloatingCartButton />
