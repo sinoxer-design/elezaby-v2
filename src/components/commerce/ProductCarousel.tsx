@@ -69,7 +69,7 @@ export function ProductCarousel({
  {products.map((product) => (
  <CarouselItem
  key={product.id}
- className="flex !pl-0 basis-[44%] md:basis-[30%] lg:basis-[22%] xl:basis-[18%]"
+ className="flex !pl-0 basis-[66%] md:basis-[30%] lg:basis-[22%] xl:basis-[18%]"
  >
  <ProductCard
  product={product}

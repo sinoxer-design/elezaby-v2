@@ -8,22 +8,13 @@ import { useCart } from"@/hooks/useCart";
 
 export function FloatingCartButton() {
  const { itemCount } = useCart();
- const [show, setShow] = React.useState(false);
 
- React.useEffect(() => {
- const handleScroll = () => {
- setShow(window.scrollY > 300);
- };
- window.addEventListener("scroll", handleScroll, { passive: true });
- return () => window.removeEventListener("scroll", handleScroll);
- }, []);
-
- // Only show when cart has items and user has scrolled
+ // Only show when cart has items
  if (itemCount === 0) return null;
 
  return (
  <AnimatePresence>
- {show && (
+ {itemCount > 0 && (
  <motion.div
  initial={{ opacity: 0, scale: 0.8 }}
  animate={{ opacity: 1, scale: 1 }}

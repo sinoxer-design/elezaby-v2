@@ -66,7 +66,7 @@ export function MaxSavingsSection({
  {products.map((product) => (
  <CarouselItem
  key={product.id}
- className="flex !pl-0 basis-[44%] md:basis-[30%] lg:basis-[22%]"
+ className="flex !pl-0 basis-[66%] md:basis-[30%] lg:basis-[22%]"
  >
  <MaxSavingsCard
  product={product}
