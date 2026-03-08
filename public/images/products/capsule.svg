@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" rx="16" fill="#E0F7FA"/>
+  <defs>
+    <linearGradient id="capTop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0D9488"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="capBot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#FCD34D"/>
+    </linearGradient>
+    <filter id="capSh" x="-10%" y="-5%" width="120%" height="115%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0D9488" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <!-- Large capsule, tilted -->
+  <g transform="translate(200,200) rotate(-30)" filter="url(#capSh)">
+    <rect x="-35" y="-90" width="70" height="90" rx="35" fill="url(#capTop)"/>
+    <rect x="-35" y="-10" width="70" height="90" rx="35" fill="url(#capBot)"/>
+    <rect x="-35" y="-10" width="70" height="20" fill="url(#capBot)"/>
+    <rect x="-35" y="-10" width="70" height="20" fill="url(#capTop)" opacity="0.3"/>
+    <ellipse cx="0" cy="-30" rx="12" ry="30" fill="white" opacity="0.12"/>
+  </g>
+  <!-- Small capsule -->
+  <g transform="translate(290,280) rotate(-15)" filter="url(#capSh)">
+    <rect x="-20" y="-52" width="40" height="52" rx="20" fill="#E879A0"/>
+    <rect x="-20" y="-8" width="40" height="52" rx="20" fill="white" stroke="#E879A0" stroke-width="1"/>
+    <rect x="-20" y="-8" width="40" height="12" fill="white"/>
+    <ellipse cx="-3" cy="-20" rx="6" ry="18" fill="white" opacity="0.15"/>
+  </g>
+  <!-- Tiny pill -->
+  <g transform="translate(120,300)">
+    <ellipse cx="0" cy="0" rx="28" ry="28" fill="#A78BFA" opacity="0.85"/>
+    <line x1="-20" y1="0" x2="20" y2="0" stroke="white" stroke-width="2" opacity="0.3"/>
+    <ellipse cx="-6" cy="-6" rx="6" ry="8" fill="white" opacity="0.12"/>
+  </g>
+</svg>
