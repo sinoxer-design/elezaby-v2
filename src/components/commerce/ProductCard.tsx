@@ -205,7 +205,7 @@ export function ProductCard({
  {product.inStock &&
  product.fulfillmentType ==="pickup-only" &&
  deliveryMethod ==="delivery" && (
- <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-[1px]">
+ <div className="absolute inset-0 flex items-center justify-center bg-white/70">
  <span className="rounded-md bg-brand-700 px-2.5 py-1 text-[0.625rem] font-bold text-white">
  Pickup Only
  </span>
@@ -214,7 +214,7 @@ export function ProductCard({
  {product.inStock &&
  product.fulfillmentType ==="delivery-only" &&
  deliveryMethod ==="pickup" && (
- <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-[1px]">
+ <div className="absolute inset-0 flex items-center justify-center bg-white/70">
  <span className="rounded-md bg-cyan-700 px-2.5 py-1 text-[0.625rem] font-bold text-white">
  Delivery Only
  </span>

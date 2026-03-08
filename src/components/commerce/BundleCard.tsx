@@ -1,7 +1,7 @@
 "use client";
 
 import Image from"next/image";
-import { ShoppingCart, Plus } from"lucide-react";
+import { ShoppingCart } from"lucide-react";
 import { motion } from"framer-motion";
 import { cn } from"@/lib/utils";
 import { type BundleData } from"@/lib/mock-data";
@@ -43,28 +43,21 @@ export function BundleCard({
  )}
  </div>
 
- {/* Product Thumbnails */}
- <div className="flex items-center justify-center gap-2 px-3 py-4">
- {bundle.products.map((product, idx) => (
- <div key={product.productId} className="flex items-center gap-2">
- <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-sand-100 bg-sand-50">
+ {/* Landscape Hero Image */}
+ {bundle.products[0] && (
+ <div className="relative flex-1 min-h-[120px] bg-sand-50">
  <Image
- src={product.imageUrl}
- alt={product.name}
+ src={bundle.products[0].imageUrl}
+ alt={bundle.name}
  fill
  className="object-cover"
- sizes="80px"
+ sizes="300px"
  />
  </div>
- {idx < bundle.products.length - 1 && (
- <Plus className="h-4 w-4 text-sand-400" />
  )}
- </div>
- ))}
- </div>
 
  {/* Product Count */}
- <div className="px-3 pb-2">
+ <div className="px-3 py-2 border-t border-sand-100">
  <p className="text-[0.625rem] text-sand-500">
  {bundle.products.length} products included
  </p>

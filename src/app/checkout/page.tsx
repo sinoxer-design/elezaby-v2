@@ -16,7 +16,6 @@ import {
  Banknote,
  ChevronDown,
 } from"lucide-react";
-import { CheckoutPrescriptionSection } from"@/components/commerce/CheckoutPrescriptionSection";
 
 const egyptAreas = [
 "Nasr City",
@@ -36,7 +35,7 @@ const egyptAreas = [
 export default function CheckoutPage() {
  const router = useRouter();
  const { items, itemCount, subtotal } = useCart();
- const { deliveryMethod, setDeliveryMethod } = useDeliveryContext();
+ const { deliveryMethod } = useDeliveryContext();
 
  // Address fields
  const [name, setName] = React.useState("");
@@ -218,72 +217,22 @@ export default function CheckoutPage() {
  </div>
  </section>
 
- {/* ---- Section: Delivery Method ---- */}
+ {/* Delivery method info (read-only — set at app entry) */}
  <section className="rounded-xl bg-white p-4 shadow-card">
  <div className="flex items-center gap-2 text-sand-800">
+ {deliveryMethod ==="delivery" ? (
  <Truck className="h-5 w-5 text-brand-500" />
- <h2 className="text-base font-bold">Delivery Method</h2>
- </div>
-
- <div className="mt-3 flex gap-3">
- <button
- type="button"
- onClick={() => setDeliveryMethod("delivery")}
- className={`flex flex-1 items-center gap-3 rounded-xl border-2 p-3 text-start transition-colors ${
- deliveryMethod ==="delivery"
- ?"border-brand-500 bg-brand-50"
- :"border-sand-200 bg-sand-50"
- }`}
- >
- <Truck
- className={`h-5 w-5 ${
- deliveryMethod ==="delivery"
- ?"text-brand-500"
- :"text-sand-400"
- }`}
- />
- <div>
- <p className="text-sm font-semibold text-sand-800">
- Home Delivery
- </p>
- <p className="text-xs text-sand-500">2-3 business days</p>
- </div>
- </button>
- <button
- type="button"
- onClick={() => setDeliveryMethod("pickup")}
- className={`flex flex-1 items-center gap-3 rounded-xl border-2 p-3 text-start transition-colors ${
- deliveryMethod ==="pickup"
- ?"border-brand-500 bg-brand-50"
- :"border-sand-200 bg-sand-50"
- }`}
- >
- <Store
- className={`h-5 w-5 ${
- deliveryMethod ==="pickup"
- ?"text-brand-500"
- :"text-sand-400"
- }`}
- />
- <div>
- <p className="text-sm font-semibold text-sand-800">
- Store Pickup
- </p>
- <p className="text-xs text-sand-500">Ready in 1 hour</p>
- </div>
- </button>
+ ) : (
+ <Store className="h-5 w-5 text-brand-500" />
+ )}
+ <h2 className="text-base font-bold">
+ {deliveryMethod ==="delivery" ?"Home Delivery" :"Store Pickup"}
+ </h2>
+ <span className="ml-auto text-xs text-sand-400">
+ {deliveryMethod ==="delivery" ?"2-3 business days" :"Ready in 1 hour"}
+ </span>
  </div>
  </section>
-
- {/* ---- Section: Prescription Upload ---- */}
- <CheckoutPrescriptionSection
- items={items.map((item) => ({
- id: item.id,
- name: item.name,
- imageUrl: item.imageUrl,
- requiresPrescription: item.requiresPrescription,
- }))}
- />
 
  {/* ---- Section: Payment Method ---- */}
  <section className="rounded-xl bg-white p-4 shadow-card">
@@ -479,12 +428,24 @@ export default function CheckoutPage() {
  </div>
  </section>
 
- {/* Place Order Button */}
- <Button type="submit" variant="add-to-cart" size="pdp-cta">
- Place Order
- </Button>
  </div>{/* end right column */}
  </div>{/* end 2-column layout */}
+
+ {/* Sticky Place Order Button */}
+ <div className="fixed inset-x-0 bottom-[var(--bottom-nav-height)] z-40 border-t border-sand-100 bg-white/95 backdrop-blur-sm px-[var(--page-padding-x)] py-3 lg:static lg:bottom-auto lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+ <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
+ <div className="lg:hidden">
+ <p className="text-xs text-sand-500">Total</p>
+ <p className="font-mono text-lg font-bold text-sand-800">{total.toFixed(2)} EGP</p>
+ </div>
+ <Button type="submit" variant="add-to-cart" size="pdp-cta" className="flex-1 lg:flex-none lg:w-full">
+ Place Order
+ </Button>
+ </div>
+ </div>
+
+ {/* Bottom spacer for sticky button on mobile */}
+ <div className="h-24 lg:hidden" />
  </form>
  );
 }

@@ -197,7 +197,7 @@ export default function AccountPage() {
           </button>
 
           <p className="hidden lg:block text-center text-xs text-sand-400">
-            El Ezaby Pharmacy v1.0.0
+            Elezaby Pharmacy v1.0.0
           </p>
         </div>
 
@@ -272,7 +272,7 @@ export default function AccountPage() {
               Sign Out
             </button>
             <p className="text-center text-xs text-sand-400">
-              El Ezaby Pharmacy v1.0.0
+              Elezaby Pharmacy v1.0.0
             </p>
           </div>
         </div>

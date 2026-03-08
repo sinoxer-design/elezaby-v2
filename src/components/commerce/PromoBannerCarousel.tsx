@@ -49,23 +49,23 @@ export function PromoBannerCarousel({
  <Link href={banner.ctaHref} className="block">
  <div
  className={cn(
-"relative overflow-hidden rounded-xl bg-gradient-to-r p-6 lg:p-10 lg:h-72",
+"relative overflow-hidden rounded-xl bg-gradient-to-r p-5 lg:p-10 h-[240px] lg:h-72",
  banner.gradient
  )}
  >
- <div className="relative z-10 flex flex-col gap-3 max-w-[60%] lg:max-w-md">
+ <div className="relative z-10 flex flex-col gap-2 lg:gap-3 max-w-[60%] lg:max-w-md">
  {banner.badge && (
  <span className="inline-flex w-fit items-center rounded-full bg-white/20 px-3 py-1 text-[0.625rem] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
  {banner.badge}
  </span>
  )}
- <h2 className="font-display text-2xl font-bold text-white lg:text-4xl">
+ <h2 className="font-display text-xl font-bold text-white lg:text-4xl">
  {banner.title}
  </h2>
- <p className="text-sm text-white/85 lg:text-base">
+ <p className="text-xs text-white/85 lg:text-base line-clamp-3">
  {banner.subtitle}
  </p>
- <span className="mt-2 inline-flex w-fit items-center rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand-700 transition-transform active:scale-95 lg:px-6 lg:py-3 lg:text-base">
+ <span className="mt-1 inline-flex w-fit items-center rounded-xl bg-white px-4 py-2 text-xs font-bold text-brand-700 transition-transform active:scale-95 lg:mt-2 lg:px-6 lg:py-3 lg:text-base">
  {banner.ctaText}
  </span>
  </div>

@@ -14,9 +14,11 @@ import {
   ChevronDown,
   Flame,
   X,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MegaMenu } from "./MegaMenu";
+import { LocationPickerSheet } from "./LocationPickerSheet";
 import { DealsBanner } from "@/components/commerce/DealsBanner";
 import { DeliveryToggle } from "./DeliveryToggle";
 import { useDeliveryContext } from "@/hooks/useDeliveryContext";
@@ -38,11 +40,13 @@ export function HeaderBar({
   isAuthenticated = false,
   minimal = false,
 }: HeaderBarProps) {
-  useScroll();
+  const { scrollDirection } = useScroll();
   const pathname = usePathname();
-  const { deliveryMethod, setDeliveryMethod } = useDeliveryContext();
+  const isAccountPage = pathname.startsWith("/account");
+  const { deliveryMethod, setDeliveryMethod, locationLabel } = useDeliveryContext();
   const { addItem } = useCart();
   const [megaMenuOpen, setMegaMenuOpen] = React.useState(false);
+  const [locationOpen, setLocationOpen] = React.useState(false);
   const megaMenuTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null);
 
   // Search state
@@ -162,13 +166,25 @@ export function HeaderBar({
               </span>
             </Link>
 
-            {/* Delivery/Pickup Toggle */}
-            {!minimal && (
-              <div className="flex-1 max-w-[11rem] lg:max-w-[13rem]">
-                <DeliveryToggle
-                  value={deliveryMethod}
-                  onChange={setDeliveryMethod}
-                />
+            {/* Delivery/Pickup Toggle + Location (desktop) */}
+            {!minimal && !isAccountPage && (
+              <div className="flex min-w-0 flex-1 items-center gap-1.5 lg:gap-2 lg:max-w-[24rem]">
+                <div className="shrink-0">
+                  <DeliveryToggle
+                    value={deliveryMethod}
+                    onChange={setDeliveryMethod}
+                  />
+                </div>
+                <button
+                  onClick={() => setLocationOpen(true)}
+                  className="hidden min-w-0 items-center gap-1 rounded-lg px-1.5 py-1 text-left transition-colors hover:bg-sand-50 lg:flex"
+                >
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-500" />
+                  <span className="truncate text-xs font-medium text-sand-600">
+                    {locationLabel}
+                  </span>
+                  <ChevronDown className="h-3 w-3 shrink-0 text-sand-400" />
+                </button>
               </div>
             )}
 
@@ -262,6 +278,32 @@ export function HeaderBar({
               </Button>
             </div>
           </div>
+
+          {/* Location Row — hides on scroll down, shows on scroll up */}
+          {!minimal && !isAccountPage && (
+            <motion.div
+              initial={false}
+              animate={
+                scrollDirection === "up" || scrollDirection === null
+                  ? { height: 37, opacity: 1 }
+                  : { height: 0, opacity: 0 }
+              }
+              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+              className="overflow-hidden lg:hidden"
+            >
+              <button
+                onClick={() => setLocationOpen(true)}
+                className="flex w-full items-center gap-1 border-t border-sand-100 px-1.5 py-2.5 text-left transition-colors hover:bg-sand-50"
+              >
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-500" />
+                <span className="truncate text-xs font-medium text-sand-600">
+                  {deliveryMethod === "delivery" ? "Deliver to:" : "Pickup from:"}{" "}
+                  <span className="text-sand-800">{locationLabel}</span>
+                </span>
+                <ChevronDown className="h-3 w-3 shrink-0 text-sand-400" />
+              </button>
+            </motion.div>
+          )}
 
           {/* Inline Search Bar — slides down under header */}
           <AnimatePresence>
@@ -446,6 +488,12 @@ export function HeaderBar({
         onClose={() => setMegaMenuOpen(false)}
         onMouseEnter={handleMegaMenuEnter}
         onMouseLeave={handleMegaMenuLeave}
+      />
+
+      {/* Location Picker */}
+      <LocationPickerSheet
+        open={locationOpen}
+        onOpenChange={setLocationOpen}
       />
     </>
   );

@@ -37,7 +37,7 @@ export default function CategoriesPage() {
           style={{
             top: "var(--header-collapsed-height)",
             height: "calc(100vh - var(--header-collapsed-height))",
-            width: "5.5rem",
+            width: "6.5rem",
           }}
         >
           <div className="flex flex-col items-center gap-0.5 py-2 lg:gap-1 lg:py-3">
@@ -52,13 +52,13 @@ export default function CategoriesPage() {
                 >
                   <div
                     className={cn(
-                      "flex h-16 w-16 items-center justify-center rounded-2xl transition-all lg:h-[4.5rem] lg:w-[4.5rem]",
+                      "flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl transition-all lg:h-[5.5rem] lg:w-[5.5rem]",
                       isActive
                         ? cn(colors.activeBg, "border-2", colors.border, "shadow-sm")
                         : cn(colors.bg, "border-2 border-transparent")
                     )}
                   >
-                    <span className="text-3xl lg:text-4xl">{cat.emoji}</span>
+                    <span className="text-4xl lg:text-5xl">{cat.emoji}</span>
                   </div>
                   <span
                     className={cn(
@@ -127,13 +127,13 @@ export default function CategoriesPage() {
                             >
                               <div
                                 className={cn(
-                                  "flex h-16 w-16 items-center justify-center rounded-full lg:h-20 lg:w-20",
+                                  "flex h-20 w-20 items-center justify-center rounded-full lg:h-24 lg:w-24",
                                   activeColors.light
                                 )}
                               >
-                                <span className="text-2xl lg:text-3xl">{deep.emoji}</span>
+                                <span className="text-3xl lg:text-4xl">{deep.emoji}</span>
                               </div>
-                              <span className="text-center text-[0.6875rem] font-medium leading-tight text-sand-700">
+                              <span className="text-center text-xs font-medium leading-tight text-sand-700">
                                 {deep.name}
                               </span>
                             </Link>
@@ -145,13 +145,13 @@ export default function CategoriesPage() {
                             >
                               <div
                                 className={cn(
-                                  "flex h-16 w-16 items-center justify-center rounded-full lg:h-20 lg:w-20",
+                                  "flex h-20 w-20 items-center justify-center rounded-full lg:h-24 lg:w-24",
                                   activeColors.light
                                 )}
                               >
-                                <span className="text-2xl lg:text-3xl">{sub.emoji}</span>
+                                <span className="text-3xl lg:text-4xl">{sub.emoji}</span>
                               </div>
-                              <span className="text-center text-[0.6875rem] font-medium leading-tight text-sand-700">
+                              <span className="text-center text-xs font-medium leading-tight text-sand-700">
                                 {sub.name}
                               </span>
                             </Link>

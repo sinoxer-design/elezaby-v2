@@ -43,7 +43,7 @@ export default function RegisterPage() {
  <div>
  <h1 className="text-2xl font-bold text-sand-800">Create Account</h1>
  <p className="mt-1 text-sm text-sand-500">
- Join El Ezaby for a personalized pharmacy experience
+ Join Elezaby for a personalized pharmacy experience
  </p>
  </div>
 

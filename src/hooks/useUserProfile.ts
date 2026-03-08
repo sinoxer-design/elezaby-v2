@@ -14,6 +14,13 @@ export interface InsuranceData {
   uploadedAt: string;
 }
 
+export interface FamilyInsuranceProfile {
+  id: string;
+  label: string; // e.g. "Mother", "Daughter", "Son"
+  memberName: string; // e.g. "Fatma Mohamed"
+  insurance: InsuranceData;
+}
+
 export interface UserProfile {
   // Demographics
   age?: number;
@@ -21,8 +28,11 @@ export interface UserProfile {
   healthConditions?: string[];
   profileDismissedAt?: string; // ISO date — re-show alert after 24h
 
-  // Insurance
+  // Insurance — primary (self)
   insurance?: InsuranceData;
+
+  // Family insurance profiles
+  familyInsurance?: FamilyInsuranceProfile[];
 }
 
 export interface UserProfileContextValue {
@@ -33,6 +43,11 @@ export interface UserProfileContextValue {
   isProfileComplete: boolean;
   completionPercentage: number;
   isInsuranceCovered: (categoryId?: string) => boolean;
+
+  // Family insurance
+  addFamilyInsurance: (member: FamilyInsuranceProfile) => void;
+  updateFamilyInsurance: (id: string, updates: Partial<FamilyInsuranceProfile>) => void;
+  removeFamilyInsurance: (id: string) => void;
 }
 
 // ── Default values ─────────────────────────────────────────────────
@@ -49,6 +64,9 @@ const DEFAULT_CONTEXT: UserProfileContextValue = {
   isProfileComplete: false,
   completionPercentage: 0,
   isInsuranceCovered: () => false,
+  addFamilyInsurance: () => {},
+  updateFamilyInsurance: () => {},
+  removeFamilyInsurance: () => {},
 };
 
 // ── Context ────────────────────────────────────────────────────────
@@ -110,6 +128,46 @@ export function useUserProfileState(): UserProfileContextValue {
     });
   }, []);
 
+  // ── Family insurance operations ─────────────────────────────────
+
+  const addFamilyInsurance = useCallback((member: FamilyInsuranceProfile) => {
+    setProfile((prev) => {
+      const existing = prev.familyInsurance ?? [];
+      const next = { ...prev, familyInsurance: [...existing, member] };
+      persistProfile(next);
+      return next;
+    });
+  }, []);
+
+  const updateFamilyInsurance = useCallback(
+    (id: string, updates: Partial<FamilyInsuranceProfile>) => {
+      setProfile((prev) => {
+        const existing = prev.familyInsurance ?? [];
+        const next = {
+          ...prev,
+          familyInsurance: existing.map((m) =>
+            m.id === id ? { ...m, ...updates } : m
+          ),
+        };
+        persistProfile(next);
+        return next;
+      });
+    },
+    []
+  );
+
+  const removeFamilyInsurance = useCallback((id: string) => {
+    setProfile((prev) => {
+      const existing = prev.familyInsurance ?? [];
+      const next = {
+        ...prev,
+        familyInsurance: existing.filter((m) => m.id !== id),
+      };
+      persistProfile(next);
+      return next;
+    });
+  }, []);
+
   // Completion: 4 sections × 25% each (age, gender, conditions, insurance)
   const completionPercentage = useMemo(() => {
     let pct = 0;
@@ -123,23 +181,31 @@ export function useUserProfileState(): UserProfileContextValue {
   const isProfileComplete = completionPercentage === 100;
 
   // Build a set of all covered category IDs (including descendants) for fast lookup
+  // Combines self insurance + all family member insurance
   const coveredCategorySet = useMemo(() => {
-    if (!profile.insurance?.coveredCategories) return new Set<string>();
     const allIds = new Set<string>();
-    for (const catId of profile.insurance.coveredCategories) {
-      for (const id of getCategoryAndDescendantIds(catId)) {
-        allIds.add(id);
+    const allInsurance = [
+      profile.insurance,
+      ...(profile.familyInsurance?.map((m) => m.insurance) ?? []),
+    ].filter(Boolean) as InsuranceData[];
+
+    for (const ins of allInsurance) {
+      for (const catId of ins.coveredCategories) {
+        for (const id of getCategoryAndDescendantIds(catId)) {
+          allIds.add(id);
+        }
       }
     }
     return allIds;
-  }, [profile.insurance?.coveredCategories]);
+  }, [profile.insurance, profile.familyInsurance]);
 
   const isInsuranceCovered = useCallback(
     (categoryId?: string) => {
-      if (!categoryId || !profile.insurance) return false;
+      if (!categoryId) return false;
+      if (!profile.insurance && (!profile.familyInsurance || profile.familyInsurance.length === 0)) return false;
       return coveredCategorySet.has(categoryId);
     },
-    [coveredCategorySet, profile.insurance]
+    [coveredCategorySet, profile.insurance, profile.familyInsurance]
   );
 
   return {
@@ -150,5 +216,8 @@ export function useUserProfileState(): UserProfileContextValue {
     isProfileComplete,
     completionPercentage,
     isInsuranceCovered,
+    addFamilyInsurance,
+    updateFamilyInsurance,
+    removeFamilyInsurance,
   };
 }

@@ -5,16 +5,18 @@ import Link from"next/link";
 import { ShoppingCart } from"lucide-react";
 import { motion, AnimatePresence } from"framer-motion";
 import { useCart } from"@/hooks/useCart";
+import { useScroll } from"@/hooks/useScroll";
 
 export function FloatingCartButton() {
  const { itemCount } = useCart();
+ const { scrollDirection } = useScroll();
 
- // Only show when cart has items
- if (itemCount === 0) return null;
+ // Show when cart has items AND user is scrolling up (or at top)
+ const visible = itemCount > 0 && (scrollDirection === "up" || scrollDirection === null);
 
  return (
  <AnimatePresence>
- {itemCount > 0 && (
+ {visible && (
  <motion.div
  initial={{ opacity: 0, scale: 0.8 }}
  animate={{ opacity: 1, scale: 1 }}

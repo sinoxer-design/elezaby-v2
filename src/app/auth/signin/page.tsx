@@ -34,7 +34,7 @@ export default function SignInPage() {
  <div>
  <h1 className="text-2xl font-bold text-sand-800">Welcome Back</h1>
  <p className="mt-1 text-sm text-sand-500">
- Sign in to your El Ezaby account
+ Sign in to your Elezaby account
  </p>
  </div>
 
