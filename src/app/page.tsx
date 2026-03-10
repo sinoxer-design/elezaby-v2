@@ -102,7 +102,14 @@ export default function HomePage() {
         {/* 1. Banner Carousel */}
         <PromoBannerCarousel banners={mockPromoBanners} />
 
-        {/* ── Categories: 2-row grid ── */}
+        {/* 2. Daily Deals */}
+        <FlashDealsSection
+          products={mockFlashDeals}
+          endsAt={flashDealEndTime}
+          onAddToCart={handleAddToCart}
+        />
+
+        {/* 3. Categories: 2-row grid */}
         <section className="relative z-10 px-[var(--page-padding-x)] lg:px-8">
           <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-cyan-500 px-4 py-2.5 shadow-[0_4px_16px_rgba(16,34,76,0.15)]">
             <div className="flex items-center gap-2">
@@ -132,13 +139,6 @@ export default function HomePage() {
         </section>
 
         <ProfileCompletionAlert />
-
-        {/* 2. Daily Deals */}
-        <FlashDealsSection
-          products={mockFlashDeals}
-          endsAt={flashDealEndTime}
-          onAddToCart={handleAddToCart}
-        />
 
         {/* 3. Top Picks (Best Sellers) */}
         <ProductCarousel
