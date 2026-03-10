@@ -10,7 +10,7 @@ import {
 import { BundleCard } from"./BundleCard";
 import { type BundleData } from"@/lib/mock-data";
 import { Button } from"@/components/ui/button";
-import { ChevronRight, Package } from"lucide-react";
+import { ChevronRight } from"lucide-react";
 import Link from"next/link";
 import { cn } from"@/lib/utils";
 
@@ -30,31 +30,23 @@ export function BundleSection({
  return (
  <section className={cn("space-y-3", className)}>
  {/* Section Header */}
- <div className="flex items-end justify-between px-[var(--page-padding-x)] lg:px-8">
- <div className="flex items-center gap-2">
- <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
- <Package className="h-4 w-4 text-brand-600" />
- </div>
- <div>
- <h2 className="font-display text-lg font-bold text-sand-800 lg:text-xl">
- Sales in Bundles
- </h2>
- <p className="text-xs text-sand-500">
- Buy together & save more
- </p>
- </div>
- </div>
+ <div className="px-[var(--page-padding-x)] lg:px-8">
+ <div className="space-y-1.5">
+ <div className="flex items-center justify-between gap-3">
+ <h2 className="text-lg font-bold text-sand-800">Sales in Bundles</h2>
  <Button
  variant="ghost"
  size="sm"
- className="text-xs font-semibold text-brand-600"
+ className="shrink-0 text-sm font-semibold text-brand-500 hover:text-brand-700"
  asChild
  >
  <Link href="/products?sale=true">
- View All
+ See All
  <ChevronRight className="ms-0.5 h-3.5 w-3.5" />
  </Link>
  </Button>
+ </div>
+ </div>
  </div>
 
  {/* Carousel */}

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from"next/image";
-import { ShoppingCart } from"lucide-react";
+import { Plus } from"lucide-react";
 import { motion } from"framer-motion";
 import { cn } from"@/lib/utils";
 import { type BundleData } from"@/lib/mock-data";
@@ -25,72 +25,65 @@ export function BundleCard({
  transition={{ type:"spring", stiffness: 400, damping: 25 }}
  className={cn("flex h-full w-full", className)}
  >
- <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-sand-200 border-l-4 border-l-deal bg-white">
- {/* Header */}
- <div className="flex items-start justify-between p-3 pb-2">
- <div className="flex-1 min-w-0">
- <h3 className="text-sm font-bold text-sand-800">
- {bundle.name}
- </h3>
- <p className="mt-0.5 text-xs text-sand-500 line-clamp-1">
- {bundle.description}
- </p>
- </div>
- {bundle.badge && (
- <span className="shrink-0 rounded-md bg-deal/10 px-2 py-0.5 text-[0.625rem] font-bold text-deal">
- {bundle.badge}
- </span>
- )}
- </div>
-
- {/* Landscape Hero Image */}
+ <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-sand-100 bg-white shadow-[0_4px_16px_rgba(16,34,76,0.07)] transition-shadow hover:shadow-[0_8px_24px_rgba(16,34,76,0.12)]">
+ {/* Image */}
  {bundle.products[0] && (
- <div className="relative flex-1 min-h-[120px] bg-sand-50">
+ <div className="relative aspect-square w-full overflow-hidden bg-sand-50">
  <Image
  src={bundle.products[0].imageUrl}
  alt={bundle.name}
  fill
  className="object-cover"
- sizes="300px"
+ sizes="(max-width: 768px) 45vw, 22vw"
  />
+ {/* Badge */}
+ {bundle.badge && (
+ <span className="absolute start-1.5 top-1.5 z-10 rounded-lg bg-deal px-1.5 py-0.5 text-[0.55rem] font-extrabold text-white shadow-sm">
+ {bundle.badge}
+ </span>
+ )}
+ {/* Discount badge */}
+ {bundle.discountPercent > 0 && (
+ <span className="absolute end-1.5 top-1.5 z-10 rounded-lg bg-deal px-1.5 py-0.5 text-[0.55rem] font-extrabold text-white shadow-sm">
+ -{bundle.discountPercent}%
+ </span>
+ )}
  </div>
  )}
 
- {/* Product Count */}
- <div className="px-3 py-2 border-t border-sand-100">
- <p className="text-[0.625rem] text-sand-500">
- {bundle.products.length} products included
+ {/* Content */}
+ <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2">
+ <p className="text-[0.6rem] font-medium text-sand-400">
+ {bundle.products.length} products
  </p>
- </div>
+ <h3 className="mt-0.5 line-clamp-2 text-[0.7rem] font-bold leading-tight text-sand-800">
+ {bundle.name}
+ </h3>
 
- {/* Price Comparison */}
- <div className="mt-auto border-t border-sand-100 p-3">
- <div className="flex items-baseline gap-2">
- <span className="text-xs text-sand-400 line-through">
- {bundle.originalTotal.toFixed(0)} EGP
- </span>
- <span className="text-lg font-extrabold text-deal">
+ {/* Price + Add button */}
+ <div className="mt-auto flex items-end justify-between pt-2">
+ <div className="flex items-baseline gap-1">
+ <span className="text-base font-extrabold leading-none text-sand-800">
  {bundle.bundlePrice.toFixed(0)}
- <span className="text-xs font-semibold"> EGP</span>
  </span>
+ <span className="text-[0.6rem] text-sand-400 line-through">
+ {bundle.originalTotal.toFixed(0)}
+ </span>
+ <span className="text-[0.55rem] font-medium text-sand-400">EGP</span>
  </div>
- <span className="text-xs font-semibold text-emerald-600">
- Save {savings.toFixed(0)} EGP ({bundle.discountPercent}% off)
- </span>
 
- {/* Add Bundle Button */}
  <motion.button
  onClick={(e) => {
  e.preventDefault();
  e.stopPropagation();
  onAddBundle?.(bundle.id);
  }}
- whileTap={{ scale: 0.95 }}
- className="mt-3 flex h-9 w-full items-center justify-center gap-1.5 rounded-lg bg-brand-700 text-white text-xs font-bold transition-colors hover:bg-brand-800"
+ whileTap={{ scale: 0.85 }}
+ className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
  >
- <ShoppingCart className="h-3.5 w-3.5" />
- Add Bundle to Cart
+ <Plus className="h-4 w-4" />
  </motion.button>
+ </div>
  </div>
  </div>
  </motion.div>

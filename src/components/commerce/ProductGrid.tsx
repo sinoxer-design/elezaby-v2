@@ -57,7 +57,7 @@ export function ProductGrid({
  {/* Horizontal scroll on mobile, grid on desktop */}
  <div
  className={cn(
-"flex gap-4 overflow-x-auto scrollbar-hide px-[var(--page-padding-x)] lg:px-8 md:grid",
+"flex gap-3 overflow-x-auto scrollbar-hide px-[var(--page-padding-x)] lg:px-8 md:grid",
  columns === 2 &&"md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
  columns === 3 &&"md:grid-cols-3 lg:grid-cols-4",
  columns === 4 &&"md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
@@ -66,7 +66,7 @@ export function ProductGrid({
  {products.map((product, i) => (
  <div
  key={product.id}
- className="card-reveal w-[66%] shrink-0 md:w-auto"
+ className="card-reveal w-[46%] shrink-0 md:w-auto"
  style={{ animationDelay: `${i * 50}ms` }}
  >
  <ProductCard

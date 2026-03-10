@@ -25,7 +25,6 @@ import { useDeliveryContext } from "@/hooks/useDeliveryContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { mockProducts, mockTrendingSearches } from "@/lib/mock-data";
 import Image from "next/image";
-import { useCart } from "@/hooks/useCart";
 
 interface HeaderBarProps {
   notificationCount?: number;
@@ -44,7 +43,6 @@ export function HeaderBar({
   const pathname = usePathname();
   const isAccountPage = pathname.startsWith("/account");
   const { deliveryMethod, setDeliveryMethod, locationLabel } = useDeliveryContext();
-  const { addItem } = useCart();
   const [megaMenuOpen, setMegaMenuOpen] = React.useState(false);
   const [locationOpen, setLocationOpen] = React.useState(false);
   const megaMenuTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null);
@@ -133,37 +131,32 @@ export function HeaderBar({
           .slice(0, 6)
       : [];
 
-  const handleAddToCart = (productId: string) => {
-    const product = mockProducts.find((p) => p.id === productId);
-    if (product) {
-      addItem({
-        id: product.id,
-        name: product.name,
-        brand: product.brand,
-        imageUrl: product.imageUrl,
-        price: product.price,
-        originalPrice: product.originalPrice,
-      });
-    }
-  };
-
   return (
     <>
-      <header ref={headerRef} className="fixed inset-x-0 top-0 z-sticky flex flex-col bg-white shadow-sm">
+      <header
+        ref={headerRef}
+        className="fixed inset-x-0 top-0 z-sticky flex flex-col overflow-hidden border-b border-white/10 bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))] shadow-lg"
+      >
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_24%),radial-gradient(circle_at_top_left,rgba(255,167,88,0.18),transparent_22%)]" />
         {/* Deals marquee banner */}
         <DealsBanner />
 
-        <div className="mx-auto flex w-full min-h-0 flex-1 max-w-7xl flex-col px-[var(--page-padding-x)] lg:px-8">
+        <div className="relative mx-auto flex w-full min-h-0 max-w-7xl flex-1 flex-col px-[var(--page-padding-x)] lg:px-8">
           {/* Top Row */}
           <div className="flex h-14 shrink-0 items-center justify-between gap-2 lg:gap-4">
             {/* Logo */}
-            <Link href="/" className="flex shrink-0 items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700">
-                <span className="text-sm font-bold text-white">E</span>
+            <Link href="/" className="flex shrink-0 items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-white to-cyan-100 shadow-[0_8px_20px_rgba(0,0,0,0.18)]">
+                <span className="text-sm font-extrabold text-brand-800">E</span>
               </div>
-              <span className="text-lg font-bold text-sand-800 hidden lg:block">
-                Elezaby
-              </span>
+              <div className="hidden lg:block">
+                <span className="block text-lg font-extrabold tracking-[0.01em] text-white">
+                  Elezaby
+                </span>
+                <span className="block text-[0.625rem] font-semibold uppercase tracking-[0.22em] text-cyan-200/90">
+                  Health Deals Hub
+                </span>
+              </div>
             </Link>
 
             {/* Delivery/Pickup Toggle + Location (desktop) */}
@@ -177,13 +170,13 @@ export function HeaderBar({
                 </div>
                 <button
                   onClick={() => setLocationOpen(true)}
-                  className="hidden min-w-0 items-center gap-1 rounded-lg px-1.5 py-1 text-left transition-colors hover:bg-sand-50 lg:flex"
+                  className="hidden min-w-0 items-center gap-1 rounded-xl border border-white/10 bg-white/8 px-2 py-1.5 text-left transition-colors hover:bg-white/12 lg:flex"
                 >
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-500" />
-                  <span className="truncate text-xs font-medium text-sand-600">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-cyan-400" />
+                  <span className="truncate text-xs font-medium text-white/70">
                     {locationLabel}
                   </span>
-                  <ChevronDown className="h-3 w-3 shrink-0 text-sand-400" />
+                  <ChevronDown className="h-3 w-3 shrink-0 text-white/40" />
                 </button>
               </div>
             )}
@@ -195,36 +188,25 @@ export function HeaderBar({
                 className="relative w-full cursor-pointer text-left"
                 aria-label="Search products"
               >
-                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand-400" />
-                <div className="flex h-10 w-full items-center rounded-lg border border-sand-200 bg-sand-50 ps-9 text-sm text-sand-400 transition-colors hover:border-brand-300">
+                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cyan-200" />
+                <div className="flex h-10 w-full items-center rounded-2xl border border-white/15 bg-white/12 ps-9 text-sm text-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-colors hover:border-cyan-300/60">
                   Search medicines, health products...
                 </div>
               </button>
             </div>
 
             {/* Action Icons */}
-            <div className="flex items-center gap-0.5 lg:gap-1">
-              {/* Search — mobile only */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 lg:hidden"
-                aria-label="Search"
-                onClick={openSearch}
-              >
-                <Search className="h-5 w-5 text-sand-600" />
-              </Button>
-
+            <div className="flex items-center gap-1 lg:gap-1.5">
               {/* Notification */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative h-9 w-9"
+                className="relative h-9 w-9 rounded-xl bg-white/8 hover:bg-white/14"
                 aria-label="Notifications"
                 asChild
               >
                 <Link href="/notifications">
-                  <Bell className="h-5 w-5 text-sand-600" />
+                  <Bell className="h-5 w-5 text-white/80" />
                   {notificationCount > 0 && (
                     <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-deal px-1 text-[10px] font-bold text-white">
                       {notificationCount > 9 ? "9+" : notificationCount}
@@ -237,12 +219,12 @@ export function HeaderBar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9"
+                className="h-9 w-9 rounded-xl bg-white/8 hover:bg-white/14"
                 aria-label="Wishlist"
                 asChild
               >
                 <Link href="/account">
-                  <Heart className="h-5 w-5 text-sand-600" />
+                  <Heart className="h-5 w-5 text-white/80" />
                 </Link>
               </Button>
 
@@ -250,12 +232,12 @@ export function HeaderBar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative hidden h-9 w-9 lg:inline-flex"
+                className="relative hidden h-9 w-9 rounded-xl bg-white/8 hover:bg-white/14 lg:inline-flex"
                 aria-label="Cart"
                 asChild
               >
                 <Link href="/cart">
-                  <ShoppingCart className="h-5 w-5 text-sand-600" />
+                  <ShoppingCart className="h-5 w-5 text-white/80" />
                   {cartCount > 0 && (
                     <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">
                       {cartCount}
@@ -268,82 +250,84 @@ export function HeaderBar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden h-9 w-9 lg:inline-flex"
+                className="hidden h-9 w-9 rounded-xl bg-white/8 hover:bg-white/14 lg:inline-flex"
                 aria-label={isAuthenticated ? "Account" : "Sign in"}
                 asChild
               >
                 <Link href="/account">
-                  <User className="h-5 w-5 text-sand-600" />
+                  <User className="h-5 w-5 text-white/80" />
                 </Link>
               </Button>
             </div>
           </div>
 
-          {/* Location Row — hides on scroll down, shows on scroll up */}
+          {/* Location Row — above search, hides on scroll down */}
           {!minimal && !isAccountPage && (
             <motion.div
               initial={false}
               animate={
                 scrollDirection === "up" || scrollDirection === null
-                  ? { height: 37, opacity: 1 }
+                  ? { height: 32, opacity: 1 }
                   : { height: 0, opacity: 0 }
               }
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              className="overflow-hidden lg:hidden"
+              className="overflow-hidden border-t border-white/10 lg:hidden"
             >
               <button
                 onClick={() => setLocationOpen(true)}
-                className="flex w-full items-center gap-1 border-t border-sand-100 px-1.5 py-2.5 text-left transition-colors hover:bg-sand-50"
+                className="flex w-full items-center gap-1 bg-white/4 px-2 py-1.5 text-left transition-colors hover:bg-white/10"
               >
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-500" />
-                <span className="truncate text-xs font-medium text-sand-600">
+                <MapPin className="h-3 w-3 shrink-0 text-cyan-400" />
+                <span className="truncate text-[0.65rem] font-medium text-white/70">
                   {deliveryMethod === "delivery" ? "Deliver to:" : "Pickup from:"}{" "}
-                  <span className="text-sand-800">{locationLabel}</span>
+                  <span className="text-white">{locationLabel}</span>
                 </span>
-                <ChevronDown className="h-3 w-3 shrink-0 text-sand-400" />
+                <ChevronDown className="h-2.5 w-2.5 shrink-0 text-white/40" />
               </button>
             </motion.div>
           )}
 
-          {/* Inline Search Bar — slides down under header */}
-          <AnimatePresence>
-            {searchOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="overflow-hidden border-t border-sand-100"
+          {/* Sticky Search Row — always visible, 70% search + 25% promo button */}
+          {!minimal && !isAccountPage && (
+            <div className="flex items-center gap-2 border-t border-white/10 py-2 lg:hidden">
+              <div className="relative" style={{ width: "70%" }}>
+                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cyan-200/80" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setSearchOpen(true)}
+                  placeholder="Search products..."
+                  className="h-10 w-full rounded-2xl border border-white/20 bg-white/12 ps-9 pe-3 text-sm text-white placeholder:text-white/45 outline-none transition-colors focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
+                />
+              </div>
+              <Link
+                href="/products?sale=true"
+                className="flex h-10 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 px-3 text-xs font-extrabold text-brand-900 shadow-[0_4px_12px_rgba(245,158,11,0.3)] transition-transform active:scale-95"
+                style={{ width: "25%" }}
               >
-                <div className="flex items-center gap-2 py-2.5">
-                  <div className="relative flex-1">
-                    <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand-400" />
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Search medicines, health products..."
-                      className="h-10 w-full rounded-lg border border-sand-200 bg-sand-50 ps-9 pe-3 text-sm text-sand-800 placeholder:text-sand-400 outline-none transition-colors focus:border-brand-400 focus:ring-1 focus:ring-brand-400"
-                    />
-                  </div>
-                  <button
-                    onClick={closeSearch}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sand-500 transition-colors hover:bg-sand-100"
-                    aria-label="Close search"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <Flame className="h-3.5 w-3.5" />
+                <span className="truncate">Deals</span>
+              </Link>
+              {searchOpen && (
+                <button
+                  onClick={closeSearch}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white/60 transition-colors hover:bg-white/10"
+                  style={{ width: "5%" }}
+                  aria-label="Close search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Desktop: Nav Row 2 */}
-          <nav className="hidden h-12 items-center gap-6 border-t border-sand-100 lg:flex">
+          <nav className="hidden h-12 items-center gap-3 border-t border-white/10 lg:flex">
             <Link
               href="/"
-              className="text-sm font-medium text-sand-600 transition-colors hover:text-brand-600"
+              className="rounded-full px-3 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/8 hover:text-white"
             >
               Home
             </Link>
@@ -351,7 +335,7 @@ export function HeaderBar({
               onMouseEnter={handleMegaMenuEnter}
               onMouseLeave={handleMegaMenuLeave}
             >
-              <button className="flex items-center gap-1 text-sm font-medium text-sand-600 transition-colors hover:text-brand-600">
+              <button className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/8 hover:text-white">
                 Categories
                 <ChevronDown
                   className={cn(
@@ -363,20 +347,20 @@ export function HeaderBar({
             </div>
             <Link
               href="/products?sale=true"
-              className="flex items-center gap-1 text-sm font-semibold text-deal transition-colors hover:text-deal/80"
+              className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold text-amber-300 transition-colors hover:bg-white/14 hover:text-amber-200"
             >
               <Flame className="h-3.5 w-3.5" />
               Deals
             </Link>
             <Link
               href="/brands"
-              className="text-sm font-medium text-sand-600 transition-colors hover:text-brand-600"
+              className="rounded-full px-3 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/8 hover:text-white"
             >
               Brands
             </Link>
             <Link
               href="/blog"
-              className="text-sm font-medium text-sand-600 transition-colors hover:text-brand-600"
+              className="rounded-full px-3 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/8 hover:text-white"
             >
               Blog
             </Link>
@@ -401,7 +385,7 @@ export function HeaderBar({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="mx-auto max-w-7xl bg-white shadow-lg overflow-y-auto"
+              className="mx-auto max-w-7xl overflow-y-auto rounded-b-[1.75rem] border border-sand-200/80 bg-white shadow-[0_24px_48px_rgba(12,22,52,0.16)]"
               style={{ maxHeight: "70vh" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -467,7 +451,7 @@ export function HeaderBar({
                           <button
                             key={term}
                             onClick={() => setQuery(term)}
-                            className="rounded-full border border-sand-200 bg-sand-50 px-3 py-1.5 text-xs font-medium text-sand-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600"
+                            className="rounded-full border border-sand-200 bg-[linear-gradient(180deg,#fff,#f8fbff)] px-3 py-1.5 text-xs font-semibold text-sand-700 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600"
                           >
                             {term}
                           </button>

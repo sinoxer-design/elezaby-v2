@@ -1,370 +1,335 @@
 "use client";
 
-import * as React from"react";
-import Image from"next/image";
-import Link from"next/link";
-import { useRouter } from"next/navigation";
-import { Card } from"@/components/ui/card";
-import { Badge } from"@/components/ui/badge";
-import { AspectRatio } from"@/components/ui/aspect-ratio";
-import { Heart, ShoppingCart, Truck } from"lucide-react";
-import { motion, AnimatePresence } from"framer-motion";
-import { cn } from"@/lib/utils";
-import { PriceBlock } from"./PriceBlock";
-import { CTAButton } from"./CTAButton";
-import { PrescriptionDialog } from"./PrescriptionDialog";
-import { NotifyMeDialog } from"./NotifyMeDialog";
-import { useDeliveryContext } from"@/hooks/useDeliveryContext";
-import { useUserProfile } from"@/hooks/useUserProfile";
-import { InsuranceBadge } from"./InsuranceBadge";
-import { getCategoryById } from"@/lib/categories";
+import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Truck, Plus, ShoppingCart, Check, Upload, Heart } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { PrescriptionDialog } from "./PrescriptionDialog";
+import { NotifyMeDialog } from "./NotifyMeDialog";
+import { useDeliveryContext } from "@/hooks/useDeliveryContext";
 
 export interface ProductData {
- id: string;
- name: string;
- brand: string;
- imageUrl: string;
- price: number;
- pickupPrice?: number;
- originalPrice?: number;
- discountPercent?: number;
- currency?: string;
- badges?: Array<{
- label: string;
- variant:"discount" |"new" |"best-seller" |"prescription" |"low-stock" |"express" |"flash-deal";
- }>;
- hasVariants: boolean;
- inStock: boolean;
- requiresPrescription?: boolean;
- quantityOffer?: string;
- rating?: number;
- reviewCount?: number;
- soldCount?: number;
- freeShipping?: boolean;
- expressDelivery?: boolean;
- flashDeal?: { endsAt: string };
- categoryId?: string;
- fulfillmentType?:"both" |"delivery-only" |"pickup-only";
+  id: string;
+  name: string;
+  brand: string;
+  imageUrl: string;
+  price: number;
+  pickupPrice?: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  currency?: string;
+  badges?: Array<{
+    label: string;
+    variant: "discount" | "new" | "best-seller" | "prescription" | "low-stock" | "express" | "flash-deal";
+  }>;
+  hasVariants: boolean;
+  inStock: boolean;
+  requiresPrescription?: boolean;
+  quantityOffer?: string;
+  rating?: number;
+  reviewCount?: number;
+  soldCount?: number;
+  freeShipping?: boolean;
+  expressDelivery?: boolean;
+  flashDeal?: { endsAt: string };
+  categoryId?: string;
+  fulfillmentType?: "both" | "delivery-only" | "pickup-only";
 }
 
 interface ProductCardProps {
- product: ProductData;
- layout?:"grid" |"horizontal";
- onAddToCart?: (productId: string) => void;
- onNotifyMe?: (productId: string) => void;
- onOptions?: (productId: string) => void;
- onWishlist?: (productId: string) => void;
- className?: string;
+  product: ProductData;
+  layout?: "grid" | "horizontal";
+  onAddToCart?: (productId: string) => void;
+  onNotifyMe?: (productId: string) => void;
+  onOptions?: (productId: string) => void;
+  onWishlist?: (productId: string) => void;
+  className?: string;
+}
+
+function formatSold(count: number): string {
+  if (count >= 1000) {
+    return `${(count / 1000).toFixed(count % 1000 === 0 ? 0 : 1).replace(/\.0$/, ",")}${String(count).slice(-3, -2)}00 sold`;
+  }
+  return `${count.toLocaleString()} sold`;
 }
 
 export function ProductCard({
- product,
- layout ="grid",
- onAddToCart,
- onNotifyMe,
- onOptions,
- onWishlist,
- className,
+  product,
+  layout = "grid",
+  onAddToCart,
+  onNotifyMe,
+  className,
 }: ProductCardProps) {
- const router = useRouter();
- const [isWishlisted, setIsWishlisted] = React.useState(false);
- const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
- const [notifyOpen, setNotifyOpen] = React.useState(false);
- const { deliveryMethod } = useDeliveryContext();
- const { isInsuranceCovered } = useUserProfile();
- const showInsuranceBadge = isInsuranceCovered(product.categoryId);
+  const router = useRouter();
+  const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
+  const [notifyOpen, setNotifyOpen] = React.useState(false);
+  const [justAdded, setJustAdded] = React.useState(false);
+  const { deliveryMethod } = useDeliveryContext();
 
- // Use pickup price when available and delivery method is pickup
- const displayPrice =
- deliveryMethod ==="pickup" && product.pickupPrice
- ? product.pickupPrice
- : product.price;
+  const displayPrice =
+    deliveryMethod === "pickup" && product.pickupPrice
+      ? product.pickupPrice
+      : product.price;
 
- // Noon-style: no accent bars on product cards - cleaner look
- const accent ="none" as const;
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!product.inStock) {
+      setNotifyOpen(true);
+      return;
+    }
+    if (product.requiresPrescription) {
+      setPrescriptionOpen(true);
+      return;
+    }
+    onAddToCart?.(product.id);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
+  };
 
- return (
- <>
- <Link href={`/products/${product.id}`} className="flex h-full">
- <motion.div
- whileTap={{ scale: 0.98 }}
- transition={{ type:"spring", stiffness: 400, damping: 25 }}
- className={cn("flex h-full w-full", className)}
- >
- <Card
- accent={accent}
- className={cn(
-"group relative flex h-full w-full flex-col overflow-hidden transition-shadow duration-200 hover:shadow-elevated",
- layout ==="horizontal" &&"!flex-row"
- )}
- >
- {/* Image Section */}
- <div
- className={cn(
-"relative",
- layout ==="grid" ?"w-full" :"w-28 shrink-0"
- )}
- >
- <AspectRatio ratio={1}>
- <Image
- src={product.imageUrl}
- alt={product.name}
- fill
- className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
- sizes={
- layout ==="grid"
- ?"(max-width: 768px) 50vw, 25vw"
- :"112px"
- }
- />
- </AspectRatio>
+  if (layout === "horizontal") {
+    return (
+      <>
+        <Link href={`/products/${product.id}`} className="flex w-full">
+          <div className={cn("flex w-full gap-3 rounded-2xl border border-sand-100 bg-white p-2.5 shadow-[0_4px_12px_rgba(16,34,76,0.06)] transition-shadow hover:shadow-md", className)}>
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-sand-50">
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="80px"
+                unoptimized
+              />
+              {!product.inStock && (
+                <div className="absolute inset-0 flex items-end justify-center bg-white/60 pb-1">
+                  <span className="rounded bg-sand-600 px-1.5 py-0.5 text-[0.5rem] font-bold text-white">Out of Stock</span>
+                </div>
+              )}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+              <div>
+                <p className="text-[0.6rem] font-medium text-sand-400">{product.brand}</p>
+                <p className="line-clamp-2 text-xs font-bold text-sand-800">{product.name}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-sm font-extrabold text-sand-800">
+                    {displayPrice.toFixed(0)}
+                  </span>
+                  {product.originalPrice && product.originalPrice > displayPrice && (
+                    <span className="text-[0.6rem] text-sand-400 line-through">
+                      {product.originalPrice.toFixed(0)}
+                    </span>
+                  )}
+                  <span className="text-[0.55rem] font-medium text-sand-400">EGP</span>
+                </div>
+                <motion.button
+                  onClick={handleAdd}
+                  whileTap={{ scale: 0.85 }}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        </Link>
+        <PrescriptionDialog open={prescriptionOpen} onOpenChange={setPrescriptionOpen} productName={product.name} onSubmit={() => { setPrescriptionOpen(false); onAddToCart?.(product.id); }} />
+        <NotifyMeDialog open={notifyOpen} onOpenChange={setNotifyOpen} productName={product.name} onSubmit={() => { onNotifyMe?.(product.id); }} />
+      </>
+    );
+  }
 
- {/* Express Delivery Badge */}
- {product.expressDelivery && layout ==="grid" && (
- <div className="absolute bottom-2 start-2 z-10">
- <span className="inline-flex items-center gap-1 rounded-md bg-express-bg px-1.5 py-0.5 text-[0.5625rem] font-bold text-cyan-700 backdrop-blur-sm">
- <Truck className="h-3 w-3" />
- Express 24hr
- </span>
- </div>
- )}
+  // ── Grid Layout (compact card) ──
+  return (
+    <>
+      <Link href={`/products/${product.id}`} className="flex h-full">
+        <motion.div
+          whileTap={{ scale: 0.97 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className={cn("flex h-full w-full", className)}
+        >
+          <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-sand-100 bg-white shadow-[0_4px_16px_rgba(16,34,76,0.07)] transition-shadow hover:shadow-[0_8px_24px_rgba(16,34,76,0.12)]">
+            {/* ── Image ── */}
+            <div className="relative aspect-square w-full overflow-hidden bg-sand-50">
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 45vw, 22vw"
+                unoptimized
+              />
 
- {/* Quick-add floating button (grid layout) */}
- {layout ==="grid" && product.inStock && !product.requiresPrescription && !product.hasVariants && (
- <motion.button
- onClick={(e) => {
- e.preventDefault();
- e.stopPropagation();
- onAddToCart?.(product.id);
- }}
- whileTap={{ scale: 0.85 }}
- className="absolute bottom-2 end-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-white shadow-md opacity-0 transition-opacity group-hover:opacity-100"
- aria-label="Quick add to cart"
- >
- <ShoppingCart className="h-3.5 w-3.5" />
- </motion.button>
- )}
+              {/* Express 24h badge — top left */}
+              {product.expressDelivery && (
+                <span className="absolute start-1.5 top-1.5 z-10 inline-flex items-center gap-0.5 rounded-lg bg-emerald-600 px-1.5 py-0.5 text-[0.55rem] font-bold text-white shadow-sm">
+                  <Truck className="h-2.5 w-2.5" />
+                  24h
+                </span>
+              )}
 
- {/* Wishlist Button */}
- <motion.button
- onClick={(e) => {
- e.preventDefault();
- e.stopPropagation();
- setIsWishlisted(!isWishlisted);
- onWishlist?.(product.id);
- }}
- whileTap={{ scale: 0.85 }}
- className="absolute end-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm transition-all hover:bg-white"
- aria-label={
- isWishlisted ?"Remove from wishlist" :"Add to wishlist"
- }
- >
- <motion.div
- animate={isWishlisted ? { scale: [1, 1.4, 1] } : { scale: 1 }}
- transition={{ duration: 0.3, ease:"easeOut" }}
- >
- <Heart
- className={cn(
-"h-4 w-4 transition-colors",
- isWishlisted
- ?"fill-deal text-deal"
- :"text-sand-400"
- )}
- />
- </motion.div>
- </motion.button>
+              {/* Discount badge — top right */}
+              {product.discountPercent && product.discountPercent > 0 && (
+                <span className="absolute end-1.5 top-1.5 z-10 rounded-lg bg-deal px-1.5 py-0.5 text-[0.55rem] font-extrabold text-white shadow-sm">
+                  -{product.discountPercent}%
+                </span>
+              )}
 
- {/* Badge Stack */}
- {product.badges && product.badges.length > 0 && (
- <div className="absolute start-2 top-2 flex flex-col gap-1">
- {product.badges.map((badge, i) => (
- <motion.div
- key={i}
- initial={{ opacity: 0, x: -10 }}
- animate={{ opacity: 1, x: 0 }}
- transition={{ delay: i * 0.05, duration: 0.2 }}
- >
- <Badge variant={badge.variant}>
- {badge.label}
- </Badge>
- </motion.div>
- ))}
- </div>
- )}
+              {/* Out of Stock overlay */}
+              {!product.inStock && (
+                <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/50 to-transparent px-2 pb-2 pt-6">
+                  <span className="text-[0.6rem] font-bold text-white">Out of Stock</span>
+                </div>
+              )}
 
- {/* Out of Stock Badge — no overlay, image stays visible */}
- {!product.inStock && (
- <div className="absolute bottom-2 start-2 z-10">
- <Badge variant="oos" className="text-xs">
- Out of Stock
- </Badge>
- </div>
- )}
+              {/* Prescription badge */}
+              {product.requiresPrescription && (
+                <span className="absolute bottom-1.5 start-1.5 z-10 inline-flex items-center gap-0.5 rounded-lg bg-blue-600 px-1.5 py-0.5 text-[0.5rem] font-bold text-white">
+                  <Upload className="h-2.5 w-2.5" />
+                  Rx
+                </span>
+              )}
 
- {/* Fulfillment Mismatch Overlay */}
- {product.inStock &&
- product.fulfillmentType ==="pickup-only" &&
- deliveryMethod ==="delivery" && (
- <div className="absolute inset-0 flex items-center justify-center bg-white/70">
- <span className="rounded-md bg-brand-700 px-2.5 py-1 text-[0.625rem] font-bold text-white">
- Pickup Only
- </span>
- </div>
- )}
- {product.inStock &&
- product.fulfillmentType ==="delivery-only" &&
- deliveryMethod ==="pickup" && (
- <div className="absolute inset-0 flex items-center justify-center bg-white/70">
- <span className="rounded-md bg-cyan-700 px-2.5 py-1 text-[0.625rem] font-bold text-white">
- Delivery Only
- </span>
- </div>
- )}
- </div>
+              {/* Wishlist heart */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onWishlist?.(product.id);
+                }}
+                className="absolute bottom-1.5 end-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-colors hover:bg-white"
+                aria-label="Add to wishlist"
+              >
+                <Heart className="h-3.5 w-3.5 text-sand-400" />
+              </button>
+            </div>
 
- {/* Content Section */}
- <div
- className={cn(
-"flex flex-1 flex-col",
- layout ==="grid" ?"p-3 pt-1" :"flex-1 justify-center p-3"
- )}
- >
- {/* Brand + Insurance Badge */}
- <div className="flex items-center gap-1.5">
- <span className="text-xs font-medium uppercase tracking-wide text-sand-400">
- {product.brand}
- </span>
- {showInsuranceBadge && <InsuranceBadge />}
- </div>
+            {/* ── Content ── */}
+            <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2">
+              {/* Brand */}
+              <p className="text-[0.6rem] font-medium text-sand-400">
+                {product.brand}
+              </p>
 
- {/* Product Name (2-line clamp) */}
- <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug text-sand-700">
- {product.name}
- </h3>
+              {/* Name */}
+              <h3 className="mt-0.5 line-clamp-2 text-[0.7rem] font-bold leading-tight text-sand-800">
+                {product.name}
+              </h3>
 
- {/* Rating + Review count */}
- {product.rating && (
- <div className="mt-1 flex items-center gap-1">
- <div className="flex">
- {Array.from({ length: 5 }).map((_, i) => (
- <span
- key={i}
- className={cn(
-"text-xs",
- i < Math.floor(product.rating!)
- ?"text-warning"
- :"text-sand-200"
- )}
- >
- &#9733;
- </span>
- ))}
- </div>
- {product.reviewCount && (
- <span className="text-[0.625rem] text-sand-400">
- ({product.reviewCount.toLocaleString()})
- </span>
- )}
- </div>
- )}
+              {/* Rating */}
+              {product.rating != null && product.rating > 0 && (
+                <div className="mt-1 flex items-center gap-0.5">
+                  <div className="flex">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={cn(
+                          "text-[0.6rem]",
+                          i < Math.floor(product.rating!)
+                            ? "text-warning"
+                            : "text-sand-200"
+                        )}
+                      >
+                        &#9733;
+                      </span>
+                    ))}
+                  </div>
+                  {product.reviewCount != null && (
+                    <span className="text-[0.55rem] text-sand-400">
+                      ({product.reviewCount.toLocaleString()})
+                    </span>
+                  )}
+                </div>
+              )}
 
- {/* Sold count */}
- {product.soldCount && product.soldCount > 1000 && (
- <span className="mt-0.5 text-[0.625rem] text-sand-400">
- {product.soldCount.toLocaleString()} sold
- </span>
- )}
+              {/* Sold count */}
+              {product.soldCount != null && product.soldCount > 100 && (
+                <span className="mt-0.5 text-[0.55rem] text-sand-400">
+                  {product.soldCount.toLocaleString()} sold
+                </span>
+              )}
 
- {/* Express delivery (horizontal layout) */}
- {layout === "horizontal" && product.expressDelivery && (
- <span className="mt-1 inline-flex items-center gap-1 text-[0.625rem] font-semibold text-cyan-600">
- <Truck className="h-3 w-3" />
- Express 24hr
- </span>
- )}
+              {/* Price row + Add button */}
+              <div className="mt-auto flex items-end justify-between pt-2">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-base font-extrabold leading-none text-sand-800">
+                    {displayPrice.toFixed(0)}
+                  </span>
+                  {product.originalPrice && product.originalPrice > displayPrice && (
+                    <span className="text-[0.6rem] text-sand-400 line-through">
+                      {product.originalPrice.toFixed(0)}
+                    </span>
+                  )}
+                  <span className="text-[0.55rem] font-medium text-sand-400">EGP</span>
+                </div>
 
- {/* Category tag (horizontal layout) */}
- {layout === "horizontal" && product.categoryId && (
- <div className="mt-1 flex flex-wrap gap-1">
- <span className="inline-flex rounded-sm bg-sand-100 px-1.5 py-0.5 text-[0.5625rem] font-medium text-sand-500">
- {getCategoryById(product.categoryId)?.name}
- </span>
- </div>
- )}
+                <motion.button
+                  onClick={handleAdd}
+                  whileTap={{ scale: 0.85 }}
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-full shadow-sm transition-colors",
+                    !product.inStock
+                      ? "bg-sand-200 text-sand-500"
+                      : justAdded
+                        ? "bg-emerald-500 text-white"
+                        : "bg-brand-700 text-white"
+                  )}
+                  aria-label={product.inStock ? "Add to cart" : "Notify me"}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {justAdded ? (
+                      <motion.div
+                        key="check"
+                        initial={{ scale: 0, rotate: -90 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        exit={{ scale: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Check className="h-4 w-4" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="plus"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </Link>
 
- {/* Price Block */}
- <PriceBlock
- price={displayPrice}
- originalPrice={product.originalPrice}
- discountPercent={product.discountPercent}
- currency={product.currency}
- className="mt-1.5"
- />
-
- {/* Free Shipping indicator */}
- {product.freeShipping && (
- <span className="mt-1 text-[0.625rem] font-semibold text-cyan-600">
- FREE Delivery
- </span>
- )}
-
- {/* Quantity Offer */}
- {product.quantityOffer && (
- <div className="mt-1.5 rounded-sm bg-brand-50 px-2 py-1">
- <span className="text-xs font-medium text-brand-700">
- {product.quantityOffer}
- </span>
- </div>
- )}
-
- {/* CTA Button */}
- <div className="mt-auto pt-2" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
- <CTAButton
- inStock={product.inStock}
- hasVariants={product.hasVariants}
- requiresPrescription={product.requiresPrescription}
- onAddToCart={() => {
- if (product.requiresPrescription) {
- setPrescriptionOpen(true);
- } else {
- onAddToCart?.(product.id);
- }
- }}
- onNotifyMe={() => setNotifyOpen(true)}
- onOptions={() => {
-              if (onOptions) {
-                onOptions(product.id);
-              } else {
-                router.push(`/products/${product.id}`);
-              }
-            }}
- size="card-cta"
- />
- </div>
- </div>
- </Card>
- </motion.div>
- </Link>
-
- {/* Dialogs rendered outside of Link to prevent navigation */}
- <PrescriptionDialog
- open={prescriptionOpen}
- onOpenChange={setPrescriptionOpen}
- productName={product.name}
- onSubmit={() => {
- setPrescriptionOpen(false);
- onAddToCart?.(product.id);
- }}
- />
-
- <NotifyMeDialog
- open={notifyOpen}
- onOpenChange={setNotifyOpen}
- productName={product.name}
- onSubmit={(email) => {
- onNotifyMe?.(product.id);
- }}
- />
- </>
- );
+      {/* Dialogs */}
+      <PrescriptionDialog
+        open={prescriptionOpen}
+        onOpenChange={setPrescriptionOpen}
+        productName={product.name}
+        onSubmit={() => {
+          setPrescriptionOpen(false);
+          onAddToCart?.(product.id);
+        }}
+      />
+      <NotifyMeDialog
+        open={notifyOpen}
+        onOpenChange={setNotifyOpen}
+        productName={product.name}
+        onSubmit={() => {
+          onNotifyMe?.(product.id);
+        }}
+      />
+    </>
+  );
 }
