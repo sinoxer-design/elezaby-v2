@@ -36,7 +36,7 @@ export function OrderAgainSection({
  return (
  <ProductCarousel
  title="Order Again"
- subtitle="Quickly reorder from past purchases"
+ kicker="Reorder"
  products={orderProducts}
  viewAllHref="/account/orders"
  onAddToCart={onAddToCart}

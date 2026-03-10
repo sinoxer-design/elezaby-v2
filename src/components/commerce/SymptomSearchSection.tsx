@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Stethoscope } from "lucide-react";
 import { motion } from "framer-motion";
 import { mockSymptoms } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
@@ -25,18 +24,8 @@ export function SymptomSearchSection({ className }: SymptomSearchSectionProps) {
   return (
     <section className={cn("space-y-3", className)}>
       {/* Section Header */}
-      <div className="flex items-center gap-2 px-[var(--page-padding-x)] lg:px-8">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
-          <Stethoscope className="h-4 w-4 text-brand-600" />
-        </div>
-        <div>
-          <h2 className="font-display text-lg font-bold text-sand-800 lg:text-xl">
-            Search by Symptom
-          </h2>
-          <p className="text-xs text-sand-500">
-            Find products for what you&apos;re feeling
-          </p>
-        </div>
+      <div className="px-[var(--page-padding-x)] lg:px-8">
+          <h2 className="text-lg font-bold text-sand-800">Search by Symptom</h2>
       </div>
 
       {/* Symptom Pills */}

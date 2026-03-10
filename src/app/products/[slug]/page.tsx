@@ -66,8 +66,8 @@ export default function ProductDetailPage() {
  const { addItem } = useCart();
  const [quantity, setQuantity] = React.useState(1);
  const [isWishlisted, setIsWishlisted] = React.useState(false);
- const [expandedSection, setExpandedSection] = React.useState<string | null>(
-"description"
+ const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
+  new Set(["description", "specs", "ingredients"])
  );
  const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
  const [notifyOpen, setNotifyOpen] = React.useState(false);
@@ -105,7 +105,12 @@ export default function ProductDetailPage() {
  };
 
  const toggleSection = (section: string) => {
- setExpandedSection((prev) => (prev === section ? null : section));
+ setExpandedSections((prev) => {
+   const next = new Set(prev);
+   if (next.has(section)) next.delete(section);
+   else next.add(section);
+   return next;
+ });
  };
 
  return (
@@ -180,7 +185,7 @@ export default function ProductDetailPage() {
  <span className="text-xs font-medium uppercase tracking-wide text-brand-500">
  {product.brand}
  </span>
- <h1 className="mt-0.5 font-display text-xl text-sand-800 lg:text-2xl">
+ <h1 className="mt-0.5 font-display text-xl font-bold text-sand-800 lg:text-2xl">
  {product.name}
  </h1>
  <span className="text-xs text-sand-400">SKU: EZ-{product.id}0042</span>
@@ -281,13 +286,13 @@ export default function ProductDetailPage() {
  className="flex w-full items-center justify-between py-3 text-sm font-semibold text-sand-700"
  >
  {section.title}
- {expandedSection === section.id ? (
+ {expandedSections.has(section.id) ? (
  <ChevronUp className="h-4 w-4 text-sand-400" />
  ) : (
  <ChevronDown className="h-4 w-4 text-sand-400" />
  )}
  </button>
- {expandedSection === section.id && (
+ {expandedSections.has(section.id) && (
  <p className="pb-3 text-sm leading-relaxed text-sand-500">
  {section.content}
  </p>
@@ -444,44 +449,15 @@ export default function ProductDetailPage() {
  )
  .slice(0, 2)
  .map((p) => (
- <div
+ <ProductCard
  key={p.id}
- className="relative overflow-hidden rounded-xl border border-sand-200 bg-white"
- >
- <div className="absolute end-2 top-2 z-10">
- <Badge className="border-transparent bg-brand-500 text-white">
- Upgrade
- </Badge>
- </div>
- <div className="aspect-square bg-sand-50 p-4">
- <Image
- src={p.imageUrl}
- alt={p.name}
- width={200}
- height={200}
- className="h-full w-full object-contain"
+ product={p}
+ layout="grid"
+ onAddToCart={(id) => {
+ const item = mockProducts.find((m) => m.id === id);
+ if (item) addItem({ ...item });
+ }}
  />
- </div>
- <div className="p-3">
- <h3 className="line-clamp-2 text-sm font-semibold text-sand-700">
- {p.name}
- </h3>
- <PriceBlock
- price={p.price}
- originalPrice={p.originalPrice}
- discountPercent={p.discountPercent}
- className="mt-1.5"
- />
- <Button
- variant="add-to-cart"
- size="card-cta"
- className="mt-2"
- onClick={() => addItem({ ...p })}
- >
- Choose This
- </Button>
- </div>
- </div>
  ))}
  </div>
  </section>

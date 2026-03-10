@@ -17,6 +17,7 @@ import { cn } from"@/lib/utils";
 interface ProductCarouselProps {
  title: string;
  subtitle?: string;
+ kicker?: string;
  products: ProductData[];
  viewAllHref?: string;
  onAddToCart?: (productId: string) => void;
@@ -26,6 +27,7 @@ interface ProductCarouselProps {
 export function ProductCarousel({
  title,
  subtitle,
+ kicker,
  products,
  viewAllHref,
  onAddToCart,
@@ -34,26 +36,25 @@ export function ProductCarousel({
  return (
  <section className={cn("space-y-3", className)}>
  {/* Section Header */}
- <div className="flex items-end justify-between px-[var(--page-padding-x)] lg:px-8">
- <div>
- <h2 className="font-display text-lg font-bold text-sand-800 lg:text-xl">{title}</h2>
- {subtitle && (
- <p className="mt-0.5 text-xs text-sand-500">{subtitle}</p>
- )}
- </div>
+ <div className="px-[var(--page-padding-x)] lg:px-8">
+ <div className="space-y-1.5">
+ <div className="flex items-center justify-between gap-3">
+ <h2 className="text-lg font-bold text-sand-800">{title}</h2>
  {viewAllHref && (
  <Button
  variant="ghost"
  size="sm"
- className="text-xs font-semibold text-brand-600"
+ className="shrink-0 text-sm font-semibold text-brand-500 hover:text-brand-700"
  asChild
  >
  <Link href={viewAllHref}>
- View All
+ See All
  <ChevronRight className="ms-0.5 h-3.5 w-3.5" />
  </Link>
  </Button>
  )}
+ </div>
+ </div>
  </div>
 
  {/* Carousel */}
@@ -65,11 +66,11 @@ export function ProductCarousel({
  }}
  className="w-full"
  >
- <CarouselContent className="!ml-0 gap-4 pl-[var(--page-padding-x)] lg:pl-8 items-stretch">
+ <CarouselContent className="!ml-0 gap-3 pl-[var(--page-padding-x)] lg:pl-8 items-stretch">
  {products.map((product) => (
  <CarouselItem
  key={product.id}
- className="flex !pl-0 basis-[66%] md:basis-[30%] lg:basis-[22%] xl:basis-[18%]"
+ className="flex !pl-0 basis-[46%] md:basis-[28%] lg:basis-[20%] xl:basis-[16%]"
  >
  <ProductCard
  product={product}

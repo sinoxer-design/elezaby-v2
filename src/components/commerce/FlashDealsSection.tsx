@@ -59,11 +59,11 @@ export function FlashDealsSection({
  opts={{ align:"start", loop: false, dragFree: true }}
  className="w-full"
  >
- <CarouselContent className="!ml-0 gap-4 pl-[var(--page-padding-x)] lg:pl-8 items-stretch">
+ <CarouselContent className="!ml-0 gap-3 pl-[var(--page-padding-x)] lg:pl-8 items-stretch">
  {products.map((product) => (
  <CarouselItem
  key={product.id}
- className="flex !pl-0 basis-[66%] md:basis-[30%] lg:basis-[22%] xl:basis-[18%]"
+ className="flex !pl-0 basis-[46%] md:basis-[28%] lg:basis-[20%] xl:basis-[16%]"
  >
  <ProductCard
  product={product}

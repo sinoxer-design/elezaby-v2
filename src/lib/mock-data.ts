@@ -1022,33 +1022,128 @@ export interface PromoBanner {
 export const mockPromoBanners: PromoBanner[] = [
   {
     id: "banner-1",
-    title: "Up to 40% Off Vitamins",
-    subtitle: "Boost your immunity this season with premium supplements",
-    ctaText: "Shop Vitamins",
-    ctaHref: "/products?category=vitamins",
-    gradient: "from-brand-800 via-brand-600 to-cyan-600",
-    badge: "Limited Time",
-    imageUrl: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=400&fit=crop",
-  },
-  {
-    id: "banner-2",
-    title: "Skincare Essentials",
-    subtitle: "Dermatologist-recommended products for every skin type",
-    ctaText: "Explore Skincare",
+    title: "Skincare Bestsellers",
+    subtitle: "CeraVe, La Roche-Posay & more — dermatologist picks at up to 35% off",
+    ctaText: "Shop Skincare",
     ctaHref: "/products?category=skincare",
     gradient: "from-cyan-700 via-cyan-500 to-brand-400",
-    badge: "New Collection",
+    badge: "Trending",
     imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop",
   },
   {
-    id: "banner-3",
+    id: "banner-2",
     title: "Baby Care Sale",
-    subtitle: "Everything your little one needs — diapers, formula & more",
+    subtitle: "Everything your little one needs — diapers, formula, feeding & more",
     ctaText: "Shop Baby",
     ctaHref: "/products?category=baby",
     gradient: "from-brand-700 via-brand-500 to-cyan-500",
     badge: "Up to 30% Off",
-    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=400&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop",
+  },
+  {
+    id: "banner-3",
+    title: "Personal Care Essentials",
+    subtitle: "Hair, bath, grooming & hygiene — daily essentials for the whole family",
+    ctaText: "Shop Now",
+    ctaHref: "/products?category=personal-care",
+    gradient: "from-brand-800 via-brand-600 to-cyan-600",
+    badge: "New In",
+    imageUrl: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+  },
+];
+
+// ── Promo Deal Sections (Nahdi-style: hero + sub-cards, color-coded) ──
+export interface PromoCard {
+  id: string;
+  title: string;
+  discount: string;
+  href: string;
+}
+
+export interface PromoSection {
+  id: string;
+  bgColor: string;
+  accentColor: string;
+  badgeBg: string;
+  heroTitle: string;
+  heroDiscount: string;
+  heroHref: string;
+  heroCta?: string;
+  cards: PromoCard[];
+}
+
+export const mockPromoSections: PromoSection[] = [
+  {
+    id: "promo-beauty",
+    bgColor: "bg-pink-50",
+    accentColor: "text-pink-700",
+    badgeBg: "bg-pink-600",
+    heroTitle: "Hydration Deals",
+    heroDiscount: "60%",
+    heroHref: "/products?category=skincare&tag=hydration",
+    heroCta: "Shop now",
+    cards: [
+      {
+        id: "pc-1",
+        title: "Colored Hair",
+        discount: "55%",
+        href: "/products?category=hair-care&tag=colored",
+      },
+      {
+        id: "pc-2",
+        title: "Anti-Aging Deals",
+        discount: "50%",
+        href: "/products?category=skincare&tag=anti-aging",
+      },
+    ],
+  },
+  {
+    id: "promo-baby",
+    bgColor: "bg-emerald-50",
+    accentColor: "text-emerald-700",
+    badgeBg: "bg-emerald-600",
+    heroTitle: "Baby Care Sale",
+    heroDiscount: "40%",
+    heroHref: "/products?category=baby-care",
+    heroCta: "Shop baby",
+    cards: [
+      {
+        id: "pc-3",
+        title: "Prenatal Vitamins",
+        discount: "20%",
+        href: "/products?category=vitamins&tag=prenatal",
+      },
+      {
+        id: "pc-4",
+        title: "Diapers & Wipes",
+        discount: "35%",
+        href: "/products?category=baby-care&tag=diapers",
+      },
+    ],
+  },
+  {
+    id: "promo-wellness",
+    bgColor: "bg-amber-50",
+    accentColor: "text-amber-700",
+    badgeBg: "bg-amber-600",
+    heroTitle: "Vitamin Mega Sale",
+    heroDiscount: "45%",
+    heroHref: "/products?category=vitamins",
+    heroCta: "Shop vitamins",
+    cards: [
+      {
+        id: "pc-5",
+        title: "Immunity Boosters",
+        discount: "30%",
+        href: "/products?category=vitamins&tag=immunity",
+      },
+      {
+        id: "pc-6",
+        title: "Omega & Fish Oil",
+        discount: "25%",
+        href: "/products?category=vitamins&tag=omega",
+      },
+    ],
   },
 ];
 

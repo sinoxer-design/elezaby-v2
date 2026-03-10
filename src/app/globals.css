@@ -360,8 +360,8 @@
   --duration-slow: 400ms;
 
   /* Layout */
-  --header-height: 7.5625rem;          /* deals banner (1.75rem) + logo row (3.5rem) + location row (2.3125rem) */
-  --header-collapsed-height: 5.25rem; /* deals banner (1.75rem) + logo row (3.5rem) — no location row */
+  --header-height: 11.125rem;          /* deals banner (1.75rem) + logo row (3.5rem) + search row (3.5625rem) + location row (2.3125rem) */
+  --header-collapsed-height: 8.8125rem; /* deals banner (1.75rem) + logo row (3.5rem) + search row (3.5625rem) — no location row */
   --bottom-nav-height: 3.75rem;
   --header-height-desktop: 8.25rem;   /* deals banner (1.75rem) + logo row (3.5rem) + nav row (3rem) */
   --page-padding-x: 1rem;
