@@ -61,6 +61,7 @@ export function ProductCard({
   layout = "grid",
   onAddToCart,
   onNotifyMe,
+  onWishlist,
   className,
 }: ProductCardProps) {
   const router = useRouter();
