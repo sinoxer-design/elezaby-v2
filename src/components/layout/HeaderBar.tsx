@@ -54,6 +54,8 @@ export function HeaderBar({
   const headerRef = React.useRef<HTMLElement>(null);
   const [headerHeight, setHeaderHeight] = React.useState(0);
   const touchStartY = React.useRef(0);
+  const scrollDirRef = React.useRef<"up" | "down" | null>(null);
+  scrollDirRef.current = scrollDirection;
 
   const handleMegaMenuEnter = () => {
     if (megaMenuTimerRef.current) clearTimeout(megaMenuTimerRef.current);
@@ -75,16 +77,31 @@ export function HeaderBar({
     setQuery("");
   }, []);
 
-  // Track header height for overlay positioning
+  // Track header height for overlay positioning AND dynamically update CSS variables
   React.useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      setHeaderHeight(entry.contentRect.height + entry.target.getBoundingClientRect().top);
+    const ro = new ResizeObserver(() => {
+      const height = el.offsetHeight;
+      setHeaderHeight(el.getBoundingClientRect().bottom);
+
+      // When collapsed (scroll down), update the collapsed-height variable
+      if (scrollDirRef.current === "down") {
+        document.documentElement.style.setProperty(
+          "--header-collapsed-height",
+          `${height}px`
+        );
+      } else {
+        // When expanded (idle or scroll up), update the full height variable
+        document.documentElement.style.setProperty(
+          "--header-height",
+          `${height}px`
+        );
+      }
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [pathname]);
 
   // Update header height when search opens/closes
   React.useEffect(() => {
