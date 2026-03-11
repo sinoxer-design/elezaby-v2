@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Home, Grid3X3, User, Flame, FileUp, CheckCircle2, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useScroll } from "@/hooks/useScroll";
 import {
   Sheet,
   SheetContent,
@@ -39,6 +40,8 @@ export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const rxOrders = useRxOrders();
+  const { scrollDirection } = useScroll();
+  const isHidden = scrollDirection === "down";
   const [rxSheetOpen, setRxSheetOpen] = React.useState(false);
   const [rxFiles, setRxFiles] = React.useState<File[]>([]);
   const [rxStep, setRxStep] = React.useState<RxStep>("upload");
@@ -85,7 +88,10 @@ export function BottomNav() {
 
   return (
     <>
-      <nav
+      <motion.nav
+        initial={false}
+        animate={isHidden ? { y: "100%" } : { y: 0 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         className="fixed inset-x-0 bottom-0 z-sticky border-t border-sand-200 bg-white/95 backdrop-blur-md shadow-bottom-nav lg:hidden"
         style={{ paddingBottom: "var(--safe-area-bottom)" }}
       >
@@ -194,7 +200,7 @@ export function BottomNav() {
             );
           })}
         </div>
-      </nav>
+      </motion.nav>
 
       {/* RX Upload Sheet — 3-step flow */}
       <Sheet open={rxSheetOpen} onOpenChange={handleSheetChange}>
