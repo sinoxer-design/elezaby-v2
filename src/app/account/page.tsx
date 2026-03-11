@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   User,
@@ -95,7 +96,12 @@ const settingsItems = [
 ];
 
 export default function AccountPage() {
+  const router = useRouter();
   const { isProfileComplete, completionPercentage } = useUserProfile();
+
+  const handleSignOut = () => {
+    router.push("/onboarding");
+  };
 
   return (
     <div className="px-[var(--page-padding-x)] py-4 lg:py-8">
@@ -191,7 +197,10 @@ export default function AccountPage() {
           </div>
 
           {/* Desktop-only sign out */}
-          <button className="hidden lg:flex items-center justify-center gap-2 rounded-xl border border-sand-200 px-4 py-3 text-sm font-medium text-discount transition-colors hover:bg-red-50">
+          <button
+            onClick={handleSignOut}
+            className="hidden lg:flex items-center justify-center gap-2 rounded-xl border border-sand-200 px-4 py-3 text-sm font-medium text-discount transition-colors hover:bg-red-50"
+          >
             <LogOut className="h-4 w-4" />
             Sign Out
           </button>
@@ -267,7 +276,10 @@ export default function AccountPage() {
 
           {/* Sign Out — mobile only */}
           <div className="flex flex-col gap-3 lg:hidden">
-            <button className="flex items-center justify-center gap-2 rounded-2xl border border-sand-200 bg-white px-4 py-3.5 text-sm font-medium text-discount shadow-card transition-colors hover:bg-red-50">
+            <button
+              onClick={handleSignOut}
+              className="flex items-center justify-center gap-2 rounded-2xl border border-sand-200 bg-white px-4 py-3.5 text-sm font-medium text-discount shadow-card transition-colors hover:bg-red-50"
+            >
               <LogOut className="h-4 w-4" />
               Sign Out
             </button>

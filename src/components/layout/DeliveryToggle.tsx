@@ -30,10 +30,10 @@ export function DeliveryToggle({ value, onChange }: DeliveryToggleProps) {
   }, [value]);
 
   return (
-    <div className="relative inline-flex h-10 rounded-xl bg-sand-100 p-1">
+    <div className="relative inline-flex h-10 rounded-xl bg-white/15 p-1">
       {/* Sliding indicator */}
       <motion.div
-        className="absolute top-1 bottom-1 rounded-[8px] bg-white shadow-sm"
+        className="absolute top-1 bottom-1 rounded-[8px] bg-white/25 shadow-sm"
         animate={{ left: indicator.left, width: indicator.width }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
       />
@@ -42,7 +42,7 @@ export function DeliveryToggle({ value, onChange }: DeliveryToggleProps) {
         ref={deliveryRef}
         className={cn(
           "relative z-10 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[8px] px-3 text-xs font-semibold transition-colors duration-200 outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-1",
-          value === "delivery" ? "text-brand-600" : "text-sand-400"
+          value === "delivery" ? "text-white" : "text-white/50"
         )}
         onClick={() => onChange("delivery")}
         aria-pressed={value === "delivery"}
@@ -55,7 +55,7 @@ export function DeliveryToggle({ value, onChange }: DeliveryToggleProps) {
         ref={pickupRef}
         className={cn(
           "relative z-10 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[8px] px-3 text-xs font-semibold transition-colors duration-200 outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-1",
-          value === "pickup" ? "text-brand-600" : "text-sand-400"
+          value === "pickup" ? "text-white" : "text-white/50"
         )}
         onClick={() => onChange("pickup")}
         aria-pressed={value === "pickup"}
