@@ -117,12 +117,20 @@ export function BottomNav() {
                   >
                     <motion.div
                       className="absolute inset-0 rounded-full bg-deal/30"
-                      animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.15, 1] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
+                      animate={
+                        isHidden
+                          ? { opacity: 0, scale: 1 }
+                          : { opacity: [0.3, 0.5, 0.3], scale: [1, 1.15, 1] }
+                      }
+                      transition={
+                        isHidden
+                          ? { duration: 0 }
+                          : {
+                              duration: 2,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }
+                      }
                     />
                     <Flame className="relative h-6 w-6" strokeWidth={2.5} />
                   </motion.div>
