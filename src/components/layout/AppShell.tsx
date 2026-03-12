@@ -16,12 +16,19 @@ import {
   useUserProfileState,
 } from "@/hooks/useUserProfile";
 import { RxOrdersContext, useRxOrdersState } from "@/hooks/useRxOrders";
+import {
+  OverlaySheetContext,
+  useOverlaySheetState,
+} from "@/hooks/useOverlaySheet";
+import { ScrollContext, useScrollState } from "@/hooks/useScroll";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const deliveryState = useDeliveryState();
   const cartState = useCartState();
   const userProfileState = useUserProfileState();
   const rxOrdersState = useRxOrdersState();
+  const overlaySheetState = useOverlaySheetState();
+  const scrollState = useScrollState();
   const pathname = usePathname();
 
   // Hide header/nav on certain pages
@@ -49,24 +56,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <DeliveryContext.Provider value={deliveryState}>
         <CartContext.Provider value={cartState}>
           <RxOrdersContext.Provider value={rxOrdersState}>
-            {!hideHeader && (
-              <HeaderBar
-                cartCount={cartState.itemCount}
-                minimal={isMinimalHeader}
-              />
-            )}
-            <main
-              className="mx-auto max-w-7xl pb-safe"
-              style={{
-                paddingTop: hideHeader ? 0 : "var(--header-height)",
-                minHeight: "100dvh",
-              }}
-            >
-              {children}
-            </main>
-            {!hideBottomNav && <BottomNav />}
-            <FloatingCartButton />
-            {isHomePage && <PersonalizedOfferFAB />}
+            <OverlaySheetContext.Provider value={overlaySheetState}>
+              <ScrollContext.Provider value={scrollState}>
+                {!hideHeader && (
+                  <HeaderBar
+                    cartCount={cartState.itemCount}
+                    minimal={isMinimalHeader}
+                  />
+                )}
+                <main
+                  className="mx-auto max-w-7xl pb-safe"
+                  style={{
+                    paddingTop: hideHeader ? 0 : "var(--header-height)",
+                    minHeight: "100dvh",
+                  }}
+                >
+                  {children}
+                </main>
+                {!hideBottomNav && <BottomNav />}
+                <FloatingCartButton />
+                {isHomePage && <PersonalizedOfferFAB />}
+              </ScrollContext.Provider>
+            </OverlaySheetContext.Provider>
           </RxOrdersContext.Provider>
         </CartContext.Provider>
       </DeliveryContext.Provider>

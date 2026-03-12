@@ -958,6 +958,7 @@ export const mockFlashDeals: ProductData[] = [
   {
     ...mockProducts[5],
     id: "flash-2",
+    inStock: false,
     flashDeal: { endsAt: hoursFromNow(6) },
     originalPrice: 520.0,
     price: 380.0,
@@ -1245,7 +1246,19 @@ export const mockBabyProducts: ProductData[] = [
 ];
 
 // Merge baby products into main pool
-export const allProducts: ProductData[] = [...mockProducts, ...mockBabyProducts];
+export const allProducts: ProductData[] = [...mockProducts, ...mockBabyProducts, ...mockFlashDeals, ...mockBestSellers];
+
+/** Find similar products by categoryId prefix (e.g. "baby-diaper" matches "baby-*"). Prefers in-stock items. */
+export function getSimilarProducts(productId: string, limit = 6): ProductData[] {
+  const product = allProducts.find((p) => p.id === productId);
+  if (!product?.categoryId) return [];
+  // Match on category prefix (first segment, e.g. "baby" from "baby-diaper")
+  const prefix = product.categoryId.split("-")[0];
+  return allProducts
+    .filter((p) => p.id !== productId && p.categoryId?.startsWith(prefix))
+    .sort((a, b) => (a.inStock === b.inStock ? 0 : a.inStock ? -1 : 1))
+    .slice(0, limit);
+}
 
 // ── Insurance Covered Categories (Feature 1) ──────────────────────────
 export const insuranceCoveredCategoryIds = [

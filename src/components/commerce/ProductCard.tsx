@@ -4,12 +4,14 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Truck, Plus, ShoppingCart, Check, Upload, Heart } from "lucide-react";
+import { Truck, Plus, Minus, ShoppingCart, Check, Upload, Heart, Bell, ArrowLeftRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PrescriptionDialog } from "./PrescriptionDialog";
-import { NotifyMeDialog } from "./NotifyMeDialog";
+import { CompareSheet } from "./CompareSheet";
 import { useDeliveryContext } from "@/hooks/useDeliveryContext";
+import { useCart } from "@/hooks/useCart";
+import { getSimilarProducts } from "@/lib/mock-data";
 
 export interface ProductData {
   id: string;
@@ -66,9 +68,18 @@ export function ProductCard({
 }: ProductCardProps) {
   const router = useRouter();
   const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
-  const [notifyOpen, setNotifyOpen] = React.useState(false);
+  const [compareOpen, setCompareOpen] = React.useState(false);
   const [justAdded, setJustAdded] = React.useState(false);
   const { deliveryMethod } = useDeliveryContext();
+  const { items, addItem, updateQuantity, removeItem } = useCart();
+
+  const cartItem = items.find((i) => i.id === product.id);
+  const qty = cartItem?.quantity ?? 0;
+
+  const similarProducts = React.useMemo(
+    () => (!product.inStock ? getSimilarProducts(product.id) : []),
+    [product.id, product.inStock]
+  );
 
   const displayPrice =
     deliveryMethod === "pickup" && product.pickupPrice
@@ -78,10 +89,6 @@ export function ProductCard({
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!product.inStock) {
-      setNotifyOpen(true);
-      return;
-    }
     if (product.requiresPrescription) {
       setPrescriptionOpen(true);
       return;
@@ -89,6 +96,28 @@ export function ProductCard({
     onAddToCart?.(product.id);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
+  };
+
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCompareOpen(true);
+  };
+
+  const handleIncrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    updateQuantity(product.id, qty + 1);
+  };
+
+  const handleDecrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (qty <= 1) {
+      removeItem(product.id);
+    } else {
+      updateQuantity(product.id, qty - 1);
+    }
   };
 
   if (layout === "horizontal") {
@@ -128,19 +157,74 @@ export function ProductCard({
                   )}
                   <span className="text-[0.55rem] font-medium text-sand-400">EGP</span>
                 </div>
-                <motion.button
-                  onClick={handleAdd}
-                  whileTap={{ scale: 0.85 }}
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                </motion.button>
+                <AnimatePresence mode="wait" initial={false}>
+                  {!product.inStock ? (
+                    <motion.button
+                      key="compare"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={handleCompare}
+                      whileTap={{ scale: 0.85 }}
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-sand-200 text-sand-500 shadow-sm"
+                      aria-label="Compare similar products"
+                    >
+                      <ArrowLeftRight className="h-3.5 w-3.5" />
+                    </motion.button>
+                  ) : qty > 0 ? (
+                    <motion.div
+                      key="stepper"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center gap-0.5 rounded-full bg-brand-700 p-0.5 shadow-sm"
+                    >
+                      <motion.button
+                        onClick={handleDecrement}
+                        whileTap={{ scale: 0.85 }}
+                        className="flex h-6 w-6 items-center justify-center rounded-full text-white transition-colors hover:bg-white/20"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </motion.button>
+                      <span className="min-w-4 text-center text-[0.65rem] font-bold text-white">
+                        {qty}
+                      </span>
+                      <motion.button
+                        onClick={handleIncrement}
+                        whileTap={{ scale: 0.85 }}
+                        className="flex h-6 w-6 items-center justify-center rounded-full text-white transition-colors hover:bg-white/20"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </motion.button>
+                    </motion.div>
+                  ) : (
+                    <motion.button
+                      key="add"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={handleAdd}
+                      whileTap={{ scale: 0.85 }}
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
+                      aria-label="Add to cart"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
         </Link>
         <PrescriptionDialog open={prescriptionOpen} onOpenChange={setPrescriptionOpen} productName={product.name} onSubmit={() => { setPrescriptionOpen(false); onAddToCart?.(product.id); }} />
-        <NotifyMeDialog open={notifyOpen} onOpenChange={setNotifyOpen} productName={product.name} onSubmit={() => { onNotifyMe?.(product.id); }} />
+        {!product.inStock && (
+          <CompareSheet open={compareOpen} onOpenChange={setCompareOpen} product={product} similarProducts={similarProducts} onAddToCart={onAddToCart} />
+        )}
       </>
     );
   }
@@ -196,30 +280,42 @@ export function ProductCard({
                 </span>
               )}
 
-              {/* Wishlist heart */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onWishlist?.(product.id);
-                }}
-                className="absolute bottom-1.5 end-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-colors hover:bg-white"
-                aria-label="Add to wishlist"
-              >
-                <Heart className="h-3.5 w-3.5 text-sand-400" />
-              </button>
+              {/* Bell icon for out-of-stock items */}
+              {!product.inStock && (
+                <button
+                  type="button"
+                  onClick={handleCompare}
+                  className="absolute bottom-1.5 end-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-colors hover:bg-white"
+                  aria-label="Compare similar products"
+                >
+                  <Bell className="h-3.5 w-3.5 text-sand-400" />
+                </button>
+              )}
             </div>
 
             {/* ── Content ── */}
             <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2">
-              {/* Brand */}
-              <p className="text-[0.6rem] font-medium text-sand-400">
-                {product.brand}
-              </p>
+              {/* Brand + Wishlist row */}
+              <div className="flex items-center justify-between">
+                <p className="text-[0.6rem] font-medium text-sand-400">
+                  {product.brand}
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onWishlist?.(product.id);
+                  }}
+                  className="flex h-5 w-5 items-center justify-center"
+                  aria-label="Add to wishlist"
+                >
+                  <Heart className="h-3.5 w-3.5 text-sand-300 transition-colors hover:text-sand-500" />
+                </button>
+              </div>
 
               {/* Name */}
-              <h3 className="mt-0.5 line-clamp-2 text-[0.7rem] font-bold leading-tight text-sand-800">
+              <h3 className="line-clamp-2 text-[0.7rem] font-bold leading-tight text-sand-800">
                 {product.name}
               </h3>
 
@@ -258,8 +354,14 @@ export function ProductCard({
 
               {/* Price row + Add button */}
               <div className="mt-auto flex items-end justify-between pt-2">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-base font-extrabold leading-none text-sand-800">
+                <div className={cn(
+                  "flex items-baseline gap-1 transition-all duration-200",
+                  qty > 0 && product.inStock ? "scale-90 origin-bottom-left" : ""
+                )}>
+                  <span className={cn(
+                    "font-extrabold leading-none text-sand-800 transition-all duration-200",
+                    qty > 0 && product.inStock ? "text-sm" : "text-base"
+                  )}>
                     {displayPrice.toFixed(0)}
                   </span>
                   {product.originalPrice && product.originalPrice > displayPrice && (
@@ -270,43 +372,75 @@ export function ProductCard({
                   <span className="text-[0.55rem] font-medium text-sand-400">EGP</span>
                 </div>
 
-                <motion.button
-                  onClick={handleAdd}
-                  whileTap={{ scale: 0.85 }}
-                  className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full shadow-sm transition-colors",
-                    !product.inStock
-                      ? "bg-sand-200 text-sand-500"
-                      : justAdded
-                        ? "bg-emerald-500 text-white"
-                        : "bg-brand-700 text-white"
-                  )}
-                  aria-label={product.inStock ? "Add to cart" : "Notify me"}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {justAdded ? (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0, rotate: -90 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0 }}
-                        transition={{ duration: 0.2 }}
+                <AnimatePresence mode="wait" initial={false}>
+                  {!product.inStock ? (
+                    <motion.button
+                      key="compare"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={handleCompare}
+                      whileTap={{ scale: 0.85 }}
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-sand-200 text-sand-500 shadow-sm transition-colors"
+                      aria-label="Compare similar products"
+                    >
+                      <ArrowLeftRight className="h-4 w-4" />
+                    </motion.button>
+                  ) : qty > 0 ? (
+                    <motion.div
+                      key="stepper"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center gap-0.5 rounded-full bg-brand-700 p-0.5 shadow-sm"
+                    >
+                      <motion.button
+                        onClick={handleDecrement}
+                        whileTap={{ scale: 0.85 }}
+                        className="flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors hover:bg-white/20"
+                        aria-label="Decrease quantity"
                       >
+                        <Minus className="h-3.5 w-3.5" />
+                      </motion.button>
+                      <span className="min-w-5 text-center text-xs font-bold text-white">
+                        {qty}
+                      </span>
+                      <motion.button
+                        onClick={handleIncrement}
+                        whileTap={{ scale: 0.85 }}
+                        className="flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors hover:bg-white/20"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </motion.button>
+                    </motion.div>
+                  ) : (
+                    <motion.button
+                      key="add"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={handleAdd}
+                      whileTap={{ scale: 0.85 }}
+                      className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-full shadow-sm transition-colors",
+                        justAdded
+                          ? "bg-emerald-500 text-white"
+                          : "bg-brand-700 text-white"
+                      )}
+                      aria-label="Add to cart"
+                    >
+                      {justAdded ? (
                         <Check className="h-4 w-4" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="plus"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{ duration: 0.15 }}
-                      >
+                      ) : (
                         <Plus className="h-4 w-4" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
+                      )}
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -323,14 +457,15 @@ export function ProductCard({
           onAddToCart?.(product.id);
         }}
       />
-      <NotifyMeDialog
-        open={notifyOpen}
-        onOpenChange={setNotifyOpen}
-        productName={product.name}
-        onSubmit={() => {
-          onNotifyMe?.(product.id);
-        }}
-      />
+      {!product.inStock && (
+        <CompareSheet
+          open={compareOpen}
+          onOpenChange={setCompareOpen}
+          product={product}
+          similarProducts={similarProducts}
+          onAddToCart={onAddToCart}
+        />
+      )}
     </>
   );
 }

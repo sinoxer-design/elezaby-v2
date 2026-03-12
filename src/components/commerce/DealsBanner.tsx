@@ -11,7 +11,7 @@ const dealMessages = [
 
 export function DealsBanner() {
  return (
- <div className="relative flex h-7 shrink-0 items-center overflow-hidden bg-brand-800 text-white">
+ <div className="relative flex h-7 shrink-0 items-center overflow-hidden bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))] text-white">
  <div className="deals-marquee whitespace-nowrap">
  {/* Double the messages for seamless loop */}
  {[...dealMessages, ...dealMessages].map((msg, i) => (

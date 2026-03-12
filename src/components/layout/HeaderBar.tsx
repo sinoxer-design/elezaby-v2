@@ -15,12 +15,12 @@ import {
   Flame,
   X,
   MapPin,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MegaMenu } from "./MegaMenu";
 import { LocationPickerSheet } from "./LocationPickerSheet";
 import { DealsBanner } from "@/components/commerce/DealsBanner";
-import { DeliveryToggle } from "./DeliveryToggle";
 import { useDeliveryContext } from "@/hooks/useDeliveryContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { mockProducts, mockTrendingSearches } from "@/lib/mock-data";
@@ -42,7 +42,7 @@ export function HeaderBar({
   const { scrollDirection } = useScroll();
   const pathname = usePathname();
   const isAccountPage = pathname.startsWith("/account");
-  const { deliveryMethod, setDeliveryMethod, locationLabel } = useDeliveryContext();
+  const { deliveryMethod, locationLabel } = useDeliveryContext();
   const [megaMenuOpen, setMegaMenuOpen] = React.useState(false);
   const [locationOpen, setLocationOpen] = React.useState(false);
   const megaMenuTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null);
@@ -56,6 +56,7 @@ export function HeaderBar({
   const touchStartY = React.useRef(0);
   const scrollDirRef = React.useRef<"up" | "down" | null>(null);
   scrollDirRef.current = scrollDirection;
+  const [activeDrawerTab, setActiveDrawerTab] = React.useState<"elezaby" | "deals">("elezaby");
 
   const handleMegaMenuEnter = () => {
     if (megaMenuTimerRef.current) clearTimeout(megaMenuTimerRef.current);
@@ -152,7 +153,7 @@ export function HeaderBar({
     <>
       <header
         ref={headerRef}
-        className="fixed inset-x-0 top-0 z-sticky flex flex-col border-b border-white/10 bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))] shadow-lg"
+        className="fixed inset-x-0 top-0 z-sticky flex flex-col bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))]"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_24%),radial-gradient(circle_at_top_left,rgba(255,167,88,0.18),transparent_22%)]" />
 
@@ -172,43 +173,14 @@ export function HeaderBar({
 
           <div className="relative mx-auto flex w-full min-h-0 max-w-7xl flex-col px-[var(--page-padding-x)] lg:px-8">
             {/* Top Row */}
-            <div className="flex h-14 shrink-0 items-center justify-between gap-2 lg:gap-4">
-              {/* Logo */}
-              <Link href="/" className="flex shrink-0 items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-white to-cyan-100 shadow-[0_8px_20px_rgba(0,0,0,0.18)]">
-                  <span className="text-sm font-extrabold text-brand-800">E</span>
-                </div>
-                <div className="hidden lg:block">
-                  <span className="block text-lg font-extrabold tracking-[0.01em] text-white">
-                    Elezaby
-                  </span>
-                  <span className="block text-[0.625rem] font-semibold uppercase tracking-[0.22em] text-cyan-200/90">
-                    Health Deals Hub
-                  </span>
-                </div>
-              </Link>
-
-              {/* Delivery/Pickup Toggle + Location (desktop) */}
-              {!minimal && !isAccountPage && (
-                <div className="flex min-w-0 flex-1 items-center gap-1.5 lg:gap-2 lg:max-w-[24rem]">
-                  <div className="shrink-0">
-                    <DeliveryToggle
-                      value={deliveryMethod}
-                      onChange={setDeliveryMethod}
-                    />
-                  </div>
-                  <button
-                    onClick={() => setLocationOpen(true)}
-                    className="hidden min-w-0 items-center gap-1 rounded-xl border border-white/10 bg-white/8 px-2 py-1.5 text-left transition-colors hover:bg-white/12 lg:flex"
-                  >
-                    <MapPin className="h-3.5 w-3.5 shrink-0 text-cyan-400" />
-                    <span className="truncate text-xs font-medium text-white/70">
-                      {locationLabel}
-                    </span>
-                    <ChevronDown className="h-3 w-3 shrink-0 text-white/40" />
-                  </button>
-                </div>
-              )}
+            <div className="flex shrink-0 items-center justify-between gap-2 py-2.5 lg:gap-4">
+              {/* Delivery time estimate */}
+              <div className="flex items-center gap-1.5">
+                <Zap className="h-5 w-5 fill-emerald-400 text-emerald-400" />
+                <span className="text-xl font-extrabold tracking-tight text-white">
+                  {deliveryMethod === "delivery" ? "30 minutes" : "15 minutes"}
+                </span>
+              </div>
 
               {/* Desktop: Expanded search bar (in collapsible section for desktop) */}
               <div className="hidden lg:flex lg:flex-1 lg:max-w-xl">
@@ -292,17 +264,15 @@ export function HeaderBar({
 
             {/* Location Row — mobile only, inside collapsible */}
             {!minimal && !isAccountPage && (
-              <div className="border-t border-white/10 lg:hidden">
+              <div className="lg:hidden">
                 <button
                   onClick={() => setLocationOpen(true)}
-                  className="flex w-full items-center gap-1 bg-white/4 px-2 py-1.5 text-left transition-colors hover:bg-white/10"
+                  className="flex w-full items-center gap-1 pb-4 text-left"
                 >
-                  <MapPin className="h-3 w-3 shrink-0 text-cyan-400" />
-                  <span className="truncate text-[0.65rem] font-medium text-white/70">
-                    {deliveryMethod === "delivery" ? "Deliver to:" : "Pickup from:"}{" "}
-                    <span className="text-white">{locationLabel}</span>
+                  <span className="truncate text-sm text-white/70">
+                    {locationLabel}
                   </span>
-                  <ChevronDown className="h-2.5 w-2.5 shrink-0 text-white/40" />
+                  <ChevronDown className="h-3 w-3 shrink-0 text-white/40" />
                 </button>
               </div>
             )}
@@ -352,39 +322,96 @@ export function HeaderBar({
           </div>
         </motion.div>
 
-        {/* ── Sticky Search Row: ALWAYS visible (mobile) ── */}
+        {/* ── File-Drawer Tabs + Search (mobile) ── */}
         {!minimal && !isAccountPage && (
-          <div className="relative flex items-center gap-2 border-t border-white/10 px-[var(--page-padding-x)] py-2 lg:hidden">
-            <div className="relative" style={{ width: "70%" }}>
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cyan-200/80" />
-              <input
-                ref={inputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setSearchOpen(true)}
-                placeholder="Search products..."
-                className="h-10 w-full rounded-2xl border border-white/20 bg-white/12 ps-9 pe-3 text-sm text-white placeholder:text-white/45 outline-none transition-colors focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
-              />
-            </div>
-            <Link
-              href="/products?sale=true"
-              className="flex h-10 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 px-3 text-xs font-extrabold text-brand-900 shadow-[0_4px_12px_rgba(245,158,11,0.3)] transition-transform active:scale-95"
-              style={{ width: "25%" }}
-            >
-              <Flame className="h-3.5 w-3.5" />
-              <span className="truncate">Deals</span>
-            </Link>
-            {searchOpen && (
+          <div className="relative lg:hidden">
+            {/* White background covering search row only — not behind inactive tab */}
+            <div className="absolute inset-x-0 bottom-0 top-[calc(100%-60px)] bg-sand-100" />
+
+            {/* Tabs row */}
+            <div className="relative flex items-end">
+              {/* Elezaby tab */}
               <button
-                onClick={closeSearch}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white/60 transition-colors hover:bg-white/10"
-                style={{ width: "5%" }}
-                aria-label="Close search"
+                onClick={() => setActiveDrawerTab("elezaby")}
+                className={cn(
+                  "relative flex w-1/2 items-center justify-center gap-2 rounded-t-2xl py-2.5 text-sm font-bold transition-colors",
+                  activeDrawerTab === "elezaby"
+                    ? "z-20 bg-sand-100 text-brand-800"
+                    : "z-10 bg-transparent text-white/50"
+                )}
               >
-                <X className="h-4 w-4" />
+                {activeDrawerTab === "elezaby" && (
+                  <>
+                    <span className="pointer-events-none absolute -left-4 bottom-0 h-4 w-4 bg-sand-100">
+                      <span className="absolute inset-0 rounded-br-2xl bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))]" />
+                    </span>
+                    <span className="pointer-events-none absolute -right-4 bottom-0 h-4 w-4 bg-sand-100">
+                      <span className="absolute inset-0 rounded-bl-2xl bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))]" />
+                    </span>
+                  </>
+                )}
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-brand-700 to-brand-900">
+                  <span className="text-[0.55rem] font-extrabold text-white">E</span>
+                </div>
+                Elezaby
               </button>
-            )}
+
+              {/* Deals tab */}
+              <button
+                onClick={() => setActiveDrawerTab("deals")}
+                className={cn(
+                  "relative flex w-1/2 items-center justify-center gap-2 rounded-t-2xl py-2.5 text-sm font-bold transition-colors",
+                  activeDrawerTab === "deals"
+                    ? "z-20 bg-sand-100 text-amber-700"
+                    : "z-10 bg-transparent text-white/50"
+                )}
+              >
+                {activeDrawerTab === "deals" && (
+                  <>
+                    <span className="pointer-events-none absolute -left-4 bottom-0 h-4 w-4 bg-sand-100">
+                      <span className="absolute inset-0 rounded-br-2xl bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))]" />
+                    </span>
+                    <span className="pointer-events-none absolute -right-4 bottom-0 h-4 w-4 bg-sand-100">
+                      <span className="absolute inset-0 rounded-bl-2xl bg-[linear-gradient(180deg,rgba(8,28,72,0.98),rgba(16,52,112,0.97))]" />
+                    </span>
+                  </>
+                )}
+                <Flame className="h-4.5 w-4.5" />
+                50% Off
+              </button>
+            </div>
+
+            {/* Search row */}
+            <div className="relative z-10 flex items-center gap-2 px-[var(--page-padding-x)] py-2.5">
+              <div className="relative flex-1">
+                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand-400" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setSearchOpen(true)}
+                  placeholder="Search products..."
+                  className="h-10 w-full rounded-2xl border border-sand-200 bg-sand-50 ps-9 pe-3 text-sm text-sand-800 placeholder:text-sand-400 outline-none transition-colors focus:border-brand-400 focus:ring-1 focus:ring-brand-200"
+                />
+              </div>
+              <Link
+                href="/products?sale=true"
+                className="flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 px-4 text-xs font-extrabold text-brand-900 shadow-[0_4px_12px_rgba(245,158,11,0.3)] transition-transform active:scale-95"
+              >
+                <Flame className="h-3.5 w-3.5" />
+                <span>Deals</span>
+              </Link>
+              {searchOpen && (
+                <button
+                  onClick={closeSearch}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sand-400 transition-colors hover:bg-sand-100"
+                  aria-label="Close search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
         )}
 

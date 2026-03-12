@@ -90,7 +90,7 @@ export function BottomNav() {
     <>
       <motion.nav
         initial={false}
-        animate={isHidden ? { y: "100%" } : { y: 0 }}
+        animate={isHidden ? { y: "calc(100% + 2rem)" } : { y: 0 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         className="fixed inset-x-0 bottom-0 z-sticky border-t border-sand-200 bg-white/95 backdrop-blur-md shadow-bottom-nav lg:hidden"
         style={{ paddingBottom: "var(--safe-area-bottom)" }}

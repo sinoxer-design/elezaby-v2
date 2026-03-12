@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 
 interface ScrollState {
   scrollY: number;
@@ -8,39 +8,58 @@ interface ScrollState {
   isScrolled: boolean;
 }
 
-export function useScroll(threshold = 10): ScrollState {
-  const [scrollState, setScrollState] = useState<ScrollState>({
-    scrollY: 0,
-    scrollDirection: null,
-    isScrolled: false,
-  });
+const defaultState: ScrollState = {
+  scrollY: 0,
+  scrollDirection: null,
+  isScrolled: false,
+};
 
+// ── Context ─────────────────────────────────────────────
+export const ScrollContext = createContext<ScrollState>(defaultState);
+
+/** Read scroll state from the nearest ScrollProvider */
+export function useScroll(): ScrollState {
+  return useContext(ScrollContext);
+}
+
+// ── Provider state hook (call once in AppShell) ─────────
+const THRESHOLD = 10;
+
+export function useScrollState(): ScrollState {
+  const [scrollState, setScrollState] = useState<ScrollState>(defaultState);
   const lastScrollY = useRef(0);
+  const directionRef = useRef<"up" | "down" | null>(null);
   const ticking = useRef(false);
 
   const updateScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
-    const direction =
-      currentScrollY > lastScrollY.current + threshold
-        ? "down"
-        : currentScrollY < lastScrollY.current - threshold
-        ? "up"
-        : scrollState.scrollDirection;
 
-    if (
-      direction !== scrollState.scrollDirection ||
-      currentScrollY !== scrollState.scrollY
+    const newDirection =
+      currentScrollY > lastScrollY.current + THRESHOLD
+        ? "down"
+        : currentScrollY < lastScrollY.current - THRESHOLD
+          ? "up"
+          : directionRef.current;
+
+    // Only update lastScrollY when direction actually changes
+    // to prevent drift between consumers
+    if (newDirection !== directionRef.current) {
+      lastScrollY.current = currentScrollY;
+      directionRef.current = newDirection;
+    } else if (
+      Math.abs(currentScrollY - lastScrollY.current) > THRESHOLD
     ) {
-      setScrollState({
-        scrollY: currentScrollY,
-        scrollDirection: direction,
-        isScrolled: currentScrollY > 0,
-      });
+      lastScrollY.current = currentScrollY;
     }
 
-    lastScrollY.current = currentScrollY;
+    setScrollState({
+      scrollY: currentScrollY,
+      scrollDirection: newDirection,
+      isScrolled: currentScrollY > 0,
+    });
+
     ticking.current = false;
-  }, [scrollState.scrollDirection, scrollState.scrollY, threshold]);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
