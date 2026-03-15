@@ -8,7 +8,8 @@ import {
  CarouselPrevious,
 } from"@/components/ui/carousel";
 import { BrandGroupCard } from"./BrandGroupCard";
-import { mockBabyBrands, allProducts } from"@/lib/mock-data";
+import { mockBabyBrands } from"@/lib/data/brands";
+import { allProducts } from"@/lib/data/products";
 import { Button } from"@/components/ui/button";
 import { ChevronRight, Baby } from"lucide-react";
 import Link from"next/link";

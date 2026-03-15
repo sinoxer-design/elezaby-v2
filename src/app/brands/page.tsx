@@ -6,8 +6,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Search, Star, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { mockBrands } from "@/lib/mock-data";
-import type { Brand } from "@/lib/mock-data";
+import { mockBrands } from "@/lib/data/brands";
+import type { Brand } from "@/lib/data/brands";
 
 // ── Animation variants ──────────────────────────────────────────────
 const containerVariants = {

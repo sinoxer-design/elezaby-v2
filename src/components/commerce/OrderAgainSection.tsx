@@ -2,7 +2,8 @@
 
 import { ProductCarousel } from"./ProductCarousel";
 import { type ProductData } from"./ProductCard";
-import { mockOrderHistory, allProducts } from"@/lib/mock-data";
+import { mockOrderHistory } from"@/lib/data/orders";
+import { allProducts } from"@/lib/data/products";
 import { cn } from"@/lib/utils";
 
 interface OrderAgainSectionProps {

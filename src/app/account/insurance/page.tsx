@@ -22,7 +22,7 @@ import {
   type InsuranceData,
   type FamilyInsuranceProfile,
 } from "@/hooks/useUserProfile";
-import { insuranceCoveredCategoryIds } from "@/lib/mock-data";
+import { insuranceCoveredCategoryIds } from "@/lib/data/insurance";
 import { cn } from "@/lib/utils";
 
 const insuranceProviders = [

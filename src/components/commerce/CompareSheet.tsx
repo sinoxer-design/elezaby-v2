@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { easeSmooth } from "@/lib/motion";
 import { useOverlaySheet } from "@/hooks/useOverlaySheet";
 import { useCart } from "@/hooks/useCart";
 import { type ProductData } from "./ProductCard";
@@ -190,7 +191,7 @@ export function CompareSheet({
                 initial={{ opacity: 0, scale: 0.4 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.4 }}
-                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.2, ease: easeSmooth }}
               >
                 <Link
                   href="/cart"

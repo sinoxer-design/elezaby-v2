@@ -2,6 +2,7 @@
 
 import * as React from"react";
 import { motion, AnimatePresence } from"framer-motion";
+import { springGentle } from"@/lib/motion";
 import { ShoppingBag, X } from"lucide-react";
 
 const socialProofMessages = [
@@ -52,7 +53,7 @@ export function SocialProofToast() {
  initial={{ opacity: 0, y: 80, x: 0 }}
  animate={{ opacity: 1, y: 0, x: 0 }}
  exit={{ opacity: 0, y: 80 }}
- transition={{ type:"spring", stiffness: 300, damping: 25 }}
+ transition={springGentle}
  className="fixed bottom-20 start-4 z-toast lg:bottom-6 lg:start-6"
  >
  <div className="flex items-center gap-3 rounded-lg border border-sand-200 bg-white/95 px-4 py-2.5 shadow-elevated backdrop-blur-sm">

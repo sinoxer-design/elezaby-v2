@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { mockSymptoms } from "@/lib/mock-data";
+import { mockSymptoms } from "@/lib/data/symptoms";
 import { cn } from "@/lib/utils";
 
 const colorMap: Record<string, string> = {

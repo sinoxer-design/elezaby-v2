@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from"framer-motion";
+import { springStiff } from"@/lib/motion";
 import { Truck, Store, Clock, MapPin } from"lucide-react";
 import { useDeliveryContext } from"@/hooks/useDeliveryContext";
 import { cn } from"@/lib/utils";
@@ -23,7 +24,7 @@ export function HomepageDeliverySelector() {
  animate={{
  left: deliveryMethod ==="delivery" ?"2px" :"calc(50%)",
  }}
- transition={{ type:"spring", stiffness: 400, damping: 30 }}
+ transition={springStiff}
  />
 
  <button

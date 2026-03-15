@@ -6,6 +6,7 @@ import Link from"next/link";
 import { ShoppingCart } from"lucide-react";
 import { motion } from"framer-motion";
 import { cn } from"@/lib/utils";
+import { springDefault } from"@/lib/motion";
 import { type ProductData } from"./ProductCard";
 
 interface MaxSavingsCardProps {
@@ -27,7 +28,7 @@ export function MaxSavingsCard({
  <Link href={`/products/${product.id}`} className="flex h-full">
  <motion.div
  whileTap={{ scale: 0.97 }}
- transition={{ type:"spring", stiffness: 400, damping: 25 }}
+ transition={springDefault}
  className={cn("flex h-full w-full", className)}
  >
  <div className="relative flex h-full w-full flex-col overflow-hidden rounded-xl border-2 border-deal/20 bg-gradient-to-br from-red-50 to-amber-50">

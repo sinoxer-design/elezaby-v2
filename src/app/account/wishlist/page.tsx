@@ -3,7 +3,7 @@
 import Link from"next/link";
 import { ChevronLeft, Heart } from"lucide-react";
 import { ProductCard } from"@/components/commerce/ProductCard";
-import { mockProducts } from"@/lib/mock-data";
+import { mockProducts } from"@/lib/data/products";
 
 const wishlistProducts = [mockProducts[0], mockProducts[2], mockProducts[4]];
 

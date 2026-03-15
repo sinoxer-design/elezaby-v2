@@ -3,6 +3,7 @@
 import * as React from"react";
 import { X, Gift } from"lucide-react";
 import { motion, AnimatePresence } from"framer-motion";
+import { springGentle } from"@/lib/motion";
 
 export function WelcomeOfferBanner() {
  const [dismissed, setDismissed] = React.useState(false);
@@ -31,7 +32,7 @@ export function WelcomeOfferBanner() {
  initial={{ opacity: 0, y: -20 }}
  animate={{ opacity: 1, y: 0 }}
  exit={{ opacity: 0, y: -20 }}
- transition={{ type:"spring", stiffness: 300, damping: 25 }}
+ transition={springGentle}
  className="mx-[var(--page-padding-x)] lg:mx-8 overflow-hidden rounded-lg border border-sand-200 bg-white shadow-sm"
  >
  <div className="flex items-center gap-3 px-4 py-3">

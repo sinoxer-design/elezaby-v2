@@ -6,12 +6,12 @@ import type {
   RxOrderStatus,
   RxOrderType,
   RxMessage,
-} from "@/lib/mock-data";
+} from "@/lib/data/rx";
 import {
   mockExistingRxOrders,
   mockRxSimulationMessages,
   mockRxIdentifiedItems,
-} from "@/lib/mock-data";
+} from "@/lib/data/rx";
 
 interface RxOrdersContextValue {
   orders: RxPrescriptionOrder[];

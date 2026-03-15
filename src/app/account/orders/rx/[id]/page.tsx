@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRxOrders } from "@/hooks/useRxOrders";
 import { useCart } from "@/hooks/useCart";
-import type { RxOrderStatus } from "@/lib/mock-data";
+import type { RxOrderStatus } from "@/lib/data/rx";
 
 const statusConfig: Record<
   RxOrderStatus,

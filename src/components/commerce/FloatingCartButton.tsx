@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/hooks/useCart";
 import { useScroll } from "@/hooks/useScroll";
 import { useOverlaySheet } from "@/hooks/useOverlaySheet";
+import { easeSmooth, easeDecelerate } from "@/lib/motion";
 
 const FREE_DELIVERY_THRESHOLD = 300;
 
@@ -61,13 +62,13 @@ export function FloatingCartButton() {
                   hasItems
                     ? {
                         duration: 0.35,
-                        ease: [0.22, 1, 0.36, 1],
+                        ease: easeSmooth,
                         borderRadius: { duration: 0.25, delay: 0.08 },
                       }
                     : {
                         duration: 0.6,
                         delay: 0.5,
-                        ease: [0.16, 1, 0.3, 1],
+                        ease: easeDecelerate,
                       }
                 }
                 style={hasItems ? { originX: 0.85, originY: 0 } : undefined}
@@ -123,7 +124,7 @@ export function FloatingCartButton() {
                   y: 30,
                   transition: { duration: 0.15, ease: "easeIn" },
                 }}
-                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.2, ease: easeSmooth }}
                 className="pointer-events-auto mb-20 me-4 ms-auto w-fit"
               >
                 <Link

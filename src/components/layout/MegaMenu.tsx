@@ -3,6 +3,7 @@
 import * as React from"react";
 import Link from"next/link";
 import { motion, AnimatePresence } from"framer-motion";
+import { easeDecelerate } from"@/lib/motion";
 import { cn } from"@/lib/utils";
 import { getPrimaryCategories, getChildren } from"@/lib/categories";
 
@@ -52,7 +53,7 @@ export function MegaMenu({ open, onClose, onMouseEnter, onMouseLeave }: MegaMenu
  initial={{ opacity: 0, y: -8 }}
  animate={{ opacity: 1, y: 0 }}
  exit={{ opacity: 0, y: -8 }}
- transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+ transition={{ duration: 0.2, ease: easeDecelerate }}
  className="fixed start-1/2 z-[100] w-[calc(100vw-4rem)] max-w-4xl -translate-x-1/2 overflow-hidden rounded-xl border border-sand-200 bg-white shadow-elevated"
  style={{ top:"var(--header-height-desktop)" }}
  onMouseEnter={onMouseEnter}

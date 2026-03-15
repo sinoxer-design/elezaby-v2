@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { CompareSheet } from "./CompareSheet";
 import { type ProductData } from "./ProductCard";
-import { getSimilarProducts } from "@/lib/mock-data";
+import { getSimilarProducts } from "@/lib/data/products";
 import { useOverlaySheet } from "@/hooks/useOverlaySheet";
 
 interface NotifyMeDialogProps {

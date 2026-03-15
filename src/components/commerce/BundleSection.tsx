@@ -8,7 +8,7 @@ import {
  CarouselPrevious,
 } from"@/components/ui/carousel";
 import { BundleCard } from"./BundleCard";
-import { type BundleData } from"@/lib/mock-data";
+import { type BundleData } from"@/lib/data/bundles";
 import { Button } from"@/components/ui/button";
 import { ChevronRight } from"lucide-react";
 import Link from"next/link";

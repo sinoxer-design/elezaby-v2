@@ -13,7 +13,7 @@ import { QuantitySelector } from"@/components/commerce/QuantitySelector";
 import { ProductCarousel } from"@/components/commerce/ProductCarousel";
 import { PrescriptionDialog } from"@/components/commerce/PrescriptionDialog";
 import { NotifyMeDialog } from"@/components/commerce/NotifyMeDialog";
-import { mockProducts, mockFlashDeals, mockBabyProducts } from"@/lib/mock-data";
+import { mockProducts, mockFlashDeals, mockBabyProducts } from"@/lib/data/products";
 import { useCart } from"@/hooks/useCart";
 import { ProductCard } from"@/components/commerce/ProductCard";
 import {

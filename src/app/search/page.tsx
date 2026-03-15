@@ -3,7 +3,8 @@
 import * as React from"react";
 import { ProductCard } from"@/components/commerce/ProductCard";
 import { Badge } from"@/components/ui/badge";
-import { mockProducts, mockTrendingSearches, mockRecentSearches } from"@/lib/mock-data";
+import { mockProducts } from"@/lib/data/products";
+import { mockTrendingSearches, mockRecentSearches } from"@/lib/data/search";
 import { useCart } from"@/hooks/useCart";
 import { Search, Clock, TrendingUp, X, ScanBarcode } from"lucide-react";
 import { cn } from"@/lib/utils";

@@ -5,8 +5,9 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { springDefault } from "@/lib/motion";
 import { type ProductData } from "./ProductCard";
-import { type BabyBrand } from "@/lib/mock-data";
+import { type BabyBrand } from "@/lib/data/brands";
 
 interface BrandGroupCardProps {
   brand: BabyBrand;
@@ -24,7 +25,7 @@ export function BrandGroupCard({
   return (
     <motion.div
       whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      transition={springDefault}
       className={cn("flex h-full w-full", className)}
     >
       <div className="flex h-full w-[260px] flex-col overflow-hidden rounded-xl bg-white shadow-card">

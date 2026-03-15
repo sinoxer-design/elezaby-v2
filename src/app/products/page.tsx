@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ProductCard } from "@/components/commerce/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { allProducts } from "@/lib/mock-data";
+import { allProducts } from "@/lib/data/products";
 import { useCart } from "@/hooks/useCart";
 import {
   FilterSheet,

@@ -11,7 +11,7 @@ import {
 } from"@/components/ui/carousel";
 import Autoplay from"embla-carousel-autoplay";
 import { cn } from"@/lib/utils";
-import type { PromoBanner } from"@/lib/mock-data";
+import type { PromoBanner } from"@/lib/data/promotions";
 
 interface PromoBannerCarouselProps {
  banners: PromoBanner[];
@@ -36,7 +36,7 @@ export function PromoBannerCarousel({
  );
 
  return (
- <section className={cn("px-[var(--page-padding-x)] lg:px-8", className)}>
+ <section className={cn("w-full", className)}>
  <Carousel
  setApi={setApi}
  plugins={[plugin.current]}
@@ -49,11 +49,11 @@ export function PromoBannerCarousel({
  <Link href={banner.ctaHref} className="block">
  <div
  className={cn(
-"relative overflow-hidden rounded-xl bg-gradient-to-r p-5 lg:p-10 h-[240px] lg:h-72",
+"relative overflow-hidden bg-gradient-to-r px-5 pt-4 pb-[30px] lg:p-10 aspect-[3/2] lg:aspect-[21/9]",
  banner.gradient
  )}
  >
- <div className="relative z-10 flex flex-col gap-2 lg:gap-3 max-w-[60%] lg:max-w-md">
+ <div className="relative z-10 flex flex-col gap-2 lg:gap-3 max-w-[55%] lg:max-w-md h-full justify-center">
  {banner.badge && (
  <span className="inline-flex w-fit items-center rounded-full bg-white/20 px-3 py-1 text-[0.625rem] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
  {banner.badge}
@@ -65,30 +65,25 @@ export function PromoBannerCarousel({
  <p className="text-xs text-white/85 lg:text-base line-clamp-3">
  {banner.subtitle}
  </p>
- <span className="mt-1 inline-flex w-fit items-center rounded-xl bg-white px-4 py-2 text-xs font-bold text-brand-700 transition-transform active:scale-95 lg:mt-2 lg:px-6 lg:py-3 lg:text-base">
+ <span className="mt-1 inline-flex w-fit items-center rounded-full bg-white px-4 py-2 text-xs font-bold text-brand-700 transition-transform active:scale-95 lg:mt-2 lg:px-6 lg:py-3 lg:text-base">
  {banner.ctaText}
  </span>
  </div>
 
  {/* Banner product image */}
  {banner.imageUrl && (
- <div className="absolute end-2 bottom-2 top-2 w-[35%] lg:end-8 lg:bottom-4 lg:top-4 lg:w-[28%]">
- <div className="relative h-full w-full opacity-90">
+ <div className="absolute end-0 bottom-0 top-0 w-[45%] lg:w-[35%]">
+ <div className="relative h-full w-full">
  <Image
  src={banner.imageUrl}
  alt=""
  fill
- className="object-contain drop-shadow-lg"
- sizes="(max-width: 768px) 35vw, 28vw"
+ className="object-cover"
+ sizes="(max-width: 768px) 45vw, 35vw"
  />
  </div>
  </div>
  )}
-
- {/* Decorative elements */}
- <div className="absolute -end-12 -top-12 h-40 w-40 rounded-full bg-white/10 lg:h-72 lg:w-72 lg:-end-20 lg:-top-20" />
- <div className="absolute -bottom-6 -end-6 h-28 w-28 rounded-full bg-white/5 lg:h-48 lg:w-48" />
- <div className="absolute bottom-4 end-4 hidden h-20 w-20 rounded-full bg-white/10 lg:block lg:h-32 lg:w-32" />
  </div>
  </Link>
  </CarouselItem>
@@ -96,8 +91,8 @@ export function PromoBannerCarousel({
  </CarouselContent>
  </Carousel>
 
- {/* Dot indicators */}
- <div className="mt-3 flex justify-center gap-1.5">
+ {/* Dot indicators — overlaid on banner */}
+ <div className="-mt-8 relative z-10 flex justify-center gap-1.5 pb-3">
  {banners.map((_, idx) => (
  <button
  key={idx}
@@ -105,8 +100,8 @@ export function PromoBannerCarousel({
  className={cn(
 "h-1.5 rounded-full transition-all duration-300",
  idx === current
- ?"w-6 bg-brand-600"
- :"w-1.5 bg-sand-300 hover:bg-sand-400"
+ ?"w-6 bg-white"
+ :"w-1.5 bg-white/50 hover:bg-white/70"
  )}
  aria-label={`Go to slide ${idx + 1}`}
  />

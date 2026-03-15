@@ -3,8 +3,9 @@
 import * as React from"react";
 import Link from"next/link";
 import { motion, AnimatePresence } from"framer-motion";
+import { springGentle } from"@/lib/motion";
 import { Gift, X, Copy, Check, Clock } from"lucide-react";
-import { mockPersonalizedOffers, type PersonalizedOffer } from"@/lib/mock-data";
+import { mockPersonalizedOffers, type PersonalizedOffer } from"@/lib/data/orders";
 import { cn } from"@/lib/utils";
 
 const SESSION_KEY ="elezaby-offer-count";
@@ -70,7 +71,7 @@ export function PersonalizedOfferFAB() {
  initial={{ x: -80, opacity: 0 }}
  animate={{ x: 0, opacity: 1 }}
  exit={{ x: -80, opacity: 0 }}
- transition={{ type:"spring", stiffness: 300, damping: 25 }}
+ transition={springGentle}
  onClick={() => setOfferOpen(true)}
  className="fixed bottom-20 start-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-deal to-amber-500 text-white shadow-elevated"
  aria-label="View personalized offer"
@@ -104,7 +105,7 @@ export function PersonalizedOfferFAB() {
  initial={{ y: 100, opacity: 0, scale: 0.9 }}
  animate={{ y: 0, opacity: 1, scale: 1 }}
  exit={{ y: 100, opacity: 0, scale: 0.9 }}
- transition={{ type:"spring", stiffness: 300, damping: 25 }}
+ transition={springGentle}
  className="fixed bottom-24 start-4 z-50 w-72 overflow-hidden rounded-2xl bg-white shadow-elevated"
  >
  {/* Gradient Header */}

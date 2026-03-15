@@ -6,7 +6,7 @@ import { ChevronLeft, Package, FileUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRxOrders } from "@/hooks/useRxOrders";
-import type { RxOrderStatus } from "@/lib/mock-data";
+import type { RxOrderStatus } from "@/lib/data/rx";
 
 const orders = [
   {

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { springStiff } from "@/lib/motion";
 import { Truck, Store } from "lucide-react";
 
 interface DeliveryToggleProps {
@@ -35,7 +36,7 @@ export function DeliveryToggle({ value, onChange }: DeliveryToggleProps) {
       <motion.div
         className="absolute top-1 bottom-1 rounded-[8px] bg-white/25 shadow-sm"
         animate={{ left: indicator.left, width: indicator.width }}
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        transition={springStiff}
       />
 
       <button

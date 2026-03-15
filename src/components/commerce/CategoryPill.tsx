@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { springSnappy } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 interface CategoryPillProps {
@@ -32,10 +33,10 @@ export function CategoryPill({
   const content = (
     <motion.div
       whileTap={{ scale: 0.92 }}
-      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      transition={springSnappy}
       className={cn(
         "flex shrink-0 flex-col items-center gap-1.5",
-        isLarge ? "w-[6.5rem]" : "w-full"
+        isLarge ? "w-[6.5rem]" : "w-[4.5rem]"
       )}
     >
       <div

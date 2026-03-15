@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, ShoppingBag } from "lucide-react";
+import { ChevronRight, ShoppingBag, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CategoryPill } from "@/components/commerce/CategoryPill";
 import { ProductCarousel } from "@/components/commerce/ProductCarousel";
@@ -18,13 +18,12 @@ import {
   mockProducts,
   mockFlashDeals,
   mockBestSellers,
-  mockPromoBanners,
-  mockBundles,
-  mockBrands,
-  mockPromoSections,
   allProducts,
   getPersonalizedProducts,
-} from "@/lib/mock-data";
+} from "@/lib/data/products";
+import { mockPromoBanners, mockPromoSections } from "@/lib/data/promotions";
+import { mockBundles } from "@/lib/data/bundles";
+import { mockBrands } from "@/lib/data/brands";
 import { getPrimaryCategories } from "@/lib/categories";
 import { useCart } from "@/hooks/useCart";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -95,12 +94,42 @@ export default function HomePage() {
   );
 
   return (
-    <div className="relative flex flex-col gap-4 pb-6 pt-2">
+    <div className="relative flex flex-col pb-6">
       <RamadanHeroBanner />
 
-      <div className="relative z-[1] isolate flex flex-col gap-10">
-        {/* 1. Banner Carousel */}
-        <PromoBannerCarousel banners={mockPromoBanners} />
+      <div className="relative z-[1] isolate flex flex-col gap-6">
+        {/* 1. Banner + Categories combined section */}
+        <section>
+          <PromoBannerCarousel banners={mockPromoBanners} />
+          {/* Categories: horizontal scrollable, below banner */}
+          <div className="-mt-3 relative z-10 rounded-t-2xl bg-sand-50 pt-3 pb-1 px-[var(--page-padding-x)] lg:px-8">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="h-4 w-4 text-sand-600" />
+                <span className="text-sm font-bold text-sand-800">Popular Categories</span>
+              </div>
+              <Link
+                href="/products"
+                className="flex items-center gap-0.5 text-[0.65rem] font-semibold text-brand-500 transition-colors hover:text-brand-700"
+              >
+                See All
+                <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
+              {sortedCategories.map((cat) => (
+                <CategoryPill
+                  key={cat.id}
+                  name={cat.name}
+                  emoji={cat.emoji}
+                  imageUrl={cat.imageUrl}
+                  href={`/products?category=${cat.slug}`}
+                  size="sm"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* 2. Daily Deals */}
         <FlashDealsSection
@@ -108,35 +137,6 @@ export default function HomePage() {
           endsAt={flashDealEndTime}
           onAddToCart={handleAddToCart}
         />
-
-        {/* 3. Categories: 2-row grid */}
-        <section className="relative z-10 px-[var(--page-padding-x)] lg:px-8">
-          <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-cyan-500 px-4 py-2.5 shadow-[0_4px_16px_rgba(16,34,76,0.15)]">
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4 text-white/90" />
-              <span className="text-sm font-bold text-white">Popular Categories</span>
-            </div>
-            <Link
-              href="/products"
-              className="flex items-center gap-0.5 text-[0.65rem] font-semibold text-white/80 transition-colors hover:text-white"
-            >
-              See All
-              <ChevronRight className="h-3 w-3" />
-            </Link>
-          </div>
-          <div className="mt-3 grid grid-cols-4 gap-x-2 gap-y-3 lg:flex lg:gap-4 lg:overflow-x-auto lg:scrollbar-hide">
-            {sortedCategories.map((cat) => (
-              <CategoryPill
-                key={cat.id}
-                name={cat.name}
-                emoji={cat.emoji}
-                imageUrl={cat.imageUrl}
-                href={`/products?category=${cat.slug}`}
-                size="sm"
-              />
-            ))}
-          </div>
-        </section>
 
         <ProfileCompletionAlert />
 
@@ -152,10 +152,59 @@ export default function HomePage() {
         {/* 4. Order Again */}
         <OrderAgainSection onAddToCart={handleAddToCart} />
 
-        {/* 5. Colorful Promo Carousel */}
-        <PromoDealBanners sections={mockPromoSections} />
+        {/* 5. Curated For You */}
+        <section className="space-y-3">
+          <div className="px-[var(--page-padding-x)] lg:px-8">
+            <h2 className="text-lg font-bold text-sand-800">Curated for you</h2>
+            <p className="text-xs text-sand-500">Handpicked deals based on what&apos;s trending</p>
+          </div>
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pl-[var(--page-padding-x)] pr-4 lg:px-8">
+            {[
+              { title: "Up to 40% off", subtitle: "Hidden Gems", brands: "The Ordinary · ClayCo · Etude", gradient: "from-amber-600 to-amber-800", href: "/products?sale=true" },
+              { title: "Buy 1 Get 1", subtitle: "BOGO Deals", brands: "Nivea · Garnier · L'Oreal", gradient: "from-brand-600 to-cyan-600", href: "/products?sale=true" },
+              { title: "Under 100 EGP", subtitle: "Budget Finds", brands: "Panadol · Oral-B · Dove", gradient: "from-emerald-600 to-teal-700", href: "/products?sale=true" },
+            ].map((card) => (
+              <Link
+                key={card.title}
+                href={card.href}
+                className="group relative w-[75%] shrink-0 overflow-hidden rounded-2xl lg:w-[280px]"
+              >
+                <div className={`bg-gradient-to-br ${card.gradient} p-5 h-[180px] flex flex-col justify-between`}>
+                  <div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-0.5 text-[0.6rem] font-bold text-white backdrop-blur-sm">
+                      {card.title}
+                    </span>
+                    <h3 className="mt-2 text-xl font-bold text-white">{card.subtitle}</h3>
+                    <p className="mt-1 text-[0.65rem] text-white/70">{card.brands}</p>
+                  </div>
+                  <span className="inline-flex w-fit items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[0.65rem] font-bold text-sand-800 transition-transform group-active:scale-95">
+                    Shop Now <ChevronRight className="h-3 w-3" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
 
-        {/* 6. Shop by Brand */}
+        {/* 6. Deals & Offers */}
+        <section className="space-y-3">
+          <div className="px-[var(--page-padding-x)] lg:px-8">
+            <h2 className="text-lg font-bold text-sand-800">Deals & Offers</h2>
+            <p className="text-xs text-sand-500">Exclusive savings across top categories</p>
+          </div>
+          <PromoDealBanners sections={mockPromoSections} />
+        </section>
+
+        {/* BOGO — Buy One Get One Free */}
+        <ProductCarousel
+          title="Buy 1 Get 1 Free"
+          kicker="Limited offers"
+          products={mockProducts.filter((p) => p.quantityOffer).slice(0, 8)}
+          viewAllHref="/products?sale=true"
+          onAddToCart={handleAddToCart}
+        />
+
+        {/* 7. Shop by Brand */}
         <section className="space-y-3">
           <div className="px-[var(--page-padding-x)] lg:px-8">
             <div className="space-y-1.5">
@@ -241,7 +290,42 @@ export default function HomePage() {
         {/* 10. Sales in Bundles */}
         <BundleSection bundles={mockBundles} onAddBundle={handleAddBundle} />
 
-        {/* 11. Health Tips */}
+        {/* Video Content */}
+        <section className="space-y-3">
+          <div className="px-[var(--page-padding-x)] lg:px-8">
+            <h2 className="text-lg font-bold text-sand-800">Watch & Learn</h2>
+            <p className="text-xs text-sand-500">Expert tips & product spotlights</p>
+          </div>
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pl-[var(--page-padding-x)] pr-4 lg:px-8">
+            {[
+              { title: "Morning Skincare Routine", duration: "2:30", category: "Skincare" },
+              { title: "Baby Bath Time Tips", duration: "3:15", category: "Baby Care" },
+              { title: "Vitamins Explained", duration: "4:00", category: "Wellness" },
+              { title: "Hair Care Essentials", duration: "2:45", category: "Hair Care" },
+            ].map((video) => (
+              <div
+                key={video.title}
+                className="w-[60%] shrink-0 lg:w-[240px]"
+              >
+                <div className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-sand-200">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                      <Play className="h-5 w-5 text-brand-700 ms-0.5" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 inset-x-0 p-3">
+                    <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[0.55rem] font-bold text-white backdrop-blur-sm">{video.category}</span>
+                    <p className="mt-1 text-sm font-bold text-white line-clamp-2">{video.title}</p>
+                    <span className="text-[0.65rem] text-white/70">{video.duration}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Health Tips */}
         <section className="space-y-3">
           <div className="px-[var(--page-padding-x)] lg:px-8">
             <div className="space-y-1.5">

@@ -4,7 +4,8 @@ import Image from"next/image";
 import { Plus } from"lucide-react";
 import { motion } from"framer-motion";
 import { cn } from"@/lib/utils";
-import { type BundleData } from"@/lib/mock-data";
+import { springDefault } from"@/lib/motion";
+import { type BundleData } from"@/lib/data/bundles";
 
 interface BundleCardProps {
  bundle: BundleData;
@@ -22,7 +23,7 @@ export function BundleCard({
  return (
  <motion.div
  whileTap={{ scale: 0.98 }}
- transition={{ type:"spring", stiffness: 400, damping: 25 }}
+ transition={springDefault}
  className={cn("flex h-full w-full", className)}
  >
  <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-sand-100 bg-white shadow-[0_4px_16px_rgba(16,34,76,0.07)] transition-shadow hover:shadow-[0_8px_24px_rgba(16,34,76,0.12)]">

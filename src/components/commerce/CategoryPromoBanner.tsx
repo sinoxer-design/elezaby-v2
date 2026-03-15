@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { mockCategoryPromoBanners } from "@/lib/mock-data";
+import { mockCategoryPromoBanners } from "@/lib/data/promotions";
 
 interface CategoryPromoBannerProps {
   primaryId: string;

@@ -8,7 +8,7 @@ import { Separator } from"@/components/ui/separator";
 import { QuantitySelector } from"@/components/commerce/QuantitySelector";
 import { ProductCarousel } from"@/components/commerce/ProductCarousel";
 import { useCart } from"@/hooks/useCart";
-import { mockProducts } from"@/lib/mock-data";
+import { mockProducts } from"@/lib/data/products";
 import { Trash2, ShoppingCart, Tag } from"lucide-react";
 
 export default function CartPage() {
