@@ -134,6 +134,12 @@ export function ProductCardGrid({
                 {product.name}
               </h3>
 
+              {/* Size */}
+              {product.size && (
+                <p className="mt-0.5 text-[0.55rem] text-sand-400">
+                  {product.size}
+                </p>
+              )}
 
               {/* Price row + Add button */}
               <div className="mt-auto flex items-end justify-between pt-2">

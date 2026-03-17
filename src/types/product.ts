@@ -20,6 +20,7 @@ export interface ProductData {
   reviewCount?: number;
   soldCount?: number;
   freeShipping?: boolean;
+  size?: string;
   expressDelivery?: boolean;
   flashDeal?: { endsAt: string };
   categoryId?: string;
