@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Package, ShoppingCart, Check } from "lucide-react";
+import { Package, ShoppingCart, Check, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sheet,
@@ -29,6 +29,7 @@ export function BundleDetailSheet({
   onAddBundle,
 }: BundleDetailSheetProps) {
   const [justAdded, setJustAdded] = React.useState(false);
+  const [expandedId, setExpandedId] = React.useState<string | null>(null);
   const { setSheetOpen } = useOverlaySheet();
   const savings = bundle.originalTotal - bundle.bundlePrice;
 
@@ -105,34 +106,62 @@ export function BundleDetailSheet({
 
         <ScrollArea className="max-h-[calc(80dvh-13rem)] px-5">
           {/* Products list */}
-          <div className="space-y-3 pb-4">
-            {bundle.products.map((product, i) => (
-              <div
-                key={product.productId}
-                className="flex items-center gap-3 rounded-2xl border border-sand-100 bg-white p-3"
-              >
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-sand-50">
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
+          <div className="space-y-3 pb-4 pt-3">
+            {bundle.products.map((product) => {
+              const isExpanded = expandedId === product.productId;
+              return (
+                <div
+                  key={product.productId}
+                  className="overflow-hidden rounded-2xl border border-sand-100 bg-white"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isExpanded ? null : product.productId)}
+                    className="flex w-full items-center gap-3 p-3"
+                  >
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-sand-50">
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1 text-start">
+                      <p className="line-clamp-2 text-xs font-bold text-sand-800">
+                        {product.name}
+                      </p>
+                      <p className="mt-0.5 text-[0.65rem] text-sand-400 line-through">
+                        {product.originalPrice.toFixed(0)} EGP
+                      </p>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: isExpanded ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sand-100"
+                    >
+                      <ChevronDown className="h-4 w-4 text-sand-500" />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isExpanded && product.shortDescription && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="px-3 pb-3 text-[0.7rem] leading-relaxed text-sand-500">
+                          {product.shortDescription}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="line-clamp-2 text-xs font-bold text-sand-800">
-                    {product.name}
-                  </p>
-                  <p className="mt-0.5 text-[0.65rem] text-sand-400 line-through">
-                    {product.originalPrice.toFixed(0)} EGP
-                  </p>
-                </div>
-                {i < bundle.products.length - 1 && (
-                  <span className="text-lg font-bold text-sand-300">+</span>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </ScrollArea>
