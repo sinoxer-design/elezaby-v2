@@ -862,6 +862,7 @@ export const mockProducts: ProductData[] = [
     reviewCount: 234,
     soldCount: 3800,
     freeShipping: true,
+    size: "60 Tablets",
     categoryId: "vit-bone-calc",
   },
   {
@@ -877,6 +878,7 @@ export const mockProducts: ProductData[] = [
     reviewCount: 189,
     soldCount: 2800,
     freeShipping: true,
+    size: "30 Gummies",
     categoryId: "vit-multi-kids",
   },
   {
@@ -890,6 +892,7 @@ export const mockProducts: ProductData[] = [
     rating: 4,
     reviewCount: 234,
     soldCount: 4100,
+    size: "10 Tabs",
     expressDelivery: true,
     categoryId: "vit-energy",
   },
@@ -907,6 +910,7 @@ export const mockProducts: ProductData[] = [
     reviewCount: 567,
     soldCount: 12300,
     freeShipping: true,
+    size: "400ml",
     categoryId: "skin-moist-body",
   },
   {
@@ -920,6 +924,7 @@ export const mockProducts: ProductData[] = [
     rating: 4,
     reviewCount: 345,
     soldCount: 8900,
+    size: "4.8g",
     categoryId: "skin-moist-lip",
   },
   {
@@ -934,6 +939,7 @@ export const mockProducts: ProductData[] = [
     reviewCount: 456,
     soldCount: 7800,
     freeShipping: true,
+    size: "150ml",
     categoryId: "skin-clean-fw",
   },
   {
@@ -949,6 +955,7 @@ export const mockProducts: ProductData[] = [
     reviewCount: 1234,
     soldCount: 18500,
     freeShipping: true,
+    size: "30ml",
     expressDelivery: true,
     categoryId: "skin-treat-ser",
   },
@@ -963,6 +970,7 @@ export const mockProducts: ProductData[] = [
     rating: 4,
     reviewCount: 234,
     soldCount: 4500,
+    size: "1 Sheet",
     categoryId: "skin-treat-mask",
   },
   {
@@ -980,6 +988,7 @@ export const mockProducts: ProductData[] = [
     reviewCount: 567,
     soldCount: 8900,
     freeShipping: true,
+    size: "88ml",
     categoryId: "skin-sun-sc",
   },
   {
@@ -993,6 +1002,7 @@ export const mockProducts: ProductData[] = [
     rating: 4,
     reviewCount: 189,
     soldCount: 2300,
+    size: "200ml",
     categoryId: "skin-sun-as",
   },
 ];
@@ -1072,6 +1082,7 @@ export const mockBabyProducts: ProductData[] = [
     reviewCount: 198,
     soldCount: 3400,
     freeShipping: true,
+    size: "800g",
     expressDelivery: true,
     categoryId: "baby-diaper",
   },
@@ -1087,6 +1098,7 @@ export const mockBabyProducts: ProductData[] = [
     reviewCount: 276,
     soldCount: 4100,
     freeShipping: true,
+    size: "900g",
     expressDelivery: true,
     categoryId: "baby-diaper",
   },
@@ -1104,6 +1116,7 @@ export const mockBabyProducts: ProductData[] = [
     rating: 4,
     reviewCount: 145,
     soldCount: 2300,
+    size: "250ml",
     categoryId: "baby-skin",
   },
   {
@@ -1121,6 +1134,7 @@ export const mockBabyProducts: ProductData[] = [
     reviewCount: 534,
     soldCount: 9800,
     freeShipping: true,
+    size: "52 Count",
     expressDelivery: true,
     categoryId: "baby-diaper",
     fulfillmentType: "delivery-only",
@@ -1138,6 +1152,7 @@ export const mockBabyProducts: ProductData[] = [
     reviewCount: 167,
     soldCount: 2100,
     freeShipping: true,
+    size: "300ml",
     categoryId: "baby-skin",
   },
   {
@@ -1151,6 +1166,7 @@ export const mockBabyProducts: ProductData[] = [
     rating: 4,
     reviewCount: 98,
     soldCount: 1500,
+    size: "600g",
     categoryId: "baby-diaper",
   },
 ];
