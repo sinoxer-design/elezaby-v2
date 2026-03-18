@@ -218,7 +218,6 @@ export const mockProducts: ProductData[] = [
     badges: [{ label: "Few Left", variant: "low-stock" }, { label: "-17%", variant: "discount" }],
     hasVariants: false,
     inStock: true,
-    badges: [{ label: "-17%", variant: "discount" }],
     rating: 3,
     reviewCount: 132,
     soldCount: 1890,
