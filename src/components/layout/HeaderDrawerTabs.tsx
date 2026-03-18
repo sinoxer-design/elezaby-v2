@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 import { Search, Flame, X, ScanBarcode } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStorefrontMode } from "@/hooks/useStorefrontMode";
@@ -25,9 +26,22 @@ export function HeaderDrawerTabs({
   onSearchClose,
 }: HeaderDrawerTabsProps) {
   const { mode, setMode } = useStorefrontMode();
+  const router = useRouter();
+  const pathname = usePathname();
   const activeDrawerTab = mode === "deals" ? "deals" : "elezaby";
   const setActiveDrawerTab = (tab: "elezaby" | "deals") => {
     setMode(tab === "deals" ? "deals" : "store");
+  };
+
+  const handleElezabyClick = () => {
+    setActiveDrawerTab("elezaby");
+    if (pathname === "/") {
+      // Already on home — scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // Navigate to home
+      router.push("/");
+    }
   };
 
   return (
@@ -39,7 +53,7 @@ export function HeaderDrawerTabs({
       <div className="relative flex items-end">
         {/* Elezaby tab */}
         <button
-          onClick={() => setActiveDrawerTab("elezaby")}
+          onClick={handleElezabyClick}
           className={cn(
             "relative flex w-1/2 items-center justify-center gap-2 rounded-t-2xl py-2.5 text-sm font-bold transition-colors",
             activeDrawerTab === "elezaby"

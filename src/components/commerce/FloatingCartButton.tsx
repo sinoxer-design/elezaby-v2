@@ -27,12 +27,12 @@ export function FloatingCartButton() {
   const isExpanded = scrollDirection === "down" && !sheetOpen;
   // Mini icon when not expanded and has items
   const showMini = !isExpanded && hasItems && !sheetOpen;
-  const isVisible = isExpanded || showMini;
+  const isVisible = isHome && (isExpanded || showMini);
 
   return (
     <AnimatePresence>
       {isVisible && (
-        <div className="fixed inset-x-0 bottom-0 z-toast lg:hidden pointer-events-none">
+        <div className="fixed inset-x-0 bottom-0 z-sticky lg:hidden pointer-events-none">
           <AnimatePresence mode="wait" initial={false}>
             {isExpanded ? (
               <motion.div

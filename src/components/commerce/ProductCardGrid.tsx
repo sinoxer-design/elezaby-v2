@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { springDefault } from "@/lib/motion";
 import { PrescriptionDialog } from "./PrescriptionDialog";
 import { CompareSheet } from "./CompareSheet";
+import { VariantPickerSheet } from "./VariantPickerSheet";
 import { VariantIndicator } from "./VariantIndicator";
 import PromoBadge from "./PromoBadge";
 import { useProductCardState } from "@/hooks/useProductCardState";
@@ -17,7 +18,7 @@ import type { ProductData } from "@/types/product";
 
 interface ProductCardGridProps {
   product: ProductData;
-  onAddToCart?: (productId: string) => void;
+  onAddToCart?: (productId: string, skipAdd?: boolean) => void;
   onNotifyMe?: (productId: string) => void;
   onOptions?: (productId: string) => void;
   onWishlist?: (productId: string) => void;
@@ -37,7 +38,11 @@ export function ProductCardGrid({
     setPrescriptionOpen,
     compareOpen,
     setCompareOpen,
+    variantOpen,
+    setVariantOpen,
     justAdded,
+    setJustAdded,
+    addItem,
     displayPrice,
     qty,
     similarProducts,
@@ -67,16 +72,11 @@ export function ProductCardGrid({
                 unoptimized
               />
 
-              {/* Stock badge — top left */}
-              {product.inStock && (
-                <span className={cn(
-                  "absolute start-1.5 top-1.5 z-10 inline-flex items-center gap-0.5 rounded-lg px-1.5 py-0.5 text-[0.55rem] font-bold text-white shadow-sm",
-                  product.badges?.some(b => b.variant === "low-stock")
-                    ? "bg-amber-500"
-                    : "bg-emerald-600"
-                )}>
+              {/* Low stock badge — top left (only for limited stock) */}
+              {product.inStock && product.badges?.some(b => b.variant === "low-stock") && (
+                <span className="absolute start-1.5 top-1.5 z-10 inline-flex items-center gap-0.5 rounded-lg bg-amber-500 px-1.5 py-0.5 text-[0.55rem] font-bold text-white shadow-sm">
                   <CheckCircle2 className="h-2.5 w-2.5" />
-                  {product.badges?.some(b => b.variant === "low-stock") ? "Limited Stock" : "In Stock"}
+                  Limited Stock
                 </span>
               )}
 
@@ -273,6 +273,28 @@ export function ProductCardGrid({
           product={product}
           similarProducts={similarProducts}
           onAddToCart={onAddToCart}
+        />
+      )}
+      {product.hasVariants && product.variants && product.variants.length > 1 && (
+        <VariantPickerSheet
+          open={variantOpen}
+          onOpenChange={setVariantOpen}
+          product={product}
+          onSelectVariant={(p, variant, qty) => {
+            const price = p.price + (variant.priceDelta ?? 0);
+            addItem({
+              id: `${p.id}-${variant.id}`,
+              name: `${p.name} (${variant.label})`,
+              brand: p.brand,
+              imageUrl: p.imageUrl,
+              price,
+              originalPrice: p.originalPrice,
+            }, qty);
+            setJustAdded(true);
+            setTimeout(() => setJustAdded(false), 1200);
+            // Trigger parent callback for BOGO detection (skipAdd since we already added)
+            onAddToCart?.(p.id, true);
+          }}
         />
       )}
     </>

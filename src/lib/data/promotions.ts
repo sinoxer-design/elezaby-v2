@@ -49,6 +49,7 @@ export interface PromoCard {
   title: string;
   discount: string;
   href: string;
+  imageUrl?: string;
 }
 
 export interface PromoSection {
@@ -60,79 +61,96 @@ export interface PromoSection {
   heroDiscount: string;
   heroHref: string;
   heroCta?: string;
+  heroImageUrl?: string;
+  /** Full-bleed background banner URL (overrides bgColor + decorative elements) */
+  heroBannerUrl?: string;
+  /** Brand names to show under the title */
+  brands?: string;
   cards: PromoCard[];
 }
 
 export const mockPromoSections: PromoSection[] = [
   {
     id: "promo-beauty",
-    bgColor: "bg-pink-50",
-    accentColor: "text-pink-700",
-    badgeBg: "bg-pink-600",
+    bgColor: "bg-gradient-to-br from-rose-600 via-pink-500 to-fuchsia-500",
+    accentColor: "text-white",
+    badgeBg: "bg-white/20",
     heroTitle: "Hydration Deals",
     heroDiscount: "60%",
     heroHref: "/products?category=skincare&tag=hydration",
-    heroCta: "Shop now",
+    heroCta: "Shop Now",
+    heroImageUrl: "https://images.unsplash.com/photo-1570194065650-d99fb4b38b17?w=300&h=300&fit=crop",
+    brands: "CeraVe · La Roche-Posay · Bioderma",
     cards: [
       {
         id: "pc-1",
         title: "Colored Hair",
         discount: "55%",
         href: "/products?category=hair-care&tag=colored",
+        imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop",
       },
       {
         id: "pc-2",
         title: "Anti-Aging Deals",
         discount: "50%",
         href: "/products?category=skincare&tag=anti-aging",
+        imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200&h=200&fit=crop",
       },
     ],
   },
   {
     id: "promo-baby",
-    bgColor: "bg-emerald-50",
-    accentColor: "text-emerald-700",
-    badgeBg: "bg-emerald-600",
+    bgColor: "bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500",
+    accentColor: "text-white",
+    badgeBg: "bg-white/20",
     heroTitle: "Baby Care Sale",
     heroDiscount: "40%",
     heroHref: "/products?category=baby-care",
-    heroCta: "Shop baby",
+    heroCta: "Shop Baby",
+    heroImageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=300&h=300&fit=crop",
+    brands: "Pampers · Aptamil · Bepanthen",
     cards: [
       {
         id: "pc-3",
         title: "Prenatal Vitamins",
         discount: "20%",
         href: "/products?category=vitamins&tag=prenatal",
+        imageUrl: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=200&h=200&fit=crop",
       },
       {
         id: "pc-4",
         title: "Diapers & Wipes",
         discount: "35%",
         href: "/products?category=baby-care&tag=diapers",
+        imageUrl: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=200&h=200&fit=crop",
       },
     ],
   },
   {
     id: "promo-wellness",
-    bgColor: "bg-amber-50",
-    accentColor: "text-amber-700",
-    badgeBg: "bg-amber-600",
+    bgColor: "bg-gradient-to-br from-amber-500 via-orange-500 to-yellow-500",
+    accentColor: "text-white",
+    badgeBg: "bg-white/20",
     heroTitle: "Vitamin Mega Sale",
     heroDiscount: "45%",
     heroHref: "/products?category=vitamins",
-    heroCta: "Shop vitamins",
+    heroCta: "Shop Now",
+    heroImageUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop",
+    brands: "Centrum · Nature's Bounty · Vitabiotics",
     cards: [
       {
         id: "pc-5",
         title: "Immunity Boosters",
         discount: "30%",
         href: "/products?category=vitamins&tag=immunity",
+        imageUrl: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop",
       },
       {
         id: "pc-6",
         title: "Omega & Fish Oil",
         discount: "25%",
         href: "/products?category=vitamins&tag=omega",
+        imageUrl: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=200&h=200&fit=crop",
       },
     ],
   },

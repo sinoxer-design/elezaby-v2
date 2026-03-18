@@ -29,7 +29,7 @@ function BrandCard({ brand, className }: { brand: Brand; className?: string }) {
 
   return (
     <Link
-      href={`/products?brand=${brand.slug}`}
+      href={`/brands/${brand.slug}`}
       className={cn(
         "group flex flex-col items-center gap-3 rounded-2xl border border-sand-100 bg-white p-4 shadow-sm transition-all duration-200 hover:border-brand-200 hover:shadow-md",
         className
@@ -70,7 +70,7 @@ function FeaturedBrandCard({ brand }: { brand: Brand }) {
 
   return (
     <Link
-      href={`/products?brand=${brand.slug}`}
+      href={`/brands/${brand.slug}`}
       className="group relative flex w-36 shrink-0 flex-col items-center gap-3 rounded-2xl border-2 border-brand-100 bg-gradient-to-b from-brand-50/60 to-white p-5 shadow-sm transition-all duration-200 hover:border-brand-300 hover:shadow-lg sm:w-40"
     >
       <div className="absolute right-2 top-2">

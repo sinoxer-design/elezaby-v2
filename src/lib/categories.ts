@@ -77,6 +77,8 @@ export const categories: Category[] = [
   { id: "baby-skin",   name: "Baby Skincare",   slug: "baby-skincare", parentId: "baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=200&h=200&fit=crop", emoji: "🧴", productCount: 80,  order: 2 },
   { id: "baby-feed",   name: "Feeding",         slug: "feeding",       parentId: "baby", imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop", emoji: "🍼", productCount: 90,  order: 3 },
   { id: "baby-health", name: "Baby Health",     slug: "baby-health",   parentId: "baby", imageUrl: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop", emoji: "🌡️", productCount: 50,  order: 4 },
+  { id: "baby-bath",   name: "Bath & Hygiene",  slug: "baby-bath",     parentId: "baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=200&h=200&fit=crop", emoji: "🛁", productCount: 45,  order: 5 },
+  { id: "baby-milk",   name: "Baby Milk",       slug: "baby-milk",     parentId: "baby", imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop", emoji: "🥛", productCount: 60,  order: 6 },
 
   // ─── Hair Care → Sub-Categories ───
   { id: "hair-shamp", name: "Shampoo",         slug: "shampoo",         parentId: "hair", imageUrl: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=200&h=200&fit=crop", emoji: "🧴", productCount: 150, order: 1 },

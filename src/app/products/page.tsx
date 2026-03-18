@@ -78,7 +78,7 @@ function ProductListingContent() {
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [appliedFilters, setAppliedFilters] =
     React.useState<FilterValues>(defaultFilters);
-  const [viewMode, setViewMode] = React.useState<"list" | "grid">("list");
+  const [viewMode, setViewMode] = React.useState<"list" | "grid">("grid");
   const [instantDelivery, setInstantDelivery] = React.useState(false);
 
   // ── Category resolution ──
@@ -259,7 +259,19 @@ function ProductListingContent() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showSort]);
 
-  const pageTitle = currentCategory?.name ?? "All Products";
+  // Derive page title from query params
+  const titleParam = searchParams.get("title");
+  const saleParam = searchParams.get("sale");
+  const sortParam = searchParams.get("sort");
+  const pageTitle = titleParam
+    ? titleParam
+    : currentCategory?.name
+      ? currentCategory.name
+      : saleParam
+        ? "Sale & Offers"
+        : sortParam === "best-selling"
+          ? "Best Sellers"
+          : "All Products";
 
   return (
     <div className="flex flex-col pb-0">

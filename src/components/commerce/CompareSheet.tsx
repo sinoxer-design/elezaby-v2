@@ -87,6 +87,18 @@ export function CompareSheet({
                 transition={{ duration: 0.2 }}
               >
                 {/* Back button */}
+                {/* Add to Cart — top of comparison */}
+                {compareProduct?.inStock && onAddToCart && (
+                  <button
+                    type="button"
+                    onClick={() => onAddToCart(compareProduct.id)}
+                    className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3 text-sm font-bold text-white shadow-md transition-transform active:scale-[0.98]"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    Add to Cart
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setShowCompare(false)}
@@ -134,29 +146,6 @@ export function CompareSheet({
                   </div>
                 </div>
 
-                {/* Add to Basket — sticky top action for selected product */}
-                <AnimatePresence>
-                  {selectedId && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mb-3 overflow-hidden"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (onAddToCart && selectedId) onAddToCart(selectedId);
-                        }}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3 text-sm font-bold text-white shadow-md transition-transform active:scale-[0.98]"
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        Add to Basket
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
                 {/* Similar products — selectable grid */}
                 {similarProducts.length > 0 ? (
                   <div className="grid grid-cols-2 gap-3 pb-20">
@@ -165,7 +154,10 @@ export function CompareSheet({
                         key={p.id}
                         product={p}
                         isSelected={selectedId === p.id}
-                        onToggle={() => handleSelect(p.id)}
+                        onToggle={() => {
+                          handleSelect(p.id);
+                          setShowCompare(true);
+                        }}
                         onAddToCart={onAddToCart}
                       />
                     ))}
@@ -187,26 +179,6 @@ export function CompareSheet({
 
         {/* Floating buttons — bottom right */}
         <div className="absolute bottom-6 end-5 z-10 flex flex-col items-center gap-3">
-          {/* Compare floating icon — pushed up when cart icon appears */}
-          <AnimatePresence>
-            {!showCompare && selectedId && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.2 }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setShowCompare(true)}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-700 shadow-[0_4px_20px_rgba(16,34,76,0.25)] transition-transform active:scale-90"
-                >
-                  <ArrowLeftRight className="h-5 w-5 text-white" />
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Mini cart icon — same as homepage floating cart */}
           <AnimatePresence>
             {hasCartItems && (
@@ -269,23 +241,17 @@ function SelectableProductCard({
           : "border-transparent shadow-[0_4px_16px_rgba(16,34,76,0.07)]"
       )}
     >
-      {/* Select checkbox */}
-      <button
-        type="button"
-        onClick={onToggle}
-        className={cn(
-          "absolute start-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border-[2.5px] transition-all",
-          isSelected
-            ? "border-brand-500 bg-brand-500 text-white shadow-md"
-            : "border-sand-400 bg-white/90 text-sand-400 shadow-sm backdrop-blur-sm"
-        )}
-      >
-        {isSelected ? (
-          <Check className="h-3.5 w-3.5" />
-        ) : (
-          <ArrowLeftRight className="h-3 w-3" />
-        )}
-      </button>
+      {/* Add to cart button — top left */}
+      {product.inStock && onAddToCart && (
+        <motion.button
+          whileTap={{ scale: 0.85 }}
+          onClick={() => onAddToCart(product.id)}
+          className="absolute start-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
+          aria-label="Add to cart"
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </motion.button>
+      )}
 
       {/* Image */}
       <div className="relative aspect-square w-full overflow-hidden bg-sand-50">
@@ -324,14 +290,14 @@ function SelectableProductCard({
             <span className="text-[0.55rem] font-medium text-sand-400">EGP</span>
           </div>
 
-          {product.inStock && onAddToCart && (
+          {product.inStock && (
             <motion.button
-              onClick={() => onAddToCart(product.id)}
+              onClick={onToggle}
               whileTap={{ scale: 0.85 }}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
-              aria-label="Add to cart"
+              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-brand-500 text-brand-500"
+              aria-label="Compare"
             >
-              <Plus className="h-4 w-4" />
+              <ArrowLeftRight className="h-3.5 w-3.5" />
             </motion.button>
           )}
         </div>
@@ -455,17 +421,7 @@ function ComparePair({
                 : "border-brand-200 bg-brand-50"
             )}
           >
-            {/* Add to cart — top right (alternative only) */}
-            {i === 1 && p.inStock && onAddToCart && (
-              <motion.button
-                onClick={() => onAddToCart(p.id)}
-                whileTap={{ scale: 0.85 }}
-                className="absolute end-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-brand-700 text-white shadow-sm"
-                aria-label="Add to cart"
-              >
-                <ShoppingCart className="h-3.5 w-3.5" />
-              </motion.button>
-            )}
+            {/* Cart icon removed — Add to Cart is now at the top of the sheet */}
 
             <div className="relative mb-2 aspect-square w-full overflow-hidden rounded-xl bg-white">
               <Image
@@ -511,17 +467,7 @@ function ComparePair({
         ))}
       </div>
 
-      {/* Full-width Add to Cart for alternative */}
-      {alternative.inStock && onAddToCart && (
-        <motion.button
-          onClick={() => onAddToCart(alternative.id)}
-          whileTap={{ scale: 0.97 }}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3.5 text-sm font-bold text-white shadow-md"
-        >
-          <ShoppingCart className="h-4 w-4" />
-          Add to Cart
-        </motion.button>
-      )}
+      {/* Add to Cart removed — it's now at the top of the sheet */}
     </div>
   );
 }

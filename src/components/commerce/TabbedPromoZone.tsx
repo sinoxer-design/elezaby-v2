@@ -32,7 +32,7 @@ export function TabbedPromoZone({
   onAddToCart,
   className,
 }: TabbedPromoZoneProps) {
-  const subCategories = getChildren(categoryId).slice(0, 3);
+  const subCategories = getChildren(categoryId).slice(0, 6);
   const [activeTab, setActiveTab] = React.useState(subCategories[0]?.id ?? "");
 
   // Filter products by active sub-category
@@ -45,10 +45,10 @@ export function TabbedPromoZone({
 
   return (
     <section className={cn("space-y-3", className)}>
-      {/* Hero Banner */}
+      {/* Hero Banner — full width, no side padding */}
       <div
         className={cn(
-          "relative mx-[var(--page-padding-x)] overflow-hidden rounded-2xl bg-gradient-to-br px-5 pb-8 pt-8 lg:mx-8",
+          "relative overflow-hidden bg-gradient-to-br px-5 pb-10 pt-8",
           gradient
         )}
       >
@@ -68,37 +68,31 @@ export function TabbedPromoZone({
             unoptimized
           />
         </div>
-
       </div>
 
-      {/* Tab pills — full-width grid, vertically centered on banner bottom edge */}
+      {/* Scrollable tab pills — overlapping banner bottom */}
       <div
-        className="relative z-10 mx-[var(--page-padding-x)] -translate-y-1/2 lg:mx-8"
+        className="relative z-10 -mt-5 flex gap-2.5 overflow-x-auto scrollbar-hide px-[var(--page-padding-x)] lg:px-8 pb-1"
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
-        <div
-          className="grid gap-2 px-2"
-          style={{ gridTemplateColumns: `repeat(${subCategories.length}, 1fr)` }}
-        >
-          {subCategories.map((cat) => (
-            <motion.button
-              key={cat.id}
-              onClick={() => setActiveTab(cat.id)}
-              whileTap={{ scale: 0.95 }}
-              className={cn(
-                "whitespace-nowrap rounded-2xl py-3 px-2 text-[0.8rem] font-bold transition-all duration-200 text-center",
-                activeTab === cat.id
-                  ? "bg-white text-brand-800 shadow-lg"
-                  : "bg-white/70 text-brand-700/70 shadow-sm backdrop-blur-sm hover:bg-white/90"
-              )}
-            >
-              {cat.name}
-            </motion.button>
-          ))}
-        </div>
+        {subCategories.map((cat) => (
+          <motion.button
+            key={cat.id}
+            onClick={() => setActiveTab(cat.id)}
+            whileTap={{ scale: 0.95 }}
+            className={cn(
+              "shrink-0 whitespace-nowrap rounded-2xl px-5 py-2.5 text-[0.8rem] font-bold transition-all duration-200",
+              activeTab === cat.id
+                ? "bg-white text-brand-800 shadow-lg"
+                : "bg-white/70 text-brand-700/70 shadow-sm backdrop-blur-sm hover:bg-white/90"
+            )}
+          >
+            {cat.name}
+          </motion.button>
+        ))}
+        {/* Right padding spacer for scroll end */}
+        <div className="shrink-0 w-[var(--page-padding-x)] lg:w-8" />
       </div>
-
-      {/* Collapse the translate gap */}
-      <div className="-mt-4" />
 
       {/* Product carousel — animates on tab change */}
       <AnimatePresence mode="wait">

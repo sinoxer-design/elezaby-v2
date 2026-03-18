@@ -12,6 +12,7 @@ export function useProductCardState(
 ) {
   const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
   const [compareOpen, setCompareOpen] = React.useState(false);
+  const [variantOpen, setVariantOpen] = React.useState(false);
   const [justAdded, setJustAdded] = React.useState(false);
   const { deliveryMethod } = useDeliveryContext();
   const { items, addItem, updateQuantity, removeItem } = useCart();
@@ -29,11 +30,21 @@ export function useProductCardState(
       ? product.pickupPrice
       : product.price;
 
+  const hasVariants =
+    product.hasVariants &&
+    product.variants &&
+    product.variants.length > 1;
+
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (product.requiresPrescription) {
       setPrescriptionOpen(true);
+      return;
+    }
+    // If product has multiple variants, show picker instead of adding directly
+    if (hasVariants) {
+      setVariantOpen(true);
       return;
     }
     onAddToCart?.(product.id);
@@ -68,6 +79,8 @@ export function useProductCardState(
     setPrescriptionOpen,
     compareOpen,
     setCompareOpen,
+    variantOpen,
+    setVariantOpen,
     justAdded,
     setJustAdded,
     items,
