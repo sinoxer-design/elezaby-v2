@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import {
   type FilterValues,
   DEFAULT_BRANDS,
-  RATING_OPTIONS,
 } from "@/lib/filter-utils";
 
 interface FilterControlsProps {
@@ -60,10 +59,6 @@ export function FilterControls({
   const labelClassName = isSheet
     ? "flex cursor-pointer items-center gap-2.5"
     : "flex cursor-pointer items-center gap-2";
-
-  const starsClassName = isSheet
-    ? "flex items-center gap-1 text-sm text-sand-600"
-    : "flex items-center gap-0.5 text-sm text-sand-600";
 
   const SectionHeading = isSheet ? "h3" : "h4";
 
@@ -178,42 +173,6 @@ export function FilterControls({
         </div>
       </section>
 
-      <Separator />
-
-      {/* Rating */}
-      <section>
-        <SectionHeading className={sectionHeadingClassName}>
-          Rating
-        </SectionHeading>
-        <div className={listGapClassName}>
-          {RATING_OPTIONS.map((option) => (
-            <Label key={option.value} className={labelClassName}>
-              <Checkbox
-                checked={filters.minRating === option.value}
-                onCheckedChange={(checked) =>
-                  update({
-                    minRating: checked === true ? option.value : undefined,
-                  })
-                }
-              />
-              <span className={starsClassName}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      "text-xs",
-                      i < option.value ? "text-warning" : "text-sand-200"
-                    )}
-                  >
-                    &#9733;
-                  </span>
-                ))}
-                <span className="ms-0.5">& up</span>
-              </span>
-            </Label>
-          ))}
-        </div>
-      </section>
     </>
   );
 }

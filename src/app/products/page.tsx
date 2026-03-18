@@ -48,7 +48,6 @@ const defaultFilters: FilterValues = {
   inStockOnly: false,
   onSale: false,
   buyXGetY: false,
-  minRating: undefined,
 };
 
 export default function ProductListingPage() {
@@ -175,12 +174,6 @@ function ProductListingContent() {
     if (appliedFilters.buyXGetY) {
       products = products.filter((p) => !!p.quantityOffer);
     }
-    if (appliedFilters.minRating) {
-      products = products.filter(
-        (p) => p.rating && p.rating >= appliedFilters.minRating!
-      );
-    }
-
     // Sort
     switch (sortBy) {
       case "price-asc":
@@ -193,7 +186,6 @@ function ProductListingContent() {
         products.sort((a, b) => Number(b.id) - Number(a.id));
         break;
       case "best-selling":
-        products.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         break;
       default:
         break;
@@ -249,8 +241,6 @@ function ProductListingContent() {
         next.onSale = false;
       } else if (label === "Buy X Get Y") {
         next.buyXGetY = false;
-      } else if (label.includes("Stars")) {
-        next.minRating = undefined;
       }
       return next;
     });

@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Plus, Star, Truck, ArrowLeftRight, ShoppingCart } from "lucide-react";
+import { Check, Plus, Truck, ArrowLeftRight, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sheet,
@@ -134,6 +134,29 @@ export function CompareSheet({
                   </div>
                 </div>
 
+                {/* Add to Basket — sticky top action for selected product */}
+                <AnimatePresence>
+                  {selectedId && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mb-3 overflow-hidden"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (onAddToCart && selectedId) onAddToCart(selectedId);
+                        }}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3 text-sm font-bold text-white shadow-md transition-transform active:scale-[0.98]"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        Add to Basket
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Similar products — selectable grid */}
                 {similarProducts.length > 0 ? (
                   <div className="grid grid-cols-2 gap-3 pb-20">
@@ -251,13 +274,17 @@ function SelectableProductCard({
         type="button"
         onClick={onToggle}
         className={cn(
-          "absolute start-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors",
+          "absolute start-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border-[2.5px] transition-all",
           isSelected
-            ? "border-brand-500 bg-brand-500 text-white"
-            : "border-sand-300 bg-white/80 backdrop-blur-sm"
+            ? "border-brand-500 bg-brand-500 text-white shadow-md"
+            : "border-sand-400 bg-white/90 text-sand-400 shadow-sm backdrop-blur-sm"
         )}
       >
-        {isSelected && <Check className="h-3.5 w-3.5" />}
+        {isSelected ? (
+          <Check className="h-3.5 w-3.5" />
+        ) : (
+          <ArrowLeftRight className="h-3 w-3" />
+        )}
       </button>
 
       {/* Image */}
@@ -283,15 +310,6 @@ function SelectableProductCard({
         <h3 className="mt-0.5 line-clamp-2 text-[0.7rem] font-bold leading-tight text-sand-800">
           {product.name}
         </h3>
-
-        {product.rating != null && product.rating > 0 && (
-          <div className="mt-1 flex items-center gap-0.5">
-            <Star className="h-3 w-3 fill-warning text-warning" />
-            <span className="text-[0.6rem] font-semibold text-sand-600">
-              {product.rating.toFixed(1)}
-            </span>
-          </div>
-        )}
 
         <div className="mt-auto flex items-end justify-between pt-2">
           <div className="flex items-baseline gap-1">
@@ -364,25 +382,6 @@ function ComparePair({
       ),
     },
     {
-      label: "Rating",
-      render: (p) =>
-        p.rating != null && p.rating > 0 ? (
-          <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 fill-warning text-warning" />
-            <span className="text-sm font-semibold text-sand-700">
-              {p.rating.toFixed(1)}
-            </span>
-            {p.reviewCount != null && (
-              <span className="text-[0.65rem] text-sand-400">
-                ({p.reviewCount})
-              </span>
-            )}
-          </div>
-        ) : (
-          <span className="text-xs text-sand-300">No rating</span>
-        ),
-    },
-    {
       label: "Delivery",
       render: (p) => (
         <div className="flex flex-col items-center gap-0.5">
@@ -406,6 +405,38 @@ function ComparePair({
       label: "Brand",
       render: (p) => (
         <span className="text-sm font-medium text-sand-600">{p.brand}</span>
+      ),
+    },
+    {
+      label: "Features",
+      render: (p) => (
+        <span className="text-xs leading-relaxed text-sand-600">
+          {p.features || "—"}
+        </span>
+      ),
+    },
+    {
+      label: "Usage",
+      render: (p) => (
+        <span className="text-xs leading-relaxed text-sand-600">
+          {p.usage || "—"}
+        </span>
+      ),
+    },
+    {
+      label: "Ingredients",
+      render: (p) => (
+        <span className="text-xs leading-relaxed text-sand-600">
+          {p.ingredients || "—"}
+        </span>
+      ),
+    },
+    {
+      label: "Skin Type",
+      render: (p) => (
+        <span className="text-xs leading-relaxed text-sand-600">
+          {p.skinType || "—"}
+        </span>
       ),
     },
   ];
@@ -479,6 +510,18 @@ function ComparePair({
           </div>
         ))}
       </div>
+
+      {/* Full-width Add to Cart for alternative */}
+      {alternative.inStock && onAddToCart && (
+        <motion.button
+          onClick={() => onAddToCart(alternative.id)}
+          whileTap={{ scale: 0.97 }}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3.5 text-sm font-bold text-white shadow-md"
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Add to Cart
+        </motion.button>
+      )}
     </div>
   );
 }

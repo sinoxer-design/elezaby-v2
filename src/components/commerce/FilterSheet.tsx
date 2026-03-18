@@ -76,7 +76,7 @@ export function FilterSheet({
             </button>
           </div>
           <SheetDescription className="sr-only">
-            Filter products by price, brand, availability, offers, and rating
+            Filter products by price, brand, availability, and offers
           </SheetDescription>
         </SheetHeader>
 

@@ -14,10 +14,12 @@ import { RamadanHeroBanner } from "@/components/commerce/RamadanHeroBanner";
 import { SymptomSearchSection } from "@/components/commerce/SymptomSearchSection";
 import { CategoryZone } from "@/components/commerce/CategoryZone";
 import { PromoDealBanners } from "@/components/commerce/PromoDealBanners";
+import { TabbedPromoZone } from "@/components/commerce/TabbedPromoZone";
 import {
   mockProducts,
   mockFlashDeals,
   mockBestSellers,
+  mockBabyProducts,
   allProducts,
   getPersonalizedProducts,
 } from "@/lib/data/products";
@@ -27,6 +29,8 @@ import { mockBrands } from "@/lib/data/brands";
 import { getPrimaryCategories } from "@/lib/categories";
 import { useCart } from "@/hooks/useCart";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useStorefrontMode } from "@/hooks/useStorefrontMode";
+import { DealsHomepage } from "@/components/commerce/DealsHomepage";
 
 // Category order for 2-row grid (4 per row)
 const CATEGORY_ORDER = ["skin", "baby", "pc", "hair", "med", "vit", "fa", "dent"];
@@ -34,10 +38,11 @@ const CATEGORY_ORDER = ["skin", "baby", "pc", "hair", "med", "vit", "fa", "dent"
 export default function HomePage() {
   const { addItem } = useCart();
   const { profile } = useUserProfile();
+  const { mode } = useStorefrontMode();
   const primaryCategories = getPrimaryCategories();
 
   const recommendedProducts = getPersonalizedProducts(
-    mockProducts.slice(0, 12),
+    mockProducts.filter(p => p.inStock).slice(0, 12),
     profile
   ).slice(0, 8);
 
@@ -82,16 +87,21 @@ export default function HomePage() {
     (a, b) => CATEGORY_ORDER.indexOf(a.id) - CATEGORY_ORDER.indexOf(b.id)
   );
 
-  // Products grouped by category for zone sections
+  // Products grouped by category for zone sections (only in-stock on homepage)
   const skincareProducts = mockProducts.filter(
-    (p) => p.categoryId?.startsWith("skin")
+    (p) => p.categoryId?.startsWith("skin") && p.inStock
   );
   const babyProducts = mockProducts.filter(
-    (p) => p.categoryId?.startsWith("baby")
+    (p) => p.categoryId?.startsWith("baby") && p.inStock
   );
   const vitaminProducts = mockProducts.filter(
-    (p) => p.categoryId?.startsWith("vit")
+    (p) => p.categoryId?.startsWith("vit") && p.inStock
   );
+
+  // Deals mode — show flashy deals-only homepage
+  if (mode === "deals") {
+    return <DealsHomepage onAddToCart={handleAddToCart} />;
+  }
 
   return (
     <div className="relative flex flex-col pb-6">
@@ -116,8 +126,8 @@ export default function HomePage() {
                 <ChevronRight className="h-3 w-3" />
               </Link>
             </div>
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-              {sortedCategories.map((cat) => (
+            <div className="grid grid-cols-4 gap-x-3 gap-y-2 pb-1 sm:grid-cols-6">
+              {sortedCategories.slice(0, 12).map((cat) => (
                 <CategoryPill
                   key={cat.id}
                   name={cat.name}
@@ -133,7 +143,7 @@ export default function HomePage() {
 
         {/* 2. Daily Deals */}
         <FlashDealsSection
-          products={mockFlashDeals}
+          products={mockFlashDeals.filter(p => p.inStock)}
           endsAt={flashDealEndTime}
           onAddToCart={handleAddToCart}
         />
@@ -144,7 +154,7 @@ export default function HomePage() {
         <ProductCarousel
           title="Best Sellers"
           kicker="Top picks"
-          products={mockBestSellers.slice(0, 8)}
+          products={mockBestSellers.filter(p => p.inStock).slice(0, 8)}
           viewAllHref="/products"
           onAddToCart={handleAddToCart}
         />
@@ -199,7 +209,7 @@ export default function HomePage() {
         <ProductCarousel
           title="Buy 1 Get 1 Free"
           kicker="Limited offers"
-          products={mockProducts.filter((p) => p.quantityOffer).slice(0, 8)}
+          products={mockProducts.filter((p) => p.quantityOffer && p.inStock).slice(0, 8)}
           viewAllHref="/products?sale=true"
           onAddToCart={handleAddToCart}
         />
@@ -273,14 +283,13 @@ export default function HomePage() {
           onAddToCart={handleAddToCart}
         />
 
-        {/* 8. Baby Care */}
-        <CategoryZone
-          title="Baby Care Favorites"
-          subtitle="Top picks for new & expecting parents"
-          kicker="Mother & baby"
-          layout="vertical"
-          products={babyProducts.length > 0 ? babyProducts : mockProducts.slice(6, 10)}
-          viewAllHref="/products?category=baby-care"
+        {/* 8. Baby Care — tabbed promo zone */}
+        <TabbedPromoZone
+          title="Baby Time"
+          categoryId="baby"
+          products={[...mockProducts, ...mockBabyProducts].filter(p => p.categoryId?.startsWith("baby"))}
+          heroImageUrl="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=400&fit=crop"
+          gradient="from-sky-200 to-cyan-100"
           onAddToCart={handleAddToCart}
         />
 

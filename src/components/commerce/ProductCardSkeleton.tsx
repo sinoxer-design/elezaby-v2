@@ -42,8 +42,6 @@ export function ProductCardSkeleton({
  <div className="h-4 w-full rounded skeleton-shimmer" />
  {/* Title line 2 */}
  <div className="h-4 w-3/4 rounded skeleton-shimmer" />
- {/* Stars */}
- <div className="h-3 w-20 rounded skeleton-shimmer" />
  {/* Price */}
  <div className="h-5 w-24 rounded skeleton-shimmer" />
  {/* CTA */}

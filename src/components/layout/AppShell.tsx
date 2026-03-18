@@ -21,6 +21,7 @@ import {
   useOverlaySheetState,
 } from "@/hooks/useOverlaySheet";
 import { ScrollContext, useScrollState } from "@/hooks/useScroll";
+import { StorefrontModeProvider } from "@/hooks/useStorefrontMode";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const deliveryState = useDeliveryState();
@@ -52,35 +53,37 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isHomePage = pathname === "/";
 
   return (
-    <UserProfileContext.Provider value={userProfileState}>
-      <DeliveryContext.Provider value={deliveryState}>
-        <CartContext.Provider value={cartState}>
-          <RxOrdersContext.Provider value={rxOrdersState}>
-            <OverlaySheetContext.Provider value={overlaySheetState}>
-              <ScrollContext.Provider value={scrollState}>
-                {!hideHeader && (
-                  <HeaderBar
-                    cartCount={cartState.itemCount}
-                    minimal={isMinimalHeader}
-                  />
-                )}
-                <main
-                  className="mx-auto max-w-7xl pb-safe"
-                  style={{
-                    paddingTop: hideHeader ? 0 : "var(--header-height)",
-                    minHeight: "100dvh",
-                  }}
-                >
-                  {children}
-                </main>
-                {!hideBottomNav && <BottomNav />}
-                <FloatingCartButton />
-                {isHomePage && <PersonalizedOfferFAB />}
-              </ScrollContext.Provider>
-            </OverlaySheetContext.Provider>
-          </RxOrdersContext.Provider>
-        </CartContext.Provider>
-      </DeliveryContext.Provider>
-    </UserProfileContext.Provider>
+    <StorefrontModeProvider>
+      <UserProfileContext.Provider value={userProfileState}>
+        <DeliveryContext.Provider value={deliveryState}>
+          <CartContext.Provider value={cartState}>
+            <RxOrdersContext.Provider value={rxOrdersState}>
+              <OverlaySheetContext.Provider value={overlaySheetState}>
+                <ScrollContext.Provider value={scrollState}>
+                  {!hideHeader && (
+                    <HeaderBar
+                      cartCount={cartState.itemCount}
+                      minimal={isMinimalHeader}
+                    />
+                  )}
+                  <main
+                    className="mx-auto max-w-7xl pb-safe"
+                    style={{
+                      paddingTop: hideHeader ? 0 : "var(--header-height)",
+                      minHeight: "100dvh",
+                    }}
+                  >
+                    {children}
+                  </main>
+                  {!hideBottomNav && <BottomNav />}
+                  <FloatingCartButton />
+                  {isHomePage && <PersonalizedOfferFAB />}
+                </ScrollContext.Provider>
+              </OverlaySheetContext.Provider>
+            </RxOrdersContext.Provider>
+          </CartContext.Provider>
+        </DeliveryContext.Provider>
+      </UserProfileContext.Provider>
+    </StorefrontModeProvider>
   );
 }

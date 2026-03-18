@@ -16,6 +16,8 @@ import { NotifyMeDialog } from"@/components/commerce/NotifyMeDialog";
 import { mockProducts, mockFlashDeals, mockBabyProducts } from"@/lib/data/products";
 import { useCart } from"@/hooks/useCart";
 import { ProductCard } from"@/components/commerce/ProductCard";
+import { VariantSelector } from"@/components/commerce/VariantSelector";
+import PromoSection from"@/components/commerce/PromoSection";
 import {
  ChevronLeft,
  Share2,
@@ -23,42 +25,8 @@ import {
  MapPin,
  ChevronDown,
  ChevronUp,
- Star,
- ArrowUpRight,
 } from"lucide-react";
 import { cn } from"@/lib/utils";
-
-const mockReviews = [
- {
- id:"1",
- author:"Sarah M.",
- rating: 5,
- comment:"Great product, fast delivery!",
- date:"2 days ago",
- },
- {
- id:"2",
- author:"Ahmed K.",
- rating: 4,
- comment:"Good quality but packaging could be better",
- date:"1 week ago",
- },
- {
- id:"3",
- author:"Mona R.",
- rating: 5,
- comment:"Been using this for months, highly recommend",
- date:"2 weeks ago",
- },
-];
-
-const ratingBreakdown = [
- { stars: 5, percent: 65 },
- { stars: 4, percent: 20 },
- { stars: 3, percent: 8 },
- { stars: 2, percent: 4 },
- { stars: 1, percent: 3 },
-];
 
 export default function ProductDetailPage() {
  const params = useParams();
@@ -71,6 +39,7 @@ export default function ProductDetailPage() {
  );
  const [prescriptionOpen, setPrescriptionOpen] = React.useState(false);
  const [notifyOpen, setNotifyOpen] = React.useState(false);
+ const [selectedVariant, setSelectedVariant] = React.useState("");
 
  const product = [...mockProducts, ...mockFlashDeals, ...mockBabyProducts].find((p) => p.id === slug);
 
@@ -199,14 +168,33 @@ export default function ProductDetailPage() {
  size="lg"
  />
 
- {/* Quantity Offer */}
- {product.quantityOffer && (
+ {/* Variant Selector */}
+ {product.variants && product.variants.length > 0 && (
+ <div>
+ <p className="mb-2 text-xs font-semibold text-sand-500">
+ {product.variants[0].variantType === "color" ? "Select Color:" : product.variants[0].variantType === "size" ? "Select Size:" : "Select Count:"}
+ </p>
+ <VariantSelector
+ variants={product.variants}
+ selectedId={selectedVariant || product.variants.find(v => v.priceDelta === 0)?.id || product.variants[0].id}
+ onSelect={setSelectedVariant}
+ />
+ </div>
+ )}
+
+ {/* Promotion Section */}
+ {product.promotion ? (
+ <PromoSection
+ promotion={product.promotion}
+ currentQty={quantity}
+ />
+ ) : product.quantityOffer ? (
  <div className="rounded-lg bg-brand-50 p-3">
  <span className="text-sm font-medium text-brand-700">
  {product.quantityOffer}
  </span>
  </div>
- )}
+ ) : null}
 
  {/* Quantity Selector */}
  <div className="flex items-center gap-4">
@@ -301,104 +289,6 @@ export default function ProductDetailPage() {
  ))}
  </div>
  </div>
-
- {/* Reviews & Ratings Section */}
- <section className="mt-6 px-[var(--page-padding-x)] lg:px-0">
- <h2 className="font-display text-lg text-sand-800 lg:text-xl">
- Reviews & Ratings
- </h2>
-
- {/* Overall Rating */}
- <div className="mt-3 flex items-start gap-4">
- <div className="flex flex-col items-center">
- <span className="text-4xl font-bold text-sand-800">4.2</span>
- <div className="mt-1 flex">
- {Array.from({ length: 5 }).map((_, i) => (
- <Star
- key={i}
- className={cn(
-"h-4 w-4",
- i < 4
- ?"fill-warning text-warning"
- :"fill-sand-200 text-sand-200"
- )}
- />
- ))}
- </div>
- <span className="mt-0.5 text-xs text-sand-400">(128 reviews)</span>
- </div>
-
- {/* Rating Breakdown */}
- <div className="flex-1 space-y-1.5">
- {ratingBreakdown.map((row) => (
- <div key={row.stars} className="flex items-center gap-2">
- <span className="w-3 text-xs font-medium text-sand-500">
- {row.stars}
- </span>
- <Star className="h-3 w-3 fill-warning text-warning" />
- <div className="h-2 flex-1 overflow-hidden rounded-full bg-sand-100">
- <div
- className="h-full rounded-full bg-warning transition-all"
- style={{ width: `${row.percent}%` }}
- />
- </div>
- <span className="w-8 text-end text-xs text-sand-400">
- {row.percent}%
- </span>
- </div>
- ))}
- </div>
- </div>
-
- {/* Review Cards */}
- <div className="mt-4 space-y-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
- {mockReviews.map((review) => (
- <div
- key={review.id}
- className="rounded-lg border border-sand-100 bg-white p-3"
- >
- <div className="flex items-center justify-between">
- <div className="flex items-center gap-2">
- <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50 text-xs font-semibold text-brand-600">
- {review.author.charAt(0)}
- </div>
- <span className="text-sm font-semibold text-sand-700">
- {review.author}
- </span>
- </div>
- <span className="text-xs text-sand-400">{review.date}</span>
- </div>
- <div className="mt-1.5 flex">
- {Array.from({ length: 5 }).map((_, i) => (
- <Star
- key={i}
- className={cn(
-"h-3 w-3",
- i < review.rating
- ?"fill-warning text-warning"
- :"fill-sand-200 text-sand-200"
- )}
- />
- ))}
- </div>
- <p className="mt-1.5 text-sm leading-relaxed text-sand-500">
- {review.comment}
- </p>
- </div>
- ))}
- </div>
-
- {/* Review Actions */}
- <div className="mt-4 flex items-center gap-3">
- <Button variant="outline" size="sm" className="flex-1">
- Write a Review
- </Button>
- <Button variant="link" size="sm" className="text-xs">
- See All Reviews
- <ArrowUpRight className="ms-0.5 h-3 w-3" />
- </Button>
- </div>
- </section>
 
  {/* Out of Stock Alternatives */}
  {!product.inStock && (
@@ -511,8 +401,8 @@ export default function ProductDetailPage() {
  {/* Cross-sell Carousels */}
  <div className="mt-6 space-y-6">
  <ProductCarousel
- title="Complete Your Purchase"
- products={mockProducts.slice(3, 8)}
+ title="You May Also Like"
+ products={mockProducts.slice(5, 10)}
  viewAllHref="/products"
  onAddToCart={(id) => {
  const p = mockProducts.find((p) => p.id === id);
@@ -520,8 +410,8 @@ export default function ProductDetailPage() {
  }}
  />
  <ProductCarousel
- title="You May Also Like"
- products={mockProducts.slice(5, 10)}
+ title="Complete Your Purchase"
+ products={mockProducts.slice(3, 8)}
  viewAllHref="/products"
  onAddToCart={(id) => {
  const p = mockProducts.find((p) => p.id === id);

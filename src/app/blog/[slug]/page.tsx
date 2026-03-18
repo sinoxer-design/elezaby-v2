@@ -1,10 +1,55 @@
 "use client";
 
+import * as React from "react";
 import Link from"next/link";
 import { useParams } from"next/navigation";
 import { ChevronLeft, Clock, Calendar, User, Share2, Bookmark, ChevronRight } from"lucide-react";
 import { Button } from"@/components/ui/button";
 import { cn } from"@/lib/utils";
+
+/** Keywords that auto-link to product listing pages */
+const KEYWORD_LINKS: { keyword: string; href: string }[] = [
+  { keyword: "SPF 30", href: "/products?q=spf" },
+  { keyword: "sunscreen", href: "/products?q=sunscreen" },
+  { keyword: "moisturizer", href: "/products?category=skincare" },
+  { keyword: "hyaluronic acid", href: "/products?q=hyaluronic+acid" },
+  { keyword: "niacinamide", href: "/products?q=niacinamide" },
+  { keyword: "Vitamin B12", href: "/products?q=vitamin+b12" },
+  { keyword: "Vitamin D", href: "/products?q=vitamin+d" },
+  { keyword: "Iron", href: "/products?q=iron+supplement" },
+  { keyword: "lip balm", href: "/products?q=lip+balm" },
+  { keyword: "diapers", href: "/products?q=diapers" },
+  { keyword: "baby formula", href: "/products?q=baby+formula" },
+  { keyword: "diaper rash", href: "/products?q=diaper+rash" },
+  { keyword: "baby lotion", href: "/products?q=baby+lotion" },
+];
+
+/** Replaces keyword occurrences in text with clickable links */
+function linkifyKeywords(text: string): React.ReactNode {
+  // Sort by longest keyword first to avoid partial matches
+  const sorted = [...KEYWORD_LINKS].sort((a, b) => b.keyword.length - a.keyword.length);
+  const pattern = sorted.map((k) => k.keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  const regex = new RegExp(`(\\b(?:${pattern})\\b)`, "gi");
+  const parts = text.split(regex);
+
+  if (parts.length === 1) return text;
+
+  return parts.map((part, i) => {
+    const match = sorted.find((k) => k.keyword.toLowerCase() === part.toLowerCase());
+    if (match) {
+      return (
+        <Link
+          key={i}
+          href={match.href}
+          className="font-semibold text-brand-600 underline decoration-brand-300 underline-offset-2 transition-colors hover:text-brand-800"
+        >
+          {part}
+        </Link>
+      );
+    }
+    return part;
+  });
+}
 
 interface Article {
  id: string;
@@ -212,7 +257,7 @@ export default function BlogDetailPage() {
  <div className="mx-auto w-full max-w-2xl flex flex-col gap-5 px-[var(--page-padding-x)] pt-5 lg:px-8">
  {article.body.map((paragraph, index) => (
  <p key={index} className="text-[15px] leading-[1.75] text-sand-600 lg:text-base">
- {paragraph}
+ {linkifyKeywords(paragraph)}
  </p>
  ))}
  </div>

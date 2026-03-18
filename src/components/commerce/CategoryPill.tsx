@@ -35,8 +35,8 @@ export function CategoryPill({
       whileTap={{ scale: 0.92 }}
       transition={springSnappy}
       className={cn(
-        "flex shrink-0 flex-col items-center gap-1.5",
-        isLarge ? "w-[6.5rem]" : "w-[4.5rem]"
+        "flex flex-col items-center gap-1.5",
+        isLarge ? "w-[6.5rem] shrink-0" : "w-full"
       )}
     >
       <div

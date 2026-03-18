@@ -1,4 +1,4 @@
-import type { ProductData } from "@/types/product";
+import type { ProductData, ProductVariant, ProductPromotion } from "@/types/product";
 
 // Helper: generate a flash deal end time (hours from now)
 function hoursFromNow(hours: number): string {
@@ -21,6 +21,7 @@ export const mockProducts: ProductData[] = [
     hasVariants: false,
     inStock: true,
     quantityOffer: "Buy 2, Get 1 Free",
+    promotion: { type: "bogo", label: "Buy 2, Get 1 Free", badgeText: "2+1 Free", buyQty: 2, getQty: 1 },
     rating: 4,
     reviewCount: 312,
     soldCount: 4520,
@@ -28,6 +29,9 @@ export const mockProducts: ProductData[] = [
     size: "24 Tablets",
     expressDelivery: true,
     categoryId: "med-pain-tab",
+    features: "Fast-acting pain relief, dual-action formula with caffeine",
+    usage: "Take 1-2 tablets every 4-6 hours as needed. Max 8 tablets in 24 hours.",
+    ingredients: "Paracetamol 500mg, Caffeine 65mg, Maize Starch, Potassium Sorbate",
   },
   {
     id: "2",
@@ -45,6 +49,15 @@ export const mockProducts: ProductData[] = [
     size: "60 Tablets",
     expressDelivery: true,
     categoryId: "vit-multi-adult",
+    variants: [
+      { id: "ct-30", variantType: "count", label: "30 Tablets", shortLabel: "30", priceDelta: -160, inStock: true },
+      { id: "ct-60", variantType: "count", label: "60 Tablets", shortLabel: "60", priceDelta: 0, inStock: true },
+      { id: "ct-120", variantType: "count", label: "120 Tablets", shortLabel: "120", priceDelta: 280, inStock: true },
+    ],
+    promotion: { type: "mix-match", label: "Buy 2 vitamins, Get 1 Free", badgeText: "Mix 2+1", requiredQty: 2, freeQty: 1, eligibleProductIds: ["2", "8"] },
+    features: "Complete A-Z multivitamin, supports immunity & energy",
+    usage: "Take 1 tablet daily with food and water.",
+    ingredients: "Vitamin A, C, D, E, K, B-complex, Iron, Zinc, Calcium, Magnesium",
   },
   {
     id: "3",
@@ -64,6 +77,15 @@ export const mockProducts: ProductData[] = [
     size: "340g",
     freeShipping: true,
     categoryId: "skin-moist-face",
+    variants: [
+      { id: "sz-50", variantType: "size", label: "50g", shortLabel: "50g", priceDelta: -430, inStock: true },
+      { id: "sz-340", variantType: "size", label: "340g", shortLabel: "340g", priceDelta: 0, inStock: true },
+      { id: "sz-453", variantType: "size", label: "453g", shortLabel: "453g", priceDelta: 120, inStock: false },
+    ],
+    features: "24-hour hydration, restores skin barrier, non-comedogenic",
+    usage: "Apply liberally to face and body as needed. Suitable for daily use.",
+    ingredients: "Ceramides 1, 3, 6-II, Hyaluronic Acid, MVE Technology, Petrolatum",
+    skinType: "All skin types, especially dry & sensitive",
   },
   {
     id: "4",
@@ -81,6 +103,9 @@ export const mockProducts: ProductData[] = [
     size: "14 Tablets",
     categoryId: "med-anti-cap",
     fulfillmentType: "pickup-only",
+    features: "Broad-spectrum antibiotic, treats bacterial infections",
+    usage: "Take as prescribed by your doctor, usually 1 tablet every 8 hours.",
+    ingredients: "Amoxicillin 500mg, Clavulanic Acid 125mg",
   },
   {
     id: "5",
@@ -90,13 +115,16 @@ export const mockProducts: ProductData[] = [
     price: 120.0,
     hasVariants: false,
     inStock: true,
-    badges: [{ label: "New", variant: "new" }],
+    badges: [{ label: "Few Left", variant: "low-stock" }],
     rating: 4,
     reviewCount: 156,
     soldCount: 2340,
     size: "50g",
     expressDelivery: true,
     categoryId: "med-pain-top",
+    features: "Topical anti-inflammatory, targeted pain relief for muscles & joints",
+    usage: "Apply a thin layer to affected area 3-4 times daily. Rub gently.",
+    ingredients: "Diclofenac Diethylamine 1.16% (equiv. to 1% Diclofenac Sodium)",
   },
   {
     id: "6",
@@ -118,6 +146,14 @@ export const mockProducts: ProductData[] = [
     expressDelivery: true,
     categoryId: "baby-diaper",
     fulfillmentType: "delivery-only",
+    variants: [
+      { id: "sz-1", variantType: "size", label: "Size 1 (2-5kg)", shortLabel: "1", inStock: true },
+      { id: "sz-2", variantType: "size", label: "Size 2 (3-8kg)", shortLabel: "2", inStock: true },
+      { id: "sz-3", variantType: "size", label: "Size 3 (5-9kg)", shortLabel: "3", inStock: true },
+      { id: "sz-4", variantType: "size", label: "Size 4 (7-18kg)", shortLabel: "4", priceDelta: 0, inStock: true },
+      { id: "sz-5", variantType: "size", label: "Size 5 (11-25kg)", shortLabel: "5", priceDelta: 30, inStock: true },
+      { id: "sz-6", variantType: "size", label: "Size 6 (13+kg)", shortLabel: "6", priceDelta: 50, inStock: false },
+    ],
   },
   {
     id: "7",
@@ -133,6 +169,10 @@ export const mockProducts: ProductData[] = [
     soldCount: 2450,
     size: "500ml",
     categoryId: "skin-clean-mic",
+    features: "Gentle micellar cleanser, removes makeup without rinsing",
+    usage: "Soak a cotton pad and gently cleanse face, eyes, and lips.",
+    ingredients: "Fatty Acid Ester Micelles, Cucumber Extract, Mannitol",
+    skinType: "Sensitive, reactive skin",
   },
   {
     id: "8",
@@ -143,6 +183,7 @@ export const mockProducts: ProductData[] = [
     hasVariants: false,
     inStock: true,
     quantityOffer: "Buy 3 for 500 EGP",
+    promotion: { type: "bundle-price", label: "Buy 3 for 500 EGP", badgeText: "3 for 500", bundleQty: 3, bundlePrice: 500, unitPrice: 210 },
     rating: 4,
     reviewCount: 267,
     soldCount: 3800,
@@ -174,6 +215,7 @@ export const mockProducts: ProductData[] = [
     pickupPrice: 275.0,
     originalPrice: 350.0,
     discountPercent: 17,
+    badges: [{ label: "Few Left", variant: "low-stock" }, { label: "-17%", variant: "discount" }],
     hasVariants: false,
     inStock: true,
     badges: [{ label: "-17%", variant: "discount" }],
@@ -193,7 +235,7 @@ export const mockProducts: ProductData[] = [
     price: 65.0,
     originalPrice: 85.0,
     discountPercent: 23,
-    badges: [{ label: "-23%", variant: "discount" }],
+    badges: [{ label: "-23%", variant: "discount" }, { label: "Few Left", variant: "low-stock" }],
     hasVariants: false,
     inStock: true,
     rating: 4,
@@ -267,7 +309,7 @@ export const mockProducts: ProductData[] = [
     freeShipping: true,
     size: "900g",
     expressDelivery: true,
-    categoryId: "baby-diaper",
+    categoryId: "baby-feed",
   },
   {
     id: "16",
@@ -1084,7 +1126,7 @@ export const mockBabyProducts: ProductData[] = [
     freeShipping: true,
     size: "800g",
     expressDelivery: true,
-    categoryId: "baby-diaper",
+    categoryId: "baby-feed",
   },
   {
     id: "26",
@@ -1100,7 +1142,7 @@ export const mockBabyProducts: ProductData[] = [
     freeShipping: true,
     size: "900g",
     expressDelivery: true,
-    categoryId: "baby-diaper",
+    categoryId: "baby-feed",
   },
   {
     id: "27",
@@ -1117,7 +1159,7 @@ export const mockBabyProducts: ProductData[] = [
     reviewCount: 145,
     soldCount: 2300,
     size: "250ml",
-    categoryId: "baby-skin",
+    categoryId: "baby-feed",
   },
   {
     id: "28",
@@ -1167,12 +1209,16 @@ export const mockBabyProducts: ProductData[] = [
     reviewCount: 98,
     soldCount: 1500,
     size: "600g",
-    categoryId: "baby-diaper",
+    categoryId: "baby-feed",
   },
 ];
 
-// Merge baby products into main pool
-export const allProducts: ProductData[] = [...mockProducts, ...mockBabyProducts, ...mockFlashDeals, ...mockBestSellers];
+// Merge baby products into main pool — deduplicate by ID (later entries win)
+export const allProducts: ProductData[] = Array.from(
+  [...mockProducts, ...mockBabyProducts, ...mockFlashDeals, ...mockBestSellers]
+    .reduce((map, p) => map.set(p.id, p), new Map<string, ProductData>())
+    .values()
+);
 
 /** Find similar products by categoryId prefix (e.g. "baby-diaper" matches "baby-*"). Prefers in-stock items. */
 export function getSimilarProducts(productId: string, limit = 6): ProductData[] {

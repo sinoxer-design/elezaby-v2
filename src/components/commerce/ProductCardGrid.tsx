@@ -4,12 +4,14 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Truck, Plus, Minus, Check, Upload, Heart, Bell, ArrowLeftRight } from "lucide-react";
+import { CheckCircle2, Plus, Minus, Check, Upload, Heart, Bell, ArrowLeftRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { springDefault } from "@/lib/motion";
 import { PrescriptionDialog } from "./PrescriptionDialog";
 import { CompareSheet } from "./CompareSheet";
+import { VariantIndicator } from "./VariantIndicator";
+import PromoBadge from "./PromoBadge";
 import { useProductCardState } from "@/hooks/useProductCardState";
 import type { ProductData } from "@/types/product";
 
@@ -65,11 +67,16 @@ export function ProductCardGrid({
                 unoptimized
               />
 
-              {/* Express 24h badge — top left */}
-              {product.expressDelivery && (
-                <span className="absolute start-1.5 top-1.5 z-10 inline-flex items-center gap-0.5 rounded-lg bg-emerald-600 px-1.5 py-0.5 text-[0.55rem] font-bold text-white shadow-sm">
-                  <Truck className="h-2.5 w-2.5" />
-                  24h
+              {/* Stock badge — top left */}
+              {product.inStock && (
+                <span className={cn(
+                  "absolute start-1.5 top-1.5 z-10 inline-flex items-center gap-0.5 rounded-lg px-1.5 py-0.5 text-[0.55rem] font-bold text-white shadow-sm",
+                  product.badges?.some(b => b.variant === "low-stock")
+                    ? "bg-amber-500"
+                    : "bg-emerald-600"
+                )}>
+                  <CheckCircle2 className="h-2.5 w-2.5" />
+                  {product.badges?.some(b => b.variant === "low-stock") ? "Limited Stock" : "In Stock"}
                 </span>
               )}
 
@@ -93,6 +100,14 @@ export function ProductCardGrid({
                   <Upload className="h-2.5 w-2.5" />
                   Rx
                 </span>
+              )}
+
+              {/* Promotion badge */}
+              {product.promotion && !product.requiresPrescription && (
+                <PromoBadge
+                  promotion={product.promotion}
+                  className="absolute bottom-1.5 start-1.5 z-10"
+                />
               )}
 
               {/* Bell icon for out-of-stock items */}
@@ -134,8 +149,13 @@ export function ProductCardGrid({
                 {product.name}
               </h3>
 
-              {/* Size */}
-              {product.size && (
+              {/* Variant pills */}
+              {product.variants && product.variants.length > 0 && (
+                <VariantIndicator variants={product.variants} className="mt-1" />
+              )}
+
+              {/* Size (only if no variants shown) */}
+              {product.size && !(product.variants && product.variants.length > 0) && (
                 <p className="mt-0.5 text-[0.55rem] text-sand-400">
                   {product.size}
                 </p>
