@@ -29,8 +29,6 @@ import { mockBrands } from "@/lib/data/brands";
 import { getPrimaryCategories } from "@/lib/categories";
 import { useCart } from "@/hooks/useCart";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useStorefrontMode } from "@/hooks/useStorefrontMode";
-import { DealsHomepage } from "@/components/commerce/DealsHomepage";
 import { BogoSheet } from "@/components/commerce/BogoSheet";
 import * as React from "react";
 
@@ -40,7 +38,6 @@ const CATEGORY_ORDER = ["skin", "baby", "pc", "hair", "med", "vit", "fa", "dent"
 export default function HomePage() {
   const { addItem } = useCart();
   const { profile } = useUserProfile();
-  const { mode } = useStorefrontMode();
   const primaryCategories = getPrimaryCategories();
 
   // BOGO sheet state
@@ -125,11 +122,6 @@ export default function HomePage() {
   const vitaminProducts = mockProducts.filter(
     (p) => p.categoryId?.startsWith("vit") && p.inStock
   );
-
-  // Deals mode — show flashy deals-only homepage
-  if (mode === "deals") {
-    return <DealsHomepage onAddToCart={handleAddToCart} />;
-  }
 
   return (
     <div className="relative flex flex-col pb-6">

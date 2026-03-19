@@ -2,11 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
 import { Search, Flame, X, ScanBarcode } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useStorefrontMode } from "@/hooks/useStorefrontMode";
 
 interface HeaderDrawerTabsProps {
   query: string;
@@ -25,24 +22,7 @@ export function HeaderDrawerTabs({
   onSearchOpen,
   onSearchClose,
 }: HeaderDrawerTabsProps) {
-  const { mode, setMode } = useStorefrontMode();
-  const router = useRouter();
-  const pathname = usePathname();
-  const activeDrawerTab = mode === "deals" ? "deals" : "elezaby";
-  const setActiveDrawerTab = (tab: "elezaby" | "deals") => {
-    setMode(tab === "deals" ? "deals" : "store");
-  };
-
-  const handleElezabyClick = () => {
-    setActiveDrawerTab("elezaby");
-    if (pathname === "/") {
-      // Already on home — scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      // Navigate to home
-      router.push("/");
-    }
-  };
+  const [activeDrawerTab, setActiveDrawerTab] = React.useState<"elezaby" | "deals">("elezaby");
 
   return (
     <div className="relative lg:hidden">
@@ -53,7 +33,7 @@ export function HeaderDrawerTabs({
       <div className="relative flex items-end">
         {/* Elezaby tab */}
         <button
-          onClick={handleElezabyClick}
+          onClick={() => setActiveDrawerTab("elezaby")}
           className={cn(
             "relative flex w-1/2 items-center justify-center gap-2 rounded-t-2xl py-2.5 text-sm font-bold transition-colors",
             activeDrawerTab === "elezaby"
@@ -71,17 +51,9 @@ export function HeaderDrawerTabs({
               </span>
             </>
           )}
-          <Image
-            src="/images/elezaby-icon.png"
-            alt=""
-            width={24}
-            height={24}
-            className={cn(
-              "h-6 w-6 object-contain",
-              activeDrawerTab !== "elezaby" && "brightness-0 invert opacity-50"
-            )}
-            priority
-          />
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-brand-700 to-brand-900">
+            <span className="text-[0.55rem] font-extrabold text-white">E</span>
+          </div>
           Elezaby
         </button>
 
@@ -111,14 +83,12 @@ export function HeaderDrawerTabs({
       </div>
 
       {/* Search row */}
-      <div className="relative z-[110] flex items-center gap-2 px-[var(--page-padding-x)] py-2.5">
+      <div className="relative z-10 flex items-center gap-2 px-[var(--page-padding-x)] py-2.5">
         <div className="relative flex-1">
           <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand-400" />
           <input
             ref={inputRef}
             type="text"
-            inputMode="search"
-            autoComplete="off"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             onFocus={onSearchOpen}

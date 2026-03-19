@@ -21,8 +21,6 @@ import {
   useOverlaySheetState,
 } from "@/hooks/useOverlaySheet";
 import { ScrollContext, useScrollState } from "@/hooks/useScroll";
-import { StorefrontModeProvider } from "@/hooks/useStorefrontMode";
-import { LocationWarningSheet } from "./LocationWarningSheet";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const deliveryState = useDeliveryState();
@@ -53,58 +51,36 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const isHomePage = pathname === "/";
 
-  // Simulate location distance check on app open
-  const [locationWarning, setLocationWarning] = React.useState(false);
-  React.useEffect(() => {
-    const dismissed = sessionStorage.getItem("loc-warning-dismissed");
-    if (dismissed) return;
-    const t = setTimeout(() => setLocationWarning(true), 2000);
-    return () => clearTimeout(t);
-  }, []);
-
   return (
-    <StorefrontModeProvider>
-      <UserProfileContext.Provider value={userProfileState}>
-        <DeliveryContext.Provider value={deliveryState}>
-          <CartContext.Provider value={cartState}>
-            <RxOrdersContext.Provider value={rxOrdersState}>
-              <OverlaySheetContext.Provider value={overlaySheetState}>
-                <ScrollContext.Provider value={scrollState}>
-                  {!hideHeader && (
-                    <HeaderBar
-                      cartCount={cartState.itemCount}
-                      minimal={isMinimalHeader}
-                    />
-                  )}
-                  <main
-                    className="mx-auto max-w-7xl pb-safe"
-                    style={{
-                      paddingTop: hideHeader ? 0 : "var(--header-height)",
-                      minHeight: "100dvh",
-                    }}
-                  >
-                    {children}
-                  </main>
-                  {!hideBottomNav && <BottomNav />}
-                  <FloatingCartButton />
-                  {isHomePage && <PersonalizedOfferFAB />}
-                  <LocationWarningSheet
-                    open={locationWarning}
-                    onOpenChange={(v) => {
-                      setLocationWarning(v);
-                      if (!v) sessionStorage.setItem("loc-warning-dismissed", "1");
-                    }}
-                    onChangeLocation={() => {
-                      sessionStorage.setItem("loc-warning-dismissed", "1");
-                      // In a real app, this would open a location picker
-                    }}
+    <UserProfileContext.Provider value={userProfileState}>
+      <DeliveryContext.Provider value={deliveryState}>
+        <CartContext.Provider value={cartState}>
+          <RxOrdersContext.Provider value={rxOrdersState}>
+            <OverlaySheetContext.Provider value={overlaySheetState}>
+              <ScrollContext.Provider value={scrollState}>
+                {!hideHeader && (
+                  <HeaderBar
+                    cartCount={cartState.itemCount}
+                    minimal={isMinimalHeader}
                   />
-                </ScrollContext.Provider>
-              </OverlaySheetContext.Provider>
-            </RxOrdersContext.Provider>
-          </CartContext.Provider>
-        </DeliveryContext.Provider>
-      </UserProfileContext.Provider>
-    </StorefrontModeProvider>
+                )}
+                <main
+                  className="mx-auto max-w-7xl pb-safe"
+                  style={{
+                    paddingTop: hideHeader ? 0 : "var(--header-height)",
+                    minHeight: "100dvh",
+                  }}
+                >
+                  {children}
+                </main>
+                {!hideBottomNav && <BottomNav />}
+                <FloatingCartButton />
+                {isHomePage && <PersonalizedOfferFAB />}
+              </ScrollContext.Provider>
+            </OverlaySheetContext.Provider>
+          </RxOrdersContext.Provider>
+        </CartContext.Provider>
+      </DeliveryContext.Provider>
+    </UserProfileContext.Provider>
   );
 }

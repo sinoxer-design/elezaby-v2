@@ -19,7 +19,7 @@ import { useDeliveryContext } from "@/hooks/useDeliveryContext";
 import { motion } from "framer-motion";
 import { easeStandard } from "@/lib/motion";
 import { mockProducts } from "@/lib/data/products";
-import { HeaderSearchOverlay, addSearchHistory } from "./HeaderSearchOverlay";
+import { HeaderSearchOverlay } from "./HeaderSearchOverlay";
 import { HeaderDrawerTabs } from "./HeaderDrawerTabs";
 import { HeaderActionIcons } from "./HeaderActionIcons";
 
@@ -70,10 +70,9 @@ export function HeaderBar({
   }, []);
 
   const closeSearch = React.useCallback(() => {
-    if (query.trim().length > 1) addSearchHistory(query.trim());
     setSearchOpen(false);
     setQuery("");
-  }, [query]);
+  }, []);
 
   // Track header height for overlay positioning AND dynamically update CSS variables
   React.useEffect(() => {
