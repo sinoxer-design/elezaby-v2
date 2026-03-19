@@ -151,7 +151,7 @@ export function ProductCardGrid({
 
               {/* Variant pills */}
               {product.variants && product.variants.length > 0 && (
-                <VariantIndicator variants={product.variants} className="mt-1" />
+                <VariantIndicator variants={product.variants} className="mt-1" onTap={() => setVariantOpen(true)} />
               )}
 
               {/* Size (only if no variants shown) */}

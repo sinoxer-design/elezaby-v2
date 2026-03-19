@@ -9,7 +9,7 @@ import { QuantitySelector } from"@/components/commerce/QuantitySelector";
 import { ProductCarousel } from"@/components/commerce/ProductCarousel";
 import { useCart } from"@/hooks/useCart";
 import { mockProducts } from"@/lib/data/products";
-import { Trash2, ShoppingCart, Tag } from"lucide-react";
+import { Trash2, ShoppingCart, Tag, Gift, Sparkles, ChevronRight } from"lucide-react";
 
 export default function CartPage() {
  const { items, itemCount, subtotal, removeItem, updateQuantity, addItem } =
@@ -135,6 +135,41 @@ export default function CartPage() {
  </p>
  )}
  </div>
+
+ {/* Free Gift Eligibility */}
+ {itemCount > 0 && (
+ <div className="rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-3.5">
+ <div className="flex items-start gap-3">
+ <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-100">
+ <Gift className="h-4.5 w-4.5 text-amber-600" />
+ </div>
+ <div className="min-w-0 flex-1">
+ {subtotal >= 500 ? (
+ <>
+ <div className="flex items-center gap-1.5">
+ <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+ <p className="text-sm font-bold text-amber-800">Free gift unlocked!</p>
+ </div>
+ <p className="mt-0.5 text-xs text-amber-600/80">You&apos;ve earned a complimentary skincare sample with your order</p>
+ </>
+ ) : (
+ <>
+ <p className="text-sm font-bold text-amber-800">You&apos;re {(500 - subtotal).toFixed(0)} EGP away from a free gift!</p>
+ <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-amber-200/60">
+ <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400 transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / 500) * 100)}%` }} />
+ </div>
+ <p className="mt-1 text-[0.65rem] text-amber-600/70">Spend 500 EGP+ to get a complimentary gift</p>
+ </>
+ )}
+ </div>
+ {subtotal >= 500 && (
+ <Link href="/products" className="flex items-center gap-0.5 whitespace-nowrap rounded-full bg-amber-500 px-3 py-1.5 text-[0.6rem] font-bold text-white transition-transform active:scale-95">
+ Choose <ChevronRight className="h-3 w-3" />
+ </Link>
+ )}
+ </div>
+ </div>
+ )}
  </div>
 
  {/* Order Summary — sticky sidebar on desktop */}

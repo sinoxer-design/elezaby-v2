@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Gift, Plus, Check, ShoppingCart, Sparkles } from "lucide-react";
+import { Gift, Plus, Minus, Check, ShoppingCart, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sheet,
@@ -36,7 +36,7 @@ export function BogoSheet({
   onAddToCart,
 }: BogoSheetProps) {
   const { setSheetOpen } = useOverlaySheet();
-  const { items } = useCart();
+  const { items, removeItem } = useCart();
   const promo = triggerProduct.promotion;
 
   // Track which items user added during this session
@@ -74,23 +74,28 @@ export function BogoSheet({
     (p) => p.id !== triggerProduct.id && p.inStock
   );
 
-  const handleAdd = (productId: string) => {
-    onAddToCart?.(productId);
-    setJustAdded((prev) => new Set(prev).add(productId));
-    setTimeout(() => {
-      setJustAdded((prev) => {
-        const next = new Set(prev);
-        next.delete(productId);
-        return next;
-      });
-    }, 1200);
+  const handleToggle = (product: ProductData) => {
+    const inCart = items.some((i) => i.id === product.id);
+    if (inCart) {
+      removeItem(product.id);
+    } else {
+      onAddToCart?.(product.id);
+      setJustAdded((prev) => new Set(prev).add(product.id));
+      setTimeout(() => {
+        setJustAdded((prev) => {
+          const next = new Set(prev);
+          next.delete(product.id);
+          return next;
+        });
+      }, 1200);
+    }
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="flex h-[80vh] flex-col rounded-t-3xl px-0 pb-0"
+        className="flex h-[80vh] flex-col rounded-t-3xl px-0 pb-0 sm:inset-x-auto sm:start-1/2 sm:w-[430px] sm:-translate-x-1/2"
       >
         <SheetHeader className="px-[var(--page-padding-x)] pb-3">
           <SheetTitle className="flex items-center gap-2 text-lg">
@@ -173,8 +178,8 @@ export function BogoSheet({
           </div>
         </div>
 
-        <ScrollArea className="min-h-0 w-full flex-1">
-          <div className="mx-auto flex w-full flex-col gap-2.5 px-4 pb-28">
+        <ScrollArea className="min-h-0 flex-1 overflow-hidden">
+          <div className="flex w-full flex-col gap-2.5 px-[var(--page-padding-x)] pb-28 overflow-hidden">
             {/* Added product confirmation */}
             <div className="flex items-center gap-3 rounded-xl border border-rose-100 bg-rose-50/50 p-2.5">
               <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-sand-100">
@@ -258,12 +263,14 @@ export function BogoSheet({
                     whileTap={{ scale: 0.9 }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleAdd(p.id);
+                      handleToggle(p);
                     }}
                     className={cn(
                       "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors",
                       wasJustAdded
                         ? "bg-emerald-500 text-white"
+                        : inCart
+                        ? "bg-rose-100 text-rose-600 active:bg-rose-200"
                         : "bg-brand-700 text-white active:bg-brand-800"
                     )}
                   >
@@ -277,6 +284,16 @@ export function BogoSheet({
                           transition={{ duration: 0.2 }}
                         >
                           <Check className="h-3.5 w-3.5" />
+                        </motion.span>
+                      ) : inCart ? (
+                        <motion.span
+                          key="minus"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          <Minus className="h-3.5 w-3.5" />
                         </motion.span>
                       ) : (
                         <motion.span

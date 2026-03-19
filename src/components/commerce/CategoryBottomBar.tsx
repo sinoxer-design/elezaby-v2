@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SlidersHorizontal, Zap, LayoutGrid, List, ArrowUpDown } from "lucide-react";
+import { SlidersHorizontal, CircleCheck, LayoutGrid, List, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CategoryBottomBarProps {
@@ -49,18 +49,18 @@ export function CategoryBottomBar({
       {/* Sort — inline slot from parent */}
       {sortSlot}
 
-      {/* Instant Delivery Toggle */}
+      {/* In Stock Toggle */}
       <button
         onClick={() => onInstantToggle(!instantDelivery)}
         className={cn(
           "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
           instantDelivery
-            ? "border-cyan-400 bg-cyan-50 text-cyan-700"
+            ? "border-emerald-400 bg-emerald-50 text-emerald-700"
             : "border-sand-200 bg-white text-sand-500"
         )}
       >
-        <Zap className={cn("h-3.5 w-3.5", instantDelivery ? "text-cyan-600" : "text-sand-400")} />
-        Instant
+        <CircleCheck className={cn("h-3.5 w-3.5", instantDelivery ? "text-emerald-600" : "text-sand-400")} />
+        In Stock
       </button>
 
       {/* View Mode Toggle */}

@@ -329,7 +329,7 @@ export default function HomePage() {
           categoryId="baby"
           products={[...mockProducts, ...mockBabyProducts].filter(p => p.categoryId?.startsWith("baby"))}
           heroImageUrl="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=400&fit=crop"
-          gradient="from-sky-200 to-cyan-100"
+          gradient="from-emerald-600 via-teal-500 to-cyan-500"
           onAddToCart={handleAddToCart}
         />
 
@@ -338,6 +338,15 @@ export default function HomePage() {
 
         {/* 10. Sales in Bundles */}
         <BundleSection bundles={mockBundles} onAddBundle={handleAddBundle} />
+
+        {/* Wellness Mega Grid */}
+        <section className="space-y-3">
+          <div className="px-[var(--page-padding-x)] lg:px-8">
+            <h2 className="text-lg font-bold text-sand-800">Wellness Corner</h2>
+            <p className="text-xs text-sand-500">Vitamins, supplements & more</p>
+          </div>
+          <PromoDealBanners sections={[mockPromoSections[2]]} layout="bento-6" />
+        </section>
 
         {/* Video Content */}
         <section className="space-y-3">

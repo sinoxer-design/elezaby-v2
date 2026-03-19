@@ -18,6 +18,7 @@ import { useCart } from"@/hooks/useCart";
 import { ProductCard } from"@/components/commerce/ProductCard";
 import { VariantSelector } from"@/components/commerce/VariantSelector";
 import PromoSection from"@/components/commerce/PromoSection";
+import { StoreAvailability } from"@/components/commerce/StoreAvailability";
 import {
  ChevronLeft,
  Share2,
@@ -225,24 +226,7 @@ export default function ProductDetailPage() {
  />
 
  {/* Store Availability */}
- <div className="rounded-lg border border-sand-200 p-3">
- <div className="flex items-center gap-2">
- <MapPin className="h-4 w-4 text-sand-400" />
- <span className="text-sm font-medium text-sand-700">
- Check Store Availability
- </span>
- </div>
- <div className="mt-2 flex gap-2">
- <input
- type="text"
- placeholder="Enter zip code"
- className="flex-1 rounded-lg border border-sand-200 bg-sand-50 px-3 py-2 text-sm placeholder:text-sand-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
- />
- <Button variant="outline" size="sm">
- Check
- </Button>
- </div>
- </div>
+ <StoreAvailability inStock={product.inStock} />
 
  {/* Accordion Sections */}
  {[

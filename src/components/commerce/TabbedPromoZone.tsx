@@ -48,12 +48,12 @@ export function TabbedPromoZone({
       {/* Hero Banner — full width, no side padding */}
       <div
         className={cn(
-          "relative overflow-hidden bg-gradient-to-br px-5 pb-10 pt-8",
+          "relative overflow-hidden bg-gradient-to-br px-5 pb-12 pt-10",
           gradient
         )}
       >
         {/* Title */}
-        <h2 className="relative z-10 font-display text-3xl font-extrabold text-brand-900/80 drop-shadow-sm">
+        <h2 className="relative z-10 font-display text-3xl font-extrabold text-white drop-shadow-sm">
           {title}
         </h2>
 

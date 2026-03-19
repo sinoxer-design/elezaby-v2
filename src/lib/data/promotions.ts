@@ -152,6 +152,13 @@ export const mockPromoSections: PromoSection[] = [
         href: "/products?category=vitamins&tag=omega",
         imageUrl: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=200&h=200&fit=crop",
       },
+      {
+        id: "pc-7",
+        title: "Joint Support",
+        discount: "20%",
+        href: "/products?category=vitamins&tag=joint",
+        imageUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
+      },
     ],
   },
 ];

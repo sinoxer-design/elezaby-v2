@@ -22,6 +22,7 @@ import {
 } from "@/hooks/useOverlaySheet";
 import { ScrollContext, useScrollState } from "@/hooks/useScroll";
 import { StorefrontModeProvider } from "@/hooks/useStorefrontMode";
+import { LocationWarningSheet } from "./LocationWarningSheet";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const deliveryState = useDeliveryState();
@@ -52,6 +53,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const isHomePage = pathname === "/";
 
+  // Simulate location distance check on app open
+  const [locationWarning, setLocationWarning] = React.useState(false);
+  React.useEffect(() => {
+    const dismissed = sessionStorage.getItem("loc-warning-dismissed");
+    if (dismissed) return;
+    const t = setTimeout(() => setLocationWarning(true), 2000);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <StorefrontModeProvider>
       <UserProfileContext.Provider value={userProfileState}>
@@ -78,6 +88,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {!hideBottomNav && <BottomNav />}
                   <FloatingCartButton />
                   {isHomePage && <PersonalizedOfferFAB />}
+                  <LocationWarningSheet
+                    open={locationWarning}
+                    onOpenChange={(v) => {
+                      setLocationWarning(v);
+                      if (!v) sessionStorage.setItem("loc-warning-dismissed", "1");
+                    }}
+                    onChangeLocation={() => {
+                      sessionStorage.setItem("loc-warning-dismissed", "1");
+                      // In a real app, this would open a location picker
+                    }}
+                  />
                 </ScrollContext.Provider>
               </OverlaySheetContext.Provider>
             </RxOrdersContext.Provider>

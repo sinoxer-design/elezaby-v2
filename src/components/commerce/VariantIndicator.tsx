@@ -7,6 +7,7 @@ interface VariantIndicatorProps {
   variants: ProductVariant[];
   compact?: boolean;
   className?: string;
+  onTap?: () => void;
 }
 
 const COLOR_MAX = 4;
@@ -16,19 +17,26 @@ export function VariantIndicator({
   variants,
   compact,
   className,
+  onTap,
 }: VariantIndicatorProps) {
   if (!variants.length) return null;
 
   const variantType = variants[0].variantType;
+  const Wrapper = onTap ? "button" : "div";
+  const wrapperProps = onTap
+    ? { type: "button" as const, onClick: (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); onTap(); } }
+    : {};
 
   if (variantType === "color") {
     const visible = variants.slice(0, COLOR_MAX);
     const overflow = variants.length - COLOR_MAX;
 
     return (
-      <div
+      <Wrapper
+        {...wrapperProps}
         className={cn(
           "flex items-center gap-1 overflow-hidden",
+          onTap && "cursor-pointer",
           className,
         )}
       >
@@ -45,7 +53,7 @@ export function VariantIndicator({
             +{overflow}
           </span>
         )}
-      </div>
+      </Wrapper>
     );
   }
 
@@ -54,16 +62,23 @@ export function VariantIndicator({
   const overflow = variants.length - PILL_MAX;
 
   return (
-    <div
+    <Wrapper
+      {...wrapperProps}
       className={cn(
         "flex items-center gap-1 overflow-hidden",
+        onTap && "cursor-pointer",
         className,
       )}
     >
-      {visible.map((v) => (
+      {visible.map((v, i) => (
         <span
           key={v.id}
-          className="shrink-0 rounded bg-sand-100 px-1.5 py-0.5 text-[0.5rem] font-medium text-sand-500"
+          className={cn(
+            "shrink-0 rounded px-1.5 py-0.5 text-[0.5rem] font-medium",
+            i === 0
+              ? "border border-brand-500 bg-brand-50 text-brand-700"
+              : "bg-sand-100 text-sand-500"
+          )}
         >
           {v.shortLabel}
         </span>
@@ -73,6 +88,6 @@ export function VariantIndicator({
           +{overflow}
         </span>
       )}
-    </div>
+    </Wrapper>
   );
 }
